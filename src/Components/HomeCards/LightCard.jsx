@@ -104,7 +104,7 @@ export default function LightCard({ product, isUserAdmin, deviceState }) {
             <img
                 src={lightStatus === 'on' ? 'svgs/light-on.svg' : 'svgs/light-off.svg'}
                 alt={lightStatus === 'on' ? 'روشن' : 'خاموش'}
-                style={{ width: '120px', transition: '0.3s ease-in-out' }}
+                style={{ width: '110px', transition: '0.3s ease-in-out' }}
             />
         </div>
     );

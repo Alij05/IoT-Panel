@@ -25,7 +25,7 @@ export default function WaterCard({ product, isUserAdmin, deviceState }) {
             <img
                 src={isWet === 'on' ? 'svgs/water-on.svg' : 'svgs/water-off.svg'}
                 alt={isWet === 'on' ? 'خیس' : 'خشک'}
-                style={{ width: '100px', transition: '0.3s ease-in-out' }}
+                style={{ width: '90px', transition: '0.3s ease-in-out' }}
             />
 
             <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isWet === 'on' ? 'خیس' : 'خشک'}</p>

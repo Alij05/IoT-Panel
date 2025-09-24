@@ -6,13 +6,11 @@
     align-items: stretch;
     /* margin: 20px 0; */
     background-color: var(--white-50);
-    padding: 40px;
+    padding: 25px 25px 20px;
     /* width: fit-content; */
 }
 
-.temp-wrapper {
-    padding: 35px 20px;
-}
+.temp-wrapper {}
 
 .sensor-cards-wrapper {
     display: flex;

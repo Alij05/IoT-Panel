@@ -26,7 +26,7 @@ export default function FlameCard({ product, isUserAdmin, deviceState }) {
             <img
                 src={flameStatus === 'on' ? 'svgs/fire-on.svg' : 'svgs/fire-off.svg'}
                 alt={flameStatus === 'on' ? 'فعال' : 'غیرفعال'}
-                style={{ width: '100px', transition: '0.3s ease-in-out' }}
+                style={{ width: '90px', transition: '0.3s ease-in-out' }}
             />
         </div>
     )

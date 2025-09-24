@@ -10,6 +10,7 @@ import LightCard from "../HomeCards/LightCard";
 import FlameCard from "../HomeCards/FlameCard";
 import WaterCard from "../HomeCards/WaterCard";
 import MotionDetectionCard from "../HomeCards/MotionDetectionCard";
+import CameraCard from "../HomeCards/CameraCard";
 
 const url = process.env.REACT_APP_URL;
 
@@ -62,6 +63,11 @@ export default function Home() {
         return <ErrorBox msg={"هیچ دستگاهی یافت نشد"} />;
     }
 
+
+    const cameras = [
+        'http://91.223.116.249:8080/mjpeg/cam2'
+    ];
+
     return (
         <div className="home-wrapper">
             <MasonryGrid>
@@ -72,14 +78,55 @@ export default function Home() {
                     // console.log("product", product);
                     return (
                         <div key={product.entity_id}>
-                            {product.deviceClass === 'light' && (<LightCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
-                            {product.deviceClass === 'flame' && (<FlameCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
-                            {product.deviceClass === 'temperature' && (<TempCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
-                            {product.deviceClass === 'water' && (<WaterCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
-                            {product.deviceClass === 'motion' && (<MotionDetectionCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
+                            {product.deviceClass === "light" && (
+                                <LightCard
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceData}
+                                />
+                            )}
+                            {product.deviceClass === "flame" && (
+                                <FlameCard
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceData}
+                                />
+                            )}
+                            {product.deviceClass === "temperature" && (
+                                <TempCard
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceData}
+                                />
+                            )}
+                            {product.deviceClass === "water" && (
+                                <WaterCard
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceData}
+                                />
+                            )}
+                            {product.deviceClass === "motion" && (
+                                <MotionDetectionCard
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceData}
+                                />
+                            )}
                         </div>
                     );
+
                 })}
+                {/* Camera Cards */}
+                {cameras.map((url, index) => (
+                    <div
+                        key={`camera-${index}`}
+                        className="btn-cell"
+                        style={{ minHeight: "200px" }}
+                    >
+                        <CameraCard url={url} />
+                    </div>
+                ))}
             </MasonryGrid>
         </div>
     );
