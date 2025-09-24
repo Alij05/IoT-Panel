@@ -1,0 +1,198 @@
+@import "./reset.css";
+
+@font-face {
+    font-family: Lalezar;
+    src: url(./fonts/Lalezar-Regular.ttf);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --white: #ffffff;
+    --white-50: #f0f0f0;
+    --box-color: #e3e3e3;
+    --blue: rgb(38, 198, 218);
+    --dark: #1a1a1a;
+    --text: #000000;
+    --sidebar: #000000;
+    --shadow: rgba(0, 0, 0, 0.15);
+    --users: #000000;
+}
+
+[data-theme='dark'] {
+    --white: rgb(43, 43, 43);
+    --white-50: #1a1a1a;
+    --box-color: #dddddd;
+    --text-color: #dddddd;
+    --sidebar: #fff;
+    --text: rgb(118, 118, 118);
+    --shadow: rgba(255, 255, 255, 0.15);
+    --users: rgb(159, 159, 161);
+}
+
+body {
+    background-color: var(--white-50);
+    direction: rtl;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+}
+
+*,
+body,
+html {
+    font-family: Lalezar;
+}
+
+:root {
+    --primary-cyan: #26c6da;
+    --primary-dark: #1a8291;
+    --primary-light: #6ed9e8;
+    --glass-bg: rgba(38, 198, 218, 0.35);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    /* --white: #f0f5f9; */
+    --dark-bg: #1b2529;
+    --input-bg: rgba(255, 255, 255, 0.15);
+    --input-focus: rgba(38, 198, 218, 0.3);
+    --text-secondary: #c0e2eb;
+    --shadow-primary: rgba(38, 198, 218, 0.3);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+}
+
+/* صفحه بکگراند زیبا و متناسب */
+.auth-body {
+    background: linear-gradient(135deg,
+            #1b2529 0%,
+            #87ced7 25%,
+            #9dc5d6 50%,
+            #87ced7 75%,
+            #1b2529 100%);
+
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lalezar', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--white);
+    overflow: hidden;
+    position: relative;
+}
+
+/* .auth-body::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle,
+            rgba(38, 198, 218, 0.3) 0%,
+            rgba(110, 217, 232, 0.2) 30%,
+            transparent 70%);
+    filter: blur(80px);
+    z-index: 0;
+    opacity: 0.7;
+    animation: floatGlow1 20s ease-in-out infinite;
+}
+
+.auth-body::after {
+    content: '';
+    position: absolute;
+    bottom: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle,
+            rgba(38, 198, 218, 0.35) 0%,
+            rgba(176, 226, 235, 0.25) 40%,
+            transparent 70%);
+    filter: blur(90px);
+    z-index: 0;
+    opacity: 0.6;
+    animation: floatGlow2 25s ease-in-out infinite reverse;
+} */
+
+
+/* گرادیانت متحرک */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* انیمیشن‌های نورانی */
+@keyframes floatGlow1 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 0.7;
+    }
+
+    25% {
+        transform: translate(100px, -50px) rotate(90deg) scale(1.1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(50px, 100px) rotate(180deg) scale(0.9);
+        opacity: 0.8;
+    }
+
+    75% {
+        transform: translate(-50px, 50px) rotate(270deg) scale(1.05);
+        opacity: 0.6;
+    }
+}
+
+@keyframes floatGlow2 {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 0.6;
+    }
+
+    33% {
+        transform: translate(-80px, -100px) rotate(120deg) scale(1.2);
+        opacity: 0.4;
+    }
+
+    66% {
+        transform: translate(120px, 80px) rotate(240deg) scale(0.8);
+        opacity: 0.7;
+    }
+}
+
+/* انیمیشن ذرات */
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.7;
+    }
+
+    90% {
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translateY(-100px) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}

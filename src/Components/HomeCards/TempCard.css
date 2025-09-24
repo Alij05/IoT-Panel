@@ -1,0 +1,92 @@
+.sensor-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: stretch;
+    /* margin: 20px 0; */
+    background-color: var(--white-50);
+    padding: 40px;
+    /* width: fit-content; */
+}
+
+.temp-wrapper {
+    padding: 35px 20px;
+}
+
+.sensor-cards-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sensor-card {
+    /* width: -webkit-fill-available; */
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    padding: 10px;
+    margin-top: 10px;
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); */
+    color: var(--text-color);
+    font-size: 1rem !important;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.sensor-card svg {
+    width: 25px;
+    height: 25px;
+}
+
+.sensor-card:hover {
+    transform: scale(1.03);
+}
+
+.temperature-card {
+    /* background: linear-gradient(135deg, #ff416c, #ff4b2b); */
+    border: 2px solid #ff416c;
+}
+
+.humidity-card {
+    /* background: linear-gradient(135deg, #2193b0, #6dd5ed); */
+    border: 2px solid #2193b0;
+}
+
+.sensor-info {
+    /* margin-left: 15px; */
+}
+
+.sensor-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.sensor-info p {
+    margin: 5px 0 0 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+
+@media (max-width: 700px) {
+    .sensor-wrapper {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 576px) {
+    .sensor-wrapper {
+        flex-direction: column;
+    }
+}

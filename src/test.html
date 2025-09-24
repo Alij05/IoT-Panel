@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Plug Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    .success { background-color: #d4edda; border-color: #c3e6cb; }
+    .error { background-color: #f8d7da; border-color: #f5c6cb; }
+    .info { background-color: #d1ecf1; border-color: #bee5eb; }
+    button { margin: 5px; padding: 10px 15px; cursor: pointer; }
+    input { margin: 5px; padding: 5px; }
+    .log-entry { margin: 5px 0; padding: 5px; background: #f8f9fa; border-left: 3px solid #007bff; }
+    .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+    .connected { background-color: #d4edda; color: #155724; }
+    .disconnected { background-color: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Smart Plug System Test</h1>
+    
+    <div class="test-section info">
+      <h3>Device Configuration</h3>
+      <label>Device Type: <input type="text" id="deviceType" value="sensor"></label><br>
+      <label>Device ID: <input type="text" id="deviceId" value="device01"></label><br>
+      <button onclick="testConnection()">Test Server Connection</button>
+    </div>
+
+    <div class="test-section">
+      <h3>Device Control</h3>
+      <button onclick="testOnCommand()">🔴 Test ON Command</button>
+      <button onclick="testOffCommand()">⚫ Test OFF Command</button>
+      <button onclick="testGetStatus()">📊 Get Device Status</button>
+    </div>
+
+    <div class="test-section">
+      <h3>Logs & Monitoring</h3>
+      <button onclick="testGetDeviceLogs()">📋 Get Device Logs</button>
+      <button onclick="testGetAllLogs()">📚 Get All Logs</button>
+      <button onclick="testGetLogStats()">📈 Get Log Statistics</button>
+    </div>
+
+    <div class="test-section">
+      <h3>Real-time WebSocket</h3>
+      <button onclick="connectWebSocket()">🔌 Connect WebSocket</button>
+      <button onclick="disconnectWebSocket()">❌ Disconnect</button>
+      <div id="wsStatus" class="status disconnected">WebSocket: Disconnected</div>
+    </div>
+
+    <div class="test-section">
+      <h3>Test Results</h3>
+      <button onclick="clearResults()">🗑️ Clear Results</button>
+      <div id="testResults"></div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+
+    function log(message, type = 'info') {
+      const results = document.getElementById('testResults');
+      const div = document.createElement('div');
+      div.className = `log-entry ${type}`;
+      div.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
+      results.appendChild(div);
+      results.scrollTop = results.scrollHeight;
+    }
+
+    function getDeviceInfo() {
+      return {
+        deviceType: document.getElementById('deviceType').value,
+        deviceId: document.getElementById('deviceId').value
+      };
+    }
+
+    function updateWsStatus(connected) {
+      const status = document.getElementById('wsStatus');
+      if (connected) {
+        status.textContent = 'WebSocket: Connected';
+        status.className = 'status connected';
+      } else {
+        status.textContent = 'WebSocket: Disconnected';
+        status.className = 'status disconnected';
+      }
+    }
+
+    async function testConnection() {
+      try {
+        const response = await fetch('/mqtt/');
+        if (response.ok) {
+          log('✅ Server connection successful', 'success');
+        } else {
+          log('❌ Server connection failed', 'error');
+        }
+      } catch (error) {
+        log(`❌ Server connection error: ${error.message}`, 'error');
+      }
+    }
+
+    async function testOnCommand() {
+      const { deviceType, deviceId } = getDeviceInfo();
+      try {
+        const response = await fetch('/mqtt/api/control/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceType, deviceId, command: 'on' })
+        });
+        const data = await response.json();
+        log(`✅ ON command sent: ${data.message}`, 'success');
+      } catch (error) {
+        log(`❌ ON command failed: ${error.message}`, 'error');
+      }
+    }
+
+    async function testOffCommand() {
+      const { deviceType, deviceId } = getDeviceInfo();
+      try {
+        const response = await fetch('/mqtt/api/control', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceType, deviceId, command: 'off' })
+        });
+        const data = await response.json();
+        log(`✅ OFF command sent: ${data.message}`, 'success');
+      } catch (error) {
+        log(`❌ OFF command failed: ${error.message}`, 'error');
+      }
+    }
+
+    async function testGetStatus() {
+      const { deviceType, deviceId } = getDeviceInfo();
+      try {
+        const response = await fetch(`/mqtt/api/status/${encodeURIComponent(deviceType)}/${encodeURIComponent(deviceId)}`);
+        if (response.ok) {
+          const data = await response.json();
+          log(`✅ Status: ${data.state} at ${new Date(data.timestamp).toLocaleString()}`, 'success');
+        } else {
+          log(`⚠️ No status data found for ${deviceType}/${deviceId}`, 'info');
+        }
+      } catch (error) {
+        log(`❌ Get status failed: ${error.message}`, 'error');
+      }
+    }
+
+    async function testGetDeviceLogs() {
+      const { deviceType, deviceId } = getDeviceInfo();
+      try {
+        const response = await fetch(`/mqtt/api/logs/device/${encodeURIComponent(deviceType)}/${encodeURIComponent(deviceId)}?limit=5`);
+        const data = await response.json();
+        log(`✅ Device logs: ${data.logs.length} logs found`, 'success');
+        data.logs.forEach(logEntry => {
+          log(`  📝 ${logEntry.eventType}: ${logEntry.message}`, 'info');
+        });
+      } catch (error) {
+        log(`❌ Get device logs failed: ${error.message}`, 'error');
+      }
+    }
+
+    async function testGetAllLogs() {
+      try {
+        const response = await fetch('/mqtt/mqtt/api/logs/all?limit=5');
+        const data = await response.json();
+        log(`✅ All logs: ${data.logs.length} total logs`, 'success');
+      } catch (error) {
+        log(`❌ Get all logs failed: ${error.message}`, 'error');
+      }
+    }
+
+    async function testGetLogStats() {
+      const { deviceType, deviceId } = getDeviceInfo();
+      try {
+        const response = await fetch(`/mqtt/api/logs/stats/${encodeURIComponent(deviceType)}/${encodeURIComponent(deviceId)}`);
+        const data = await response.json();
+        log(`✅ Log stats: ${data.totalLogs} total logs`, 'success');
+        data.eventTypeStats.forEach(stat => {
+          log(`  📊 ${stat._id}: ${stat.count} occurrences`, 'info');
+        });
+      } catch (error) {
+        log(`❌ Get log stats failed: ${error.message}`, 'error');
+      }
+    }
+
+    function connectWebSocket() {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        log('⚠️ WebSocket already connected', 'info');
+        return;
+      }
+
+      const { deviceType, deviceId } = getDeviceInfo();
+      ws = new WebSocket(`wss://imilkyway.digital/mqtt/ws`);
+
+      ws.onopen = () => {
+        log('✅ WebSocket connected', 'success');
+        updateWsStatus(true);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.deviceType === deviceType && data.deviceId === deviceId) {
+            log(`📡 Live update: ${data.state} at ${new Date(data.timestamp).toLocaleString()}`, 'info');
+          }
+        } catch (error) {
+          log(`❌ WebSocket message parse error: ${error.message}`, 'error');
+        }
+      };
+
+      ws.onclose = () => {
+        log('⚠️ WebSocket disconnected', 'info');
+        updateWsStatus(false);
+      };
+
+      ws.onerror = (error) => {
+        log(`❌ WebSocket error: ${error}`, 'error');
+        updateWsStatus(false);
+      };
+    }
+
+    function disconnectWebSocket() {
+      if (ws) {
+        ws.close();
+        ws = null;
+        updateWsStatus(false);
+      }
+    }
+
+    function clearResults() {
+      document.getElementById('testResults').innerHTML = '';
+    }
+
+    // Auto-test on load
+    window.onload = () => {
+      log('🚀 Test page loaded successfully', 'success');
+      testConnection();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+/* بخش کلی فرم کاربران */
+.users-main {
+    margin-top: 60px;
+}
+
+.users-title {
+    font-size: 2rem;
+}
+
+.add-users-form {
+    margin-top: 30px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 30px 20px;
+    border-radius: 20px;
+    width: 85%;
+    margin: 30px auto 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+.add-users-form-wrap {
+    width: 85%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 25px;
+}
+
+/* گروه اینپوت با آیکون */
+.add-users-form-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-50);
+    padding: 0 20px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position: relative;
+}
+
+.input-icon {
+    font-size: 1.4rem;
+    color: #767676;
+    margin-right: 10px;
+}
+
+/* لیبل و اینپوت با افکت شناور */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.add-users-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.1rem;
+    padding: 16px 10px 8px;
+    color: var(--text);
+}
+
+.input-wrapper label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    color: #888;
+    background: var(--white-50);
+    padding: 0 4px;
+    pointer-events: none;
+}
+
+.add-users-input:focus+label,
+.add-users-input:valid+label {
+    top: 0;
+    transform: translateY(-50%) scale(0.85);
+    color: #444;
+}
+
+/* چک‌باکس‌ها (در صورت استفاده) */
+.input-checkbox {
+    display: flex;
+    gap: 10px;
+}
+
+.input-checkbox p,
+.input-checkbox label {
+    color: #767676;
+}
+
+/* دکمه ارسال */
+.add-users-submit {
+    border: none;
+    background: hsl(187deg 100% 50%);
+    color: white;
+    font-size: 1.1rem;
+    padding: 10px 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    margin: 36px auto 0;
+    display: block;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-users-submit:hover {
+    transform: translateY(-2px);
+    filter: brightness(95%);
+}
+
+.add-users-submit:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 972px) {
+    .add-users-form {
+        width: 100%;
+    }
+    .add-users-form-wrap {
+        width: 95%;
+    }
+}
+
+@media (max-width: 692px) {
+    .add-users-form-wrap {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 478px) {
+    .add-users-form-wrap {
+        grid-template-columns: 1fr;
+    }
+
+    .add-users-input {
+        font-size: 1rem;
+    }
+}

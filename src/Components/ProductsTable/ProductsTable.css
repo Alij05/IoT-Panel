@@ -1,0 +1,150 @@
+/*   **************************   */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    /* برای حذف فاصله اضافی بین سلول‌ها */
+    table-layout: fixed;
+    /* مهم برای مساوی شدن عرض ستون‌ها */
+}
+
+.users-table th,
+.users-table td {
+    text-align: center;
+    padding: 16px;
+    word-wrap: break-word;
+    /* جلوگیری از شکستن جدول */
+}
+
+/*   **************************   */
+
+.details-products-form-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-50);
+    padding: 0 20px;
+    border-radius: 10px;
+    width: 320px;
+    margin: 5px auto 0;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.chart-card {
+    background-color: var(--white);
+    box-shadow: none;
+    width: 100%;
+}
+
+.humadity-card {
+    box-shadow: none;
+    background-color: var(--white);
+}
+
+/* Users List Styles */
+
+.users-products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 75px;
+}
+
+.users-products-title {
+    margin-top: 0;
+}
+
+.back-btn {
+    background: var(--blue);
+    color: var(--sidebar);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px var(--blue);
+}
+
+.back-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.users-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.user-card {
+    /* flex: 1 1; */
+    min-width: 200px;
+    /* background: #fff; */
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--input-bg);
+    text-align: center;
+}
+
+.user-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: var(--blue);
+    /* آبی قشنگ */
+}
+
+.user-card h3 {
+    font-size: 19px;
+    font-weight: 450;
+    /* color: #1f2937; */
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.user-card p {
+    font-size: 14px;
+    color: #858585;
+    margin: 0;
+}
+
+
+@media (max-width: 686px) {
+    .user-card {
+        min-width: 160px;
+    }
+
+    .users-list-div {
+        flex-grow: 1;
+    }
+}
+
+@media (max-width: 400px) {
+    .user-card {
+        min-width: 150px;
+    }
+
+    .users-title {
+        font-size: 1.6rem !important;
+    }
+}
+
+@media (max-width: 340px) {
+    .users-list-div {
+        width: 75%;
+        ;
+    }
+}

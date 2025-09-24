@@ -1,0 +1,263 @@
+.report-chart-container {
+  margin: 50px auto !important;
+}
+.report-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.report-chart-Name {
+  text-align: center;
+}
+.report-chart-type-section {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+.report-period-toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.range-pickers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 5px;
+  gap: 5px;
+}
+.toggle-group {
+  gap: 10px !important;
+}
+.recharts-default-legend {
+  display: none !important;
+}
+.recharts-surface {
+  outline: none !important;
+}
+.report-chart-type-button {
+  padding: 8px 16px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+.report-chart {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.report-chart-datePicker-section {
+  margin: 5px 0;
+  text-align: center;
+}
+.report-chart-DatePicker {
+  direction: rtl;
+  cursor: pointer !important;
+  .rmdp-arrow {
+    border: solid #26a69a;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    height: 3px;
+    margin-top: 5px;
+    padding: 2px;
+    width: 3px;
+  }
+  .rmdp-day.rmdp-selected span:not(.highlight) {
+    background-color: #26a69a;
+    box-shadow: 0 0 3px #8798ad;
+    color: #fff;
+  }
+  .rmdp-day.rmdp-selected span:not(.highlight):hover {
+    background-color: #26a6998f;
+  }
+  .rmdp-week-day {
+    color: #26a69a;
+    cursor: default;
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
+.report-chart-period-datePicker-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+}
+.date-picker-label {
+  cursor: pointer;
+}
+.report-chart-period-datePicker-checkbox {
+  cursor: pointer;
+}
+.report-chart-section {
+  position: relative;
+}
+.report-chart-buttons-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.report-chart-restart-button {
+  padding: 5px 10px !important;
+  background-color: rgb(38, 166, 154) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+.report-chart-exel-button {
+  padding: 5px 10px !important;
+  background-color: rgb(38, 166, 154) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .report-chart-container {
+    margin: 20px auto !important;
+    padding: 0 10px;
+  }
+
+  .report-chart-header {
+    gap: 5px;
+    /* flex-direction: column; */
+  }
+
+  .report-chart-Name {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+
+  .report-chart-type-section {
+    gap: 5px;
+    margin: 5px 0;
+  }
+
+  .toggle-group {
+    gap: 5px !important;
+  }
+
+  .report-chart-type-button {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .report-chart-DatePicker {
+    font-size: 12px;
+    width: 120px;
+  }
+
+  .report-chart-period-datePicker-section {
+    padding: 0 5px;
+  }
+
+  .range-pickers {
+    gap: 3px;
+    padding: 3px;
+    flex-direction: column;
+  }
+
+  .report-chart-buttons-section {
+    gap: 10px;
+    align-items: center;
+  }
+
+  .report-chart-restart-button,
+  .report-chart-exel-button {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    min-width: 80px;
+  }
+
+  /* Chart container adjustments */
+  .report-chart-section {
+    height: 300px !important;
+  }
+
+  /* Date picker calendar adjustments */
+  .rmdp-calendar {
+    width: 280px !important;
+  }
+
+  .rmdp-day {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 12px !important;
+  }
+
+  .rmdp-week-day {
+    font-size: 11px !important;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .report-chart-container {
+    margin: 10px auto !important;
+    padding: 0 5px;
+  }
+
+  .report-chart-Name {
+    font-size: 14px;
+  }
+
+  .report-chart-type-button {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .report-chart-DatePicker {
+    width: 100px;
+    font-size: 11px;
+  }
+
+  .report-chart-section {
+    height: 250px !important;
+  }
+
+  .rmdp-calendar {
+    width: 250px !important;
+  }
+
+  .rmdp-day {
+    width: 25px !important;
+    height: 25px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .report-chart-type-section {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .toggle-group {
+    flex-direction: column !important;
+  }
+
+  .report-chart-buttons-section {
+    gap: 5px;
+  }
+
+  .report-chart-restart-button,
+  .report-chart-exel-button {
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+    min-width: 70px;
+  }
+
+  .report-chart-section {
+    height: 200px !important;
+  }
+}
