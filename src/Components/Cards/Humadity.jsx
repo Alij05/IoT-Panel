@@ -1,7 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from 'recharts';
 
-export default function Humadity({ humidity = 0 }) {
+export default function Humadity({ deviceState }) {
+    const [humidity, setHumidity] = useState("Loading");
+
+    useEffect(() => {
+        if (typeof deviceState === "string" && deviceState.includes("/")) {
+            const [t, h] = deviceState.split("/");
+            
+            setHumidity(Number(h));
+        }
+    }, [deviceState]);
+
     const humidityData = [
         {
             name: 'Humidity',
@@ -9,6 +19,7 @@ export default function Humadity({ humidity = 0 }) {
             fill: '#26c6da',
         },
     ]
+
 
     return (
         <div className='details-products-form-group humadity-card'>

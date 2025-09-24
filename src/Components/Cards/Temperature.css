@@ -22,7 +22,7 @@
   .thermometer {
     position: relative;
     width: 24px;
-    height: 220px;
+    height: 180px;
     background-color: #e0e0e0;
     border-radius: 12px;
     overflow: hidden;

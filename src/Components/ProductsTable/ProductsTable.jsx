@@ -36,7 +36,7 @@ const url = process.env.REACT_APP_URL
 
 export default function ProductsTable() {
 
-    const { sensorsData } = useSockets()
+    const { sensorsData } = useSockets();
 
 
     const contextData = useContext(SearchContext)
@@ -128,7 +128,7 @@ export default function ProductsTable() {
     }
 
 
-    async function fetchTurnOffSwitch(entityID) {
+    async function fetchTurnOffLight(entityID) {
         try {
             if (!isSwitchOn) {
                 toast.warn('لامپ در حال حاضر خاموش است !', { className: 'toast-center' });
@@ -144,7 +144,7 @@ export default function ProductsTable() {
         }
     }
 
-    async function fetchTurnOnSwitch(entityID) {
+    async function fetchTurnOnLight(entityID) {
         try {
             if (isSwitchOn) {
                 toast.warn('لامپ در حال حاضر روشن است !', { className: 'toast-center' });
@@ -347,16 +347,45 @@ export default function ProductsTable() {
                                                 <td>{product.deviceName}</td>
                                                 <td>{product.deviceLocationName}</td>
                                                 <td className="btn-cell">
-                                                    {product?.attributes?.friendly_name.startsWith("GC9 Thermo B80C GC9 Thermo B80C Temperature") && (
+                                                    {product?.deviceClass === 'light' && (
                                                         <>
                                                             <button className='users-table-btn' onClick={() => {
-                                                                console.log('product', product);
                                                                 setIsShowDetailsModal(true);
                                                                 setProductInfo(product)
-
-                                                            }}>دما</button>
+                                                            }}>نمایش</button>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                fetchTurnOnLight(product)
+                                                                setProductInfo(product)
+                                                                // fetchEntityById(product.data.entity_id)
+                                                            }}>روشن</button>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                fetchTurnOffLight(product)
+                                                                setProductInfo(product)
+                                                                // fetchEntityById(product.data.entity_id)
+                                                            }}>خاموش</button>
                                                         </>
                                                     )}
+
+
+
+                                                    {product?.deviceClass === 'flame' && (
+                                                        <>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                setIsShowDetailsModal(true);
+                                                                setProductInfo(product)
+                                                            }}>شعله</button>
+                                                        </>
+                                                    )}
+
+                                                    {product?.deviceClass === 'temperature' && (
+                                                        <>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                setIsShowDetailsModal(true);
+                                                                setProductInfo(product)
+                                                            }}>دما و رطوبت</button>
+                                                        </>
+                                                    )}
+
 
                                                 </td>
                                             </tr>
@@ -389,14 +418,47 @@ export default function ProductsTable() {
                                     <td>{product.deviceName}</td>
                                     <td>{product.deviceLocationName}</td>
                                     <td className="btn-cell">
-                                        {/* {product?.attributes?.friendly_name.startsWith("GC9 Thermo B80C GC9 Thermo B80C Temperature") && ( */}
-                                        <>
-                                            <button className='users-table-btn' onClick={() => {
-                                                setIsShowDetailsModal(true);
-                                                setProductInfo(product)
-                                            }}>دما</button>
-                                        </>
-                                        {/* )} */}
+                                        {product?.deviceClass === 'light' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>نمایش</button>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    fetchTurnOnLight(product)
+                                                    setProductInfo(product)
+                                                    // fetchEntityById(product.data.entity_id)
+                                                }}>روشن</button>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    fetchTurnOffLight(product)
+                                                    setProductInfo(product)
+                                                    // fetchEntityById(product.data.entity_id)
+                                                }}>خاموش</button>
+                                            </>
+                                        )}
+
+
+
+                                        {product?.deviceClass === 'flame' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>شعله</button>
+                                            </>
+                                        )}
+
+                                        {product?.deviceClass === 'temperature' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    console.log(product);
+
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>دما و رطوبت</button>
+                                            </>
+                                        )}
+
                                     </td>
                                 </tr>
                             ))}
@@ -409,8 +471,12 @@ export default function ProductsTable() {
             {isShowDetailsModal && (
                 <DetailsModal closeModal={closeDetailsModal}>
                     <div className="edit_form_wrapper">
-                        {productInfo.entity_id === ("esp32_6CC840060AA8") && <Temperature temperature={sensorsData?.[productInfo.entity_id]?.temperature ?? "Loading..."} />}
-                        {/* <Chart /> */}
+                        {productInfo?.deviceClass === "temperature" && (
+                            <>
+                                <Temperature deviceState={sensorsData?.[productInfo.entity_id]?.state} />
+                                <Humadity deviceState={sensorsData?.[productInfo.entity_id]?.state} />
+                            </>
+                        )}
                     </div>
                 </DetailsModal>
             )}

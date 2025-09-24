@@ -37,6 +37,7 @@
 .humadity-card {
     box-shadow: none;
     background-color: var(--white);
+    margin-bottom: -90px;
 }
 
 /* Users List Styles */
