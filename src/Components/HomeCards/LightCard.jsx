@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 
 const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
 
-
 export default function LightCard({ product, isUserAdmin, deviceState }) {
     const [lightStatus, setLightStatus] = useState(deviceState);
     const [isPending, setIsPending] = useState(false);

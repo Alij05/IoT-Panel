@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react'
 import './FlameCard.css'
 
 export default function FlameCard({ product, isUserAdmin, deviceState }) {
-    // const [flameStatus, setFlameStatus] = useState(product.state)
     const [flameStatus, setFlameStatus] = useState(deviceState ? 'on' : 'off')
 
     useEffect(() => {
         setFlameStatus(deviceState ? 'on' : 'off')
     }, [deviceState])
-    // }, [product.state])
 
     return (
         <div style={{ textAlign: 'center', cursor: 'pointer' }} className='home-box' >

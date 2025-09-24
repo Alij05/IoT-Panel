@@ -4,9 +4,6 @@ import './TempCard.css';
 
 export default function TempCard({ product, isUserAdmin, deviceState }) {
 
-    // console.log('deviceState', deviceState);
-
-
     return (
         <>
             <div className="sensor-wrapper home-box temp-wrapper">
