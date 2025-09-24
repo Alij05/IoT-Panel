@@ -21,7 +21,6 @@ import RGBColorPicker from '../Cards/RGBColorPicker'
 import FanStatus from '../Cards/FanStatus'
 import SmartRelayStatus from '../Cards/SmartRelayStatus'
 import WaterMoistureStatus from '../Cards/WaterMoistureStatus'
-import { getSocket } from '../../WebSocket/Socket'
 import useUsersStore from '../../Store/usersStore'
 import EastIcon from '@mui/icons-material/East';
 import { useAuth } from '../../Contexts/AuthContext'
@@ -371,9 +370,16 @@ export default function ProductsTable() {
                                                     {product?.deviceClass === 'flame' && (
                                                         <>
                                                             <button className='users-table-btn' onClick={() => {
-                                                                setIsShowDetailsModal(true);
                                                                 setProductInfo(product)
                                                             }}>شعله</button>
+                                                        </>
+                                                    )}
+
+                                                    {product?.deviceClass === 'motion' && (
+                                                        <>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                setProductInfo(product)
+                                                            }}>حرکت</button>
                                                         </>
                                                     )}
 
@@ -383,6 +389,15 @@ export default function ProductsTable() {
                                                                 setIsShowDetailsModal(true);
                                                                 setProductInfo(product)
                                                             }}>دما و رطوبت</button>
+                                                        </>
+                                                    )}
+
+                                                    {product?.deviceClass === 'water' && (
+                                                        <>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                setIsShowDetailsModal(true);
+                                                                setProductInfo(product)
+                                                            }}>وضعیت</button>
                                                         </>
                                                     )}
 
@@ -442,9 +457,16 @@ export default function ProductsTable() {
                                         {product?.deviceClass === 'flame' && (
                                             <>
                                                 <button className='users-table-btn' onClick={() => {
-                                                    setIsShowDetailsModal(true);
                                                     setProductInfo(product)
                                                 }}>شعله</button>
+                                            </>
+                                        )}
+
+                                        {product?.deviceClass === 'motion' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setProductInfo(product)
+                                                }}>حرکت</button>
                                             </>
                                         )}
 

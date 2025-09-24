@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import throttle from "lodash.throttle";
 import "./RGBColorPicker.css";
 import { toast } from "react-toastify";
-import { getSocket } from "../../WebSocket/Socket";
 
 let msgId = 1; // To keep request IDs unique
 
@@ -13,7 +12,6 @@ export default function RGBColorPicker({ rgbSensorID }) {
   const socketRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = getSocket();
   }, []);
 
 

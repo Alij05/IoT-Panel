@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Droplet, Droplets } from 'lucide-react';
-import { getSocket } from '../../WebSocket/Socket';
 
 export default function WaterMoistureStatus({ deviceState }) {
 

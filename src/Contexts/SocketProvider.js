@@ -9,7 +9,7 @@ export function WebSocketProvider({ children }) {
     const [sensorsData, setSensorsData] = useState({});
 
     const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
-    const wsUrl = `${BASE_URL.replace(/^https?/, "wss")}/ws`; 
+    const wsUrl = `${BASE_URL.replace(/^https?/, "wss")}/ws`;
 
 
     useEffect(() => {
