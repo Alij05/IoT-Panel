@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Thermometer, Droplets } from 'lucide-react';
 import './TempCard.css';
 
 export default function TempCard({ product, isUserAdmin, deviceState }) {
+    const [temperature, setTemperature] = useState("Loading");
+    const [humidity, setHumidity] = useState("Loading");
+
+    useEffect(() => {
+        if (typeof deviceState === "string" && deviceState.includes("/")) {
+            const [t, h] = deviceState.split("/");
+            setTemperature(t);
+            setHumidity(h);
+        }
+    }, [deviceState]);
+
 
     return (
         <>
@@ -23,14 +34,14 @@ export default function TempCard({ product, isUserAdmin, deviceState }) {
                         <Thermometer size={40} />
                         <div className="sensor-info">
                             <h3>Temperature</h3>
-                            <p>{product.temperature}°C</p>
+                            <p>{temperature}°C</p>
                         </div>
                     </div>
                     <div className="sensor-card humidity-card">
                         <Droplets size={40} />
                         <div className="sensor-info">
                             <h3>Humidity</h3>
-                            <p>% {product.humidity}</p>
+                            <p>% {humidity}</p>
                         </div>
                     </div>
                 </div>
