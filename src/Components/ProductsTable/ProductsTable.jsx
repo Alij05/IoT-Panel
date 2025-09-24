@@ -451,11 +451,18 @@ export default function ProductsTable() {
                                         {product?.deviceClass === 'temperature' && (
                                             <>
                                                 <button className='users-table-btn' onClick={() => {
-                                                    console.log(product);
-
                                                     setIsShowDetailsModal(true);
                                                     setProductInfo(product)
                                                 }}>دما و رطوبت</button>
+                                            </>
+                                        )}
+
+                                        {product?.deviceClass === 'water' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>وضعیت</button>
                                             </>
                                         )}
 
@@ -471,6 +478,7 @@ export default function ProductsTable() {
             {isShowDetailsModal && (
                 <DetailsModal closeModal={closeDetailsModal}>
                     <div className="edit_form_wrapper">
+                        {productInfo?.deviceClass === "water" && (<WaterMoistureStatus deviceState={sensorsData?.[productInfo.entity_id]?.state} />)}
                         {productInfo?.deviceClass === "temperature" && (
                             <>
                                 <Temperature deviceState={sensorsData?.[productInfo.entity_id]?.state} />

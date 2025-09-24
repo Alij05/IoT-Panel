@@ -8,6 +8,7 @@ import { useAuth } from "../../Contexts/AuthContext";
 import { useSockets } from "../../Contexts/SocketProvider";
 import LightCard from "../HomeCards/LightCard";
 import FlameCard from "../HomeCards/FlameCard";
+import WaterCard from "../HomeCards/WaterCard";
 
 const url = process.env.REACT_APP_URL;
 
@@ -73,6 +74,7 @@ export default function Home() {
                             {product.deviceClass === 'light' && (<LightCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
                             {product.deviceClass === 'flame' && (<FlameCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
                             {product.deviceClass === 'temperature' && (<TempCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
+                            {product.deviceClass === 'water' && (<WaterCard product={product} isUserAdmin={isUserAdmin} deviceState={deviceData} />)}
                         </div>
                     );
                 })}

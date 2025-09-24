@@ -1,17 +1,22 @@
-import React, { useEffect } from 'react';
-import { Droplet, Droplets } from 'lucide-react'; 
+import React, { useEffect, useState } from 'react';
+import { Droplet, Droplets } from 'lucide-react';
 import { getSocket } from '../../WebSocket/Socket';
 
-export default function WaterMoistureStatus({ waterStatus }) {
-    const isWet = waterStatus === 'Wet';
+export default function WaterMoistureStatus({ deviceState }) {
+
+    const [isWet, setIsWet] = useState(deviceState ? 'on' : 'off')
+
+    useEffect(() => {
+        setIsWet(deviceState ? 'on' : 'off')
+    }, [deviceState])
 
 
     const styles = {
         container: {
             padding: '1rem',
             borderRadius: '1rem',
-            backgroundColor: isWet ? '#e0f7fa' : '#fff3e0',
-            color: isWet ? '#26a69a' : '#e65100',
+            backgroundColor: isWet === 'on' ? '#e0f7fa' : '#fff3e0',
+            color: isWet === 'on' ? '#26a69a' : '#e65100',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -37,13 +42,13 @@ export default function WaterMoistureStatus({ waterStatus }) {
 
     return (
         <div style={styles.container}>
-            {isWet ? (
+            {isWet === 'on' ? (
                 <Droplets size={36} color="#00796b" />
             ) : (
                 <Droplet size={36} color="#e65100" />
             )}
             <div style={styles.statusText}>
-                {isWet ? 'خیس' : 'خشک'}
+                {isWet === 'on' ? 'خیس' : 'خشک'}
             </div>
             {/* <div style={styles.value}>رطوبت  : {waterMoisture} % </div> */}
         </div>
