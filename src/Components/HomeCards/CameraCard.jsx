@@ -1,28 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import "./CameraCard.css";
 
 export default function CameraCard({ url }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const showFullCamera = () => setIsOpen(true);
+  const closeFullCamera = () => setIsOpen(false);
+
   return (
-    // <div className="switch-container home-box">
-    //   <div className="camera-header">دوربین</div>
-
-    //   {/* قاب iframe */}
-    //   <div className="video-container">
-    //     <iframe
-    //       src={url}
-    //       title="Live Stream"
-    //       frameBorder="0"
-    //       allow="autoplay; fullscreen"
-    //     ></iframe>
-    //   </div>
-    // </div>
-
     <div className="switch-container home-box">
       <div className="camera-header">دوربین</div>
       <div className="video-container">
-        <img src={url} alt="camera" />
+        <img className="full-page-icon" src="svgs/full-page.svg" alt="fullscreen" onClick={showFullCamera}
+        />
+        <img src={url} alt="camera" className="camera-img" />
       </div>
-    </div>
 
+      {isOpen &&
+        ReactDOM.createPortal(
+          <div className="popup-overlay">
+            <img src={url} alt="camera-full" className="popup-image" />
+            <button className="close-camera-btn" onClick={closeFullCamera}>
+              ×
+            </button>
+          </div>,
+          document.body
+        )}
+    </div>
   );
 }
