@@ -1,7 +1,7 @@
 import IconRenderer from '../../libs/iot-icons/IconRenderer';
 import "./ReportCard.css";
 
-export default function ReportCard({ entityInfo, deviceClass, Name, onClick }) {
+export default function ReportCard({ deviceId, entityInfo, deviceClass, Name, onClick }) {
   return (
     <div className="report-card-container" onClick={onClick}>
       <IconRenderer

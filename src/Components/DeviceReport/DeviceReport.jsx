@@ -9,7 +9,7 @@ import ChartDisplay from "./ChartDisplay";
 import StateLogTable from "./StateLogTable";
 import { exportToExcel } from "./ExcelExport";
 
-const DeviceReport = ({ rawData = [], Entity = "", deviceInfos }) => {
+const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass }) => {
   console.log('rawData', rawData);
 
   const [filteredData, setFilteredData] = useState([]);
@@ -20,9 +20,11 @@ const DeviceReport = ({ rawData = [], Entity = "", deviceInfos }) => {
   const { range, setRange } = useReportStore();
 
   // تشخیص نوع دیوایس
-  const isSensor = Entity.includes("temperature") || Entity.includes("humidity") || Entity.includes("air_quality");
-  const isHumidity = Entity.includes("humidity");
+  const isSensor = deviceClass.includes("temperature") || deviceClass.includes("humidity") || deviceClass.includes("air_quality");
+  const isHumidity = deviceClass.includes("humidity");
 
+  console.log('isSensor', deviceClass);
+  
 
   const transformDeviceData = (rawData = []) => {
     const seen = new Set();
@@ -54,19 +56,19 @@ const DeviceReport = ({ rawData = [], Entity = "", deviceInfos }) => {
 
 
   const handleExportToExcel = () => {
-    exportToExcel(filteredData, Entity);
+    exportToExcel(filteredData, deviceId);
   };
 
   return (
     <Box className="report-chart-container" sx={{ margin: "50px auto" }}>
       {isSensor ? (
         <>
-          <ChartHeader chartType={chartType} Entity={Entity} />
+          <ChartHeader chartType={chartType} deviceId={deviceId} />
           <ChartControls chartType={chartType} setChartType={setChartType} selectedDate={selectedDate} setSelectedDate={setSelectedDate} useRange={useRange} setUseRange={setUseRange} range={range} setRange={setRange} />
-          <ChartDisplay filteredData={filteredData} setFilteredData={setFilteredData} isHumidity={isHumidity} Entity={Entity} exportToExcel={handleExportToExcel} />
+          <ChartDisplay filteredData={filteredData} setFilteredData={setFilteredData} isHumidity={isHumidity} deviceId={deviceId} exportToExcel={handleExportToExcel} />
         </>
       ) : (
-        <StateLogTable data={filteredData} Entity={Entity} exportToExcel={handleExportToExcel} deviceInfos={deviceInfos} />
+        <StateLogTable data={filteredData} deviceId={deviceId} exportToExcel={handleExportToExcel} deviceInfos={deviceInfos} />
       )}
     </Box>
   );

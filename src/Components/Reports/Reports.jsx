@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Reports.css";
-import { getEntityHistory } from "../../Services/getentityHistory";
+import getEntityHistory from "../../Services/getentityHistory";
 import ReportCard from "../ReportCard/ReportCard";
 import DeviceReportModal from '../DeviceReportModal/DeviceReportModal';
 import { useReportStore } from "../../Store/dateStore";
@@ -76,7 +76,7 @@ export default function Reports() {
 
 
   const openModalHandler = (modalInfo) => {
-    setModalData({ entity: modalInfo.entity, data: modalInfo.data });
+    setModalData({ deviceId: modalInfo.deviceId, data: modalInfo.data });
     setOpenModal(true);
   };
 
@@ -162,13 +162,13 @@ export default function Reports() {
       <div className="Devices-section">
         {entity_id.map((id) => (
           <ReportCard
-            entity={id}
+            deviceId={id}
             entityInfo={deviceInfos[id]}
             deviceClass={devicesClass[id].deviceClass}
             Name={dataMap[id]?.[0]?.attributes?.friendly_name || id}
             key={id}
             onClick={() =>
-              openModalHandler({ entity: id, data: dataMap[id] })
+              openModalHandler({ deviceId: id, data: dataMap[id] })
             }
           />
         ))}
@@ -183,9 +183,10 @@ export default function Reports() {
             resetDate();
             resetRange();
           }}
-          entity={modalData.entity}
+          deviceId={modalData.deviceId}
+          deviceClass={devicesClass[modalData.deviceId].deviceClass}
           data={modalData.data}
-          deviceInfos={deviceInfos[modalData.entity]}
+          deviceInfos={deviceInfos[modalData.deviceId]}
         />
       )}
     </div>

@@ -15,7 +15,7 @@ import { ReportLocalization } from "../../Constants/Localizations/Localizations"
 import { toJalaliDateString } from "./DateUtils";
 import "./DeviceReport.css";
 
-const ChartDisplay = ({ filteredData, setFilteredData, isHumidity, Entity, exportToExcel }) => {
+const ChartDisplay = ({ filteredData, setFilteredData, isHumidity, deviceId, exportToExcel }) => {
   const formatValue = (val) =>
     isHumidity
       ? `${parseFloat(val).toFixed(1)}%`

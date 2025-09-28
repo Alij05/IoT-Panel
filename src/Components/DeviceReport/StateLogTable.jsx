@@ -6,7 +6,10 @@ import DescriptionIcon from '@mui/icons-material/Description';
 
 import './StateLogTable.css'
 
-const StateLogTable = ({ data = [], Entity, exportToExcel, deviceInfos }) => {
+const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
+
+  console.log(deviceInfos);
+  
 
   return (
     <Box>

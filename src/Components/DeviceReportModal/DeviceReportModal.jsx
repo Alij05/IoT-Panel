@@ -2,13 +2,11 @@ import DeviceReport from '../DeviceReport/DeviceReport';
 import { useReportStore } from '../../Store/dateStore';
 import "./DeviceReportModal.css";
 
-export default function DeviceReportModal({
-  isOpen,
-  onClose,
-  entity,
-  data,
-}) {
+export default function DeviceReportModal({ isOpen, onClose, deviceId, data, deviceInfos, deviceClass}) {
   const selectedDate = useReportStore((state) => state.selectedDate);
+
+  console.log('deviceInfos', deviceInfos);
+
 
   return (
     <div className="modal-overlay">
@@ -17,9 +15,11 @@ export default function DeviceReportModal({
           ✖
         </button>
         <DeviceReport
-          key={`${entity}-${selectedDate?.toISOString?.()}`}
+          key={`${deviceId}-${selectedDate?.toISOString?.()}`}
           rawData={data}
-          Entity={entity}
+          deviceId={deviceId}
+          deviceClass={deviceClass}
+          deviceInfos={deviceInfos}
         />
       </div>
     </div>
