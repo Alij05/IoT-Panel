@@ -19,7 +19,6 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
 
   // تشخیص نوع دیوایس
   const isSensor = deviceClass.includes("temperature") || deviceClass.includes("humidity") || deviceClass.includes("air_quality");
-  const isHumidity = deviceClass.includes("humidity");
 
   const transformDeviceData = (rawData = []) => {
     const seen = new Set();
@@ -61,7 +60,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
           <ChartHeader chartType={chartType} deviceId={deviceId} />
           <ChartControls chartType={chartType} setChartType={setChartType} selectedDate={selectedDate} setSelectedDate={setSelectedDate} useRange={useRange} setUseRange={setUseRange} range={range} setRange={setRange} />
           {/* <ChartDisplay filteredData={filteredData} setFilteredData={setFilteredData} isHumidity={isHumidity} deviceId={deviceId} exportToExcel={handleExportToExcel} /> */}
-          <ChartDisplay filteredData={rawData} setFilteredData={setFilteredData} isHumidity={isHumidity} deviceId={deviceId} exportToExcel={handleExportToExcel} />
+          <ChartDisplay filteredData={rawData} setFilteredData={setFilteredData} deviceId={deviceId} exportToExcel={handleExportToExcel} />
         </>
       ) : (
         // <StateLogTable data={filteredData} deviceId={deviceId} exportToExcel={handleExportToExcel} deviceInfos={deviceInfos} />

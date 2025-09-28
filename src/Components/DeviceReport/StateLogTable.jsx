@@ -8,8 +8,8 @@ import './StateLogTable.css'
 
 const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
 
-  console.log(deviceInfos);
-  
+  console.log('data in Chart', data);
+
 
   return (
     <Box>
@@ -46,28 +46,21 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
           <TableBody>
             {data.length > 0 ? (
               data.map((row, index) => (
-                <TableRow
-                  key={index}
-                  sx={{
-                    "&:nth-of-type(odd)": { backgroundColor: "#f9f9f9" },
-                    "&:hover": { backgroundColor: "#e3f2fd" },
-                    transition: "0.2s",
-                  }}
-                >
-                  <TableCell>{toJalaliDateString(row.time)}</TableCell>
+                <TableRow key={index} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#f9f9f9" }, "&:hover": { backgroundColor: "#e3f2fd" }, transition: "0.2s", }}>
+                  <TableCell>{toJalaliDateString(row.timestamp)}</TableCell>
                   <TableCell>
                     <Chip
                       label={
-                        String(row.value).toLowerCase() === "on"
+                        (String(row.state).toLowerCase() === "on" || String(row.state).toLowerCase() === "motion" || String(row.state).toLowerCase() === "true")
                           ? "روشن"
-                          : String(row.value).toLowerCase() === "off"
+                          : (String(row.state).toLowerCase() === "off" || String(row.state).toLowerCase() === "clear" || String(row.state).toLowerCase() === "false")
                             ? "خاموش"
                             : 'غیر فعال'
                       }
                       color={
-                        String(row.value).toLowerCase() === "on"
+                        (String(row.state).toLowerCase() === "on" || String(row.state).toLowerCase() === "motion" || String(row.state).toLowerCase() === "true")
                           ? "success"
-                          : String(row.value).toLowerCase() === "off"
+                          : (String(row.state).toLowerCase() === "off" || String(row.state).toLowerCase() === "clear" || String(row.state).toLowerCase() === "false")
                             ? "error"
                             : "default"
                       }

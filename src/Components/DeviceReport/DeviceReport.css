@@ -2,6 +2,10 @@
   color: red !important;
 }
 
+.css-1yqr9nu, .css-rl2iqt {
+  margin-top: 50px;
+}
+
 @media (hover: hover) {
   .rmdp-day:not(.rmdp-disabled, .rmdp-day-hidden) span:hover {
     background-color: var(--blue) !important;
