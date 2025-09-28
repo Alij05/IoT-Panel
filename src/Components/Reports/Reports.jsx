@@ -44,6 +44,7 @@ export default function Reports() {
           entity_id.map((id) =>
             getEntityHistory(
               id,
+              devicesClass[id].deviceClass,
               useRange ? { from: range.from, to: range.to } : selectedDate
             )
           )

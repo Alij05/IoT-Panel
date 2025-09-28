@@ -16,6 +16,10 @@ import { toJalaliDateString } from "./DateUtils";
 import "./DeviceReport.css";
 
 const ChartDisplay = ({ filteredData, setFilteredData, isHumidity, deviceId, exportToExcel }) => {
+  
+  console.log('filteredData', filteredData);
+  
+  
   const formatValue = (val) =>
     isHumidity
       ? `${parseFloat(val).toFixed(1)}%`

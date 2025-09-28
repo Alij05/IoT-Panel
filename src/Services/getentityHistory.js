@@ -2,9 +2,11 @@ import axios from "axios";
 
 const url = process.env.REACT_APP_URL;
 
-export default async function getEntityHistory(entityId, deviceType = "sensor") {
+export default async function getEntityHistory(deviceId, deviceType = "sensor", time) {
+  const isSensor = (deviceType.includes('temperature') || deviceType.includes('air')) ? 'sensor' : 'switch'
+
   try {
-    const finalUrl = `${url}/mqtt/api/logs/device/${encodeURIComponent(deviceType)}/${encodeURIComponent(entityId)}?limit=5`;
+    const finalUrl = `${url}/mqtt/api/logs/device/${isSensor}/${deviceId}?limit=5`;
 
     const response = await axios.get(finalUrl, {
       headers: {
@@ -12,8 +14,6 @@ export default async function getEntityHistory(entityId, deviceType = "sensor") 
       },
     });
 
-    console.log('response', response);
-    
     return response.data.logs || [];
   } catch (error) {
     console.error("⛔ خطا در دریافت لاگ‌های entity/device:", error);
