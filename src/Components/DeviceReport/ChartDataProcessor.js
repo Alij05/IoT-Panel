@@ -6,13 +6,7 @@ import { toJalaliDateString } from "./DateUtils";
 dayjs.extend(utc);
 dayjs.locale("fa");
 
-export const processChartData = (
-  rawData,
-  chartType,
-  selectedDate,
-  useRange,
-  range
-) => {
+export const processChartData = (rawData, chartType, selectedDate, useRange, range) => {
   if (!Array.isArray(rawData)) {
     return [];
   }

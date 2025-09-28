@@ -65,7 +65,8 @@ export default function Home() {
 
 
     const cameras = [
-        'http://91.223.116.249:8080/mjpeg/cam2'
+        'http://91.223.116.249:8080/mjpeg/cam2',
+        // 'http://91.223.116.249:8080/mjpeg/cam2?auth=Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbWQiLCJpYXQiOjE3NTg3MTM4MjYsImV4cCI6MTc1ODc0OTgyNn0.brn-hyZLk-jx8qFBJPs5wktNrGJh-HMFN5PMEEvz-LI'
     ];
 
     return (

@@ -1,70 +1,73 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import "dayjs/locale/fa.js";
 import "./DeviceReport.css";
 import { useReportStore } from "../../Store/dateStore";
 import { processChartData } from "./ChartDataProcessor";
-import { exportToExcel } from "./ExcelExport";
 import ChartHeader from "./ChartHeader";
 import ChartControls from "./ChartControls";
 import ChartDisplay from "./ChartDisplay";
+import StateLogTable from "./StateLogTable";
+import { exportToExcel } from "./ExcelExport";
 
-dayjs.extend(utc);
-dayjs.locale("fa");
+const DeviceReport = ({ rawData = [], Entity = "", deviceInfos }) => {
+  console.log('rawData', rawData);
 
-const DeviceReport = ({ rawData, Entity }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [chartType, setChartType] = useState("instant");
-  const isHumidity = Entity.includes("humidity");
   const setSelectedDate = useReportStore((state) => state.setSelectedDate);
   const selectedDate = useReportStore((state) => state.selectedDate);
   const [useRange, setUseRange] = useState(false);
   const { range, setRange } = useReportStore();
 
+  // تشخیص نوع دیوایس
+  const isSensor = Entity.includes("temperature") || Entity.includes("humidity") || Entity.includes("air_quality");
+  const isHumidity = Entity.includes("humidity");
+
+
+  const transformDeviceData = (rawData = []) => {
+    const seen = new Set();
+    return rawData
+      .map((item) => ({
+        value: item.state || "-",
+        time: item.last_changed || item.last_updated || new Date().toISOString(),
+        name: item.attributes?.friendly_name || item.entity_id,
+      }))
+      .filter((item) => {
+        const key = item.time + item.value;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .sort((a, b) => new Date(b.time) - new Date(a.time));
+  };
+
+  useEffect(() => {
+    if (isSensor) {
+      const processedData = processChartData(rawData || [], chartType, selectedDate, useRange, range);
+      setFilteredData(processedData || []);
+
+    } else {
+      const processedData = transformDeviceData(rawData);
+      setFilteredData(processedData);
+    }
+  }, [selectedDate, rawData, chartType, useRange, range, isSensor]);
+
+
   const handleExportToExcel = () => {
     exportToExcel(filteredData, Entity);
   };
 
-  useEffect(() => {
-    console.log(rawData);
-    const processedData = processChartData(
-      rawData,
-      chartType,
-      selectedDate,
-      useRange,
-      range
-    );
-    setFilteredData(processedData);
-  }, [selectedDate, rawData, chartType, useRange, range]);
-
   return (
     <Box className="report-chart-container" sx={{ margin: "50px auto" }}>
-      <ChartHeader
-        chartType={chartType}
-        isHumidity={isHumidity}
-        Entity={Entity}
-      />
-
-      <ChartControls
-        chartType={chartType}
-        setChartType={setChartType}
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        useRange={useRange}
-        setUseRange={setUseRange}
-        range={range}
-        setRange={setRange}
-      />
-
-      <ChartDisplay
-        filteredData={filteredData}
-        setFilteredData={setFilteredData}
-        isHumidity={isHumidity}
-        Entity={Entity}
-        exportToExcel={handleExportToExcel}
-      />
+      {isSensor ? (
+        <>
+          <ChartHeader chartType={chartType} Entity={Entity} />
+          <ChartControls chartType={chartType} setChartType={setChartType} selectedDate={selectedDate} setSelectedDate={setSelectedDate} useRange={useRange} setUseRange={setUseRange} range={range} setRange={setRange} />
+          <ChartDisplay filteredData={filteredData} setFilteredData={setFilteredData} isHumidity={isHumidity} Entity={Entity} exportToExcel={handleExportToExcel} />
+        </>
+      ) : (
+        <StateLogTable data={filteredData} Entity={Entity} exportToExcel={handleExportToExcel} deviceInfos={deviceInfos} />
+      )}
     </Box>
   );
 };

@@ -1,14 +1,20 @@
 import jalaali from "jalaali-js";
 
-export function toJalaliDateString(isoDateString) {
-  const d = new Date(isoDateString);
-  const localDate = new Date(d.getTime() + 0 * 60 * 60 * 1000);
+export const toJalaliDateString = (isoDateString) => {
+  if (!isoDateString) return "-";
+  const date = new Date(isoDateString);
+  if (isNaN(date.getTime())) return "-";
 
-  const { jy, jm, jd } = jalaali.toJalaali(localDate);
-  const hh = localDate.getHours().toString().padStart(2, "0");
-  const mm = localDate.getMinutes().toString().padStart(2, "0");
+  const { jy, jm, jd } = jalaali.toJalaali(date);
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  const second = String(date.getSeconds()).padStart(2, "0");
 
-  return `${jy}/${jm.toString().padStart(2, "0")}/${jd
-    .toString()
-    .padStart(2, "0")} ${hh}:${mm}`;
-}
+  const jalaliString = `${jy}/${String(jm).padStart(2, "0")}/${String(
+    jd
+  ).padStart(2, "0")}  -  ${hour}:${minute}:${second}`;
+
+  // تبدیل اعداد به فارسی
+  const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+  return jalaliString.replace(/\d/g, (d) => persianDigits[d]);
+};

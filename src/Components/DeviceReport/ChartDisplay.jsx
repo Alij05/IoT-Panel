@@ -15,13 +15,7 @@ import { ReportLocalization } from "../../Constants/Localizations/Localizations"
 import { toJalaliDateString } from "./DateUtils";
 import "./DeviceReport.css";
 
-const ChartDisplay = ({
-  filteredData,
-  setFilteredData,
-  isHumidity,
-  Entity,
-  exportToExcel,
-}) => {
+const ChartDisplay = ({ filteredData, setFilteredData, isHumidity, Entity, exportToExcel }) => {
   const formatValue = (val) =>
     isHumidity
       ? `${parseFloat(val).toFixed(1)}%`
@@ -29,6 +23,7 @@ const ChartDisplay = ({
 
   return (
     <Box className="report-chart-section" sx={{ width: "100%", height: 400 }}>
+      {/* دکمه‌ها */}
       <div className="report-chart-buttons-section">
         <Button
           sx={{ mt: 0.5 }}
@@ -45,6 +40,7 @@ const ChartDisplay = ({
           خروجی Excel
         </Button>
       </div>
+
       <ResponsiveContainer>
         <AreaChart
           data={filteredData}
@@ -56,12 +52,24 @@ const ChartDisplay = ({
               <stop offset="95%" stopColor="#26a69a" stopOpacity={0} />
             </linearGradient>
           </defs>
+
+          {/* محور X بدون تغییر */}
           <XAxis
+            tick={{ fontSize: 13.5 }}
             dataKey="time"
             tickFormatter={(timeStr) => toJalaliDateString(timeStr)}
           />
 
-          <YAxis tickFormatter={formatValue} domain={["auto", "auto"]} />
+          {/* محور Y سفارشی برای tspan x=0 */}
+          <YAxis
+            tick={({ x, y, payload }) => (
+              <text x={x} y={y} fill="black" textAnchor="end">
+                <tspan x={0} dy="0.3em">{formatValue(payload.value)}</tspan>
+              </text>
+            )}
+            domain={["auto", "auto"]}
+          />
+
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip
             labelFormatter={(label) => `زمان: ${toJalaliDateString(label)}`}
@@ -78,10 +86,21 @@ const ChartDisplay = ({
             type="monotone"
             dataKey="value"
             stroke="#1d7c73ff"
-            fillOpacity={1}
-            fill="url(#colorValue)"
+            fillOpacity={0.5}
+            fill="var(--blue)"
           />
-          <Brush dataKey="time" height={25} stroke="#26a69a" />
+          {/* <Brush dataKey="time" height={25} stroke="#26a69a" /> */}
+          <Brush
+            dataKey="time"
+            height={28}
+            stroke="var(--blue)"
+            travellerWidth={10}
+            tickFormatter={() => ''}
+            tick={{ fontSize: 11, fill: "#16665f" }}
+            tickMargin={20}   // ← فاصله متن از محور
+          />
+
+
         </AreaChart>
       </ResponsiveContainer>
     </Box>

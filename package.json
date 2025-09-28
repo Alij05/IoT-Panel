@@ -19,7 +19,7 @@
     "hls.js": "^1.6.7",
     "home-assistant-js-websocket": "^9.5.0",
     "html5-qrcode": "^2.3.8",
-    "iot-icons": "^2.0.0",
+    "iot-icons": "^2.1.2",
     "lodash.throttle": "^4.1.1",
     "lucide-react": "0.304.0",
     "moment-jalaali": "^0.10.4",

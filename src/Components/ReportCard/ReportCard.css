@@ -2,7 +2,7 @@
   background-color: var(--white);
   direction: ltr;
   width: 100%;
-  max-width: 250px;
+  max-width: 220px;
   overflow: hidden;
   /* margin-top: 50px; */
   padding: 20px;
@@ -12,12 +12,12 @@
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  gap: 20px;
+  gap: 15px;
   transition: transform 0.3s ease;
   cursor: pointer;
 }
 .report-card-container:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .report-card-container svg {
@@ -30,12 +30,23 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
   color: var(--text-color);
 }
 
 
 @media (max-width: 576px) {
   .report-card-container {
-    max-width: 200px;
+    /* max-width: 200px; */
+    flex-grow: 1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .report-card-container {
+    /* max-width: 200px; */
+    max-width: none;
+    width: 100%;
   }
 }

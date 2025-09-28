@@ -6,16 +6,7 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { ReportLocalization } from "../../Constants/Localizations/Localizations";
 import "./DeviceReport.css";
 
-const ChartControls = ({
-  chartType,
-  setChartType,
-  selectedDate,
-  setSelectedDate,
-  useRange,
-  setUseRange,
-  range,
-  setRange,
-}) => {
+const ChartControls = ({ chartType, setChartType, selectedDate, setSelectedDate, useRange, setUseRange, range, setRange}) => {
   return (
     <>
       <Box className="report-chart-type-section">
