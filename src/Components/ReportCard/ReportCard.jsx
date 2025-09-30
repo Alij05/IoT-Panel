@@ -10,7 +10,7 @@ export default function ReportCard({ deviceId, entityInfo, deviceClass, Name, on
         height={32}
         className="report-card-icon"
       />
-      <h1 className="report-card-name">{entityInfo.deviceName} در {entityInfo.deviceLocationName}</h1>
+      <h2 className="report-card-name">{entityInfo.deviceName} در {entityInfo.deviceLocationName}</h2>
     </div>
   );
 }

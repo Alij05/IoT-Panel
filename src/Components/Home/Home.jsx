@@ -11,6 +11,7 @@ import FlameCard from "../HomeCards/FlameCard";
 import WaterCard from "../HomeCards/WaterCard";
 import MotionDetectionCard from "../HomeCards/MotionDetectionCard";
 import CameraCard from "../HomeCards/CameraCard";
+import WeatherWidget from "../WeatherWidget/WeatherWidget";
 
 const url = process.env.REACT_APP_URL;
 
@@ -72,6 +73,7 @@ export default function Home() {
     return (
         <div className="home-wrapper">
             <MasonryGrid>
+                <WeatherWidget />
                 {productsToShow.map((product) => {
                     const deviceId = product.entity_id;
                     const deviceData = deviceId ? sensorsData?.[deviceId]?.state : null;

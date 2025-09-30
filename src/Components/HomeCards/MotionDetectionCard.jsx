@@ -27,7 +27,7 @@ export default function MotionDetectionCard({ product, isUserAdmin, deviceState 
             <img
                 src={motionStatus === 'on' ? 'svgs/motion-on.svg' : 'svgs/motion-off.svg'}
                 alt={motionStatus === 'on' ? 'متصل' : 'قطع'}
-                style={{ width: '130px', transition: '0.3s ease-in-out', transform: 'scale(1.15)', marginTop: '-15px' }}
+                style={{ width: '120px', transition: '0.3s ease-in-out', transform: 'scale(1.15)', marginTop: '-15px' }}
             />
         </div>
     )
