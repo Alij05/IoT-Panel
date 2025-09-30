@@ -19,6 +19,7 @@
     --sidebar: #000000;
     --shadow: rgba(0, 0, 0, 0.15);
     --users: #000000;
+    --scrollbar: #f5f8f8;
 }
 
 [data-theme='dark'] {
@@ -30,6 +31,7 @@
     --text: rgb(118, 118, 118);
     --shadow: rgba(255, 255, 255, 0.15);
     --users: rgb(159, 159, 161);
+    --scrollbar: rgb(57, 57, 57);
 }
 
 body {
@@ -82,39 +84,31 @@ html {
     position: relative;
 }
 
-/* .auth-body::before {
-    content: '';
-    position: absolute;
-    top: -200px;
-    left: -200px;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle,
-            rgba(38, 198, 218, 0.3) 0%,
-            rgba(110, 217, 232, 0.2) 30%,
-            transparent 70%);
-    filter: blur(80px);
-    z-index: 0;
-    opacity: 0.7;
-    animation: floatGlow1 20s ease-in-out infinite;
+
+/*?  Custom Scroll   */
+::-webkit-scrollbar {
+    width: 8px;
+    /* عرض اسکرول‌بار */
 }
 
-.auth-body::after {
-    content: '';
-    position: absolute;
-    bottom: -200px;
-    right: -200px;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle,
-            rgba(38, 198, 218, 0.35) 0%,
-            rgba(176, 226, 235, 0.25) 40%,
-            transparent 70%);
-    filter: blur(90px);
-    z-index: 0;
-    opacity: 0.6;
-    animation: floatGlow2 25s ease-in-out infinite reverse;
-} */
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: var(--scrollbar);
+    /* رنگ پس‌زمینه */
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #0097a7;
+    /* رنگ اسکرول */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #006b6f;
+    /* رنگ در حالت hover */
+}
+
+
 
 
 /* گرادیانت متحرک */
