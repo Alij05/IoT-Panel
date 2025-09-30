@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./CameraCard.css";
 
-export default function CameraCard({ url }) {
+export default function CameraCard({ cameraId }) {
+  const token = localStorage.getItem('token')
+  const url = `https://cam-dev-str13.openremote.ir/${cameraId}?token=${token}`
   const [isOpen, setIsOpen] = useState(false);
 
   const showFullCamera = () => setIsOpen(true);

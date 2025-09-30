@@ -65,8 +65,9 @@ export default function Home() {
     }
 
 
+
     const cameras = [
-        'http://91.223.116.249:8080/mjpeg/cam2',
+        // 'http://91.223.116.249:8080/mjpeg/cam2',
         // 'http://91.223.116.249:8080/mjpeg/cam2?auth=Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbWQiLCJpYXQiOjE3NTg3MTM4MjYsImV4cCI6MTc1ODc0OTgyNn0.brn-hyZLk-jx8qFBJPs5wktNrGJh-HMFN5PMEEvz-LI'
     ];
 
@@ -116,20 +117,20 @@ export default function Home() {
                                     deviceState={deviceData}
                                 />
                             )}
+
+                            {product.deviceClass === "camera" && (
+                                <div
+                                    key={`camera-${product.entity_id}`}
+                                    className="btn-cell"
+                                    style={{ minHeight: "200px" }}
+                                >
+                                    <CameraCard cameraId={product.entity_id} />
+                                </div>
+                            )}
                         </div>
                     );
 
                 })}
-                {/* Camera Cards */}
-                {cameras.map((url, index) => (
-                    <div
-                        key={`camera-${index}`}
-                        className="btn-cell"
-                        style={{ minHeight: "200px" }}
-                    >
-                        <CameraCard url={url} />
-                    </div>
-                ))}
             </MasonryGrid>
         </div>
     );
