@@ -64,21 +64,14 @@ export default function Home() {
         return <ErrorBox msg={"هیچ دستگاهی یافت نشد"} />;
     }
 
-
-
-    const cameras = [
-        // 'http://91.223.116.249:8080/mjpeg/cam2',
-        // 'http://91.223.116.249:8080/mjpeg/cam2?auth=Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtbWQiLCJpYXQiOjE3NTg3MTM4MjYsImV4cCI6MTc1ODc0OTgyNn0.brn-hyZLk-jx8qFBJPs5wktNrGJh-HMFN5PMEEvz-LI'
-    ];
-
     return (
         <div className="home-wrapper">
             <MasonryGrid>
                 <WeatherWidget />
                 {productsToShow.map((product) => {
                     const deviceId = product.entity_id;
-                    const deviceData = deviceId ? sensorsData?.[deviceId]?.state : null;
-                    // console.log('deviceData', deviceData);
+                    const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
+                    // console.log('deviceState', deviceState);
                     // console.log("product", product);
                     return (
                         <div key={product.entity_id}>
@@ -86,35 +79,35 @@ export default function Home() {
                                 <LightCard
                                     product={product}
                                     isUserAdmin={isUserAdmin}
-                                    deviceState={deviceData}
+                                    deviceState={deviceState}
                                 />
                             )}
                             {product.deviceClass === "flame" && (
                                 <FlameCard
                                     product={product}
                                     isUserAdmin={isUserAdmin}
-                                    deviceState={deviceData}
+                                    deviceState={deviceState}
                                 />
                             )}
                             {product.deviceClass === "temperature" && (
                                 <TempCard
                                     product={product}
                                     isUserAdmin={isUserAdmin}
-                                    deviceState={deviceData}
+                                    deviceState={deviceState}
                                 />
                             )}
                             {product.deviceClass === "water" && (
                                 <WaterCard
                                     product={product}
                                     isUserAdmin={isUserAdmin}
-                                    deviceState={deviceData}
+                                    deviceState={deviceState}
                                 />
                             )}
                             {product.deviceClass === "motion" && (
                                 <MotionDetectionCard
                                     product={product}
                                     isUserAdmin={isUserAdmin}
-                                    deviceState={deviceData}
+                                    deviceState={deviceState}
                                 />
                             )}
 

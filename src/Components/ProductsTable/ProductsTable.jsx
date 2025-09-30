@@ -27,6 +27,9 @@ import { useAuth } from '../../Contexts/AuthContext'
 import axios from 'axios'
 import useDeviceStatusStore from '../../Store/deviceStateStore'
 import { useSockets } from '../../Contexts/SocketProvider'
+import CameraCard from '../HomeCards/CameraCard'
+import MotionStatus from '../Cards/MotionStatus'
+import FlameStatus from '../Cards/FlameStatus'
 
 
 const BASE_URL = process.env.REACT_APP_HA_BASE_URL
@@ -370,6 +373,7 @@ export default function ProductsTable() {
                                                     {product?.deviceClass === 'flame' && (
                                                         <>
                                                             <button className='users-table-btn' onClick={() => {
+                                                                setIsShowDetailsModal(true);
                                                                 setProductInfo(product)
                                                             }}>شعله</button>
                                                         </>
@@ -378,6 +382,7 @@ export default function ProductsTable() {
                                                     {product?.deviceClass === 'motion' && (
                                                         <>
                                                             <button className='users-table-btn' onClick={() => {
+                                                                setIsShowDetailsModal(true);
                                                                 setProductInfo(product)
                                                             }}>حرکت</button>
                                                         </>
@@ -398,6 +403,15 @@ export default function ProductsTable() {
                                                                 setIsShowDetailsModal(true);
                                                                 setProductInfo(product)
                                                             }}>وضعیت</button>
+                                                        </>
+                                                    )}
+
+                                                    {product?.deviceClass === 'camera' && (
+                                                        <>
+                                                            <button className='users-table-btn' onClick={() => {
+                                                                setIsShowDetailsModal(true);
+                                                                setProductInfo(product)
+                                                            }}>دوربین</button>
                                                         </>
                                                     )}
 
@@ -452,11 +466,10 @@ export default function ProductsTable() {
                                             </>
                                         )}
 
-
-
                                         {product?.deviceClass === 'flame' && (
                                             <>
                                                 <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
                                                     setProductInfo(product)
                                                 }}>شعله</button>
                                             </>
@@ -465,6 +478,7 @@ export default function ProductsTable() {
                                         {product?.deviceClass === 'motion' && (
                                             <>
                                                 <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
                                                     setProductInfo(product)
                                                 }}>حرکت</button>
                                             </>
@@ -488,6 +502,15 @@ export default function ProductsTable() {
                                             </>
                                         )}
 
+                                        {product?.deviceClass === 'camera' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>دوربین</button>
+                                            </>
+                                        )}
+
                                     </td>
                                 </tr>
                             ))}
@@ -497,19 +520,39 @@ export default function ProductsTable() {
             )}
 
 
-            {isShowDetailsModal && (
-                <DetailsModal closeModal={closeDetailsModal}>
-                    <div className="edit_form_wrapper">
-                        {productInfo?.deviceClass === "water" && (<WaterMoistureStatus deviceState={sensorsData?.[productInfo.entity_id]?.state} />)}
-                        {productInfo?.deviceClass === "temperature" && (
-                            <>
-                                <Temperature deviceState={sensorsData?.[productInfo.entity_id]?.state} />
-                                <Humadity deviceState={sensorsData?.[productInfo.entity_id]?.state} />
-                            </>
-                        )}
-                    </div>
-                </DetailsModal>
-            )}
+            {isShowDetailsModal && (() => {
+                const deviceId = productInfo.entity_id;
+                const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
+
+                return (
+                    <DetailsModal closeModal={closeDetailsModal}>
+                        <div className="edit_form_wrapper">
+                            {productInfo?.deviceClass === "water" && (
+                                <WaterMoistureStatus deviceState={deviceState} />
+                            )}
+
+                            {productInfo?.deviceClass === "temperature" && (
+                                <>
+                                    <Temperature deviceState={deviceState} />
+                                    <Humadity deviceState={deviceState} />
+                                </>
+                            )}
+
+                            {productInfo?.deviceClass === "motion" && (
+                                <MotionStatus product={productInfo} deviceState={deviceState} />
+                            )}
+
+                            {productInfo?.deviceClass === "flame" && (
+                                <FlameStatus product={productInfo} deviceState={deviceState} />
+                            )}
+
+                            {productInfo?.deviceClass === "camera" && (
+                                <CameraCard cameraId={productInfo.entity_id} deviceState={deviceState} />
+                            )}
+                        </div>
+                    </DetailsModal>
+                );
+            })()}
 
         </>
     );
