@@ -41,6 +41,8 @@ export default function Home() {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 200) setUserProducts(res.data);
+            console.log('res.data', res.data);
+
         } catch (err) {
             console.log(err);
         }

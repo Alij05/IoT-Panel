@@ -116,6 +116,7 @@ export default function PanelLayout() {
                                 <div className="main">
                                     <Header />
                                     {/* Show Flame Alert in All Pages When Flame is Detected*/}
+                                    <FlameAlert />
 
                                     <Outlet />
                                 </div>

@@ -52,17 +52,19 @@ export async function turnOffSwitch(entityID) {
     });
 }
 
-export async function turnOnSwitch(entityID) {  
-    const res = await axios.post(`${BASE_URL}/api/services/switch/turn_on`, {
-        entity_id: entityID,    
-    }, {
+export async function turnOnSwitch(deviceId, deviceType, state) {
+    const token = localStorage.getItem('token')
+    const res = await fetch(`${BASE_URL}/api/control`, {
+        method: 'POST',
         headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-        }
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ deviceType, deviceId, command: state })
     });
-    console.log(res);
-    
+
+    return res
+
 }
 
 
@@ -123,7 +125,7 @@ export async function turnOnFan(entityID) {
             }
         })
 
-    } catch(err) {
+    } catch (err) {
         toast.error('Error')
     }
 }
@@ -140,7 +142,7 @@ export async function turnOffFan(entityID) {
             }
         })
 
-    } catch(err) {
+    } catch (err) {
         toast.error('Error')
     }
 }
@@ -156,7 +158,7 @@ export async function turnOnSmartRelay(entityID) {
             }
         })
 
-    } catch(err) {
+    } catch (err) {
         toast.error('Error')
     }
 }
@@ -173,7 +175,7 @@ export async function turnOffSmartRelay(entityID) {
             }
         })
 
-    } catch(err) {
+    } catch (err) {
         toast.error('Error')
     }
 }

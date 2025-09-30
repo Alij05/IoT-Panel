@@ -8,32 +8,18 @@ import Chart from '../Cards/Chart'
 import Humadity from '../Cards/Humadity'
 import Temperature from '../Cards/Temperature'
 import LightControl from '../Cards/LightControl'
-import { SearchContext } from '../../Contexts/SearchContext'
 import { getEntities, getEntityById, getEntityHistory, lockSwitch, turnOffFan, turnOffSmartRelay, turnOffSwitch, turnOnFan, turnOnSmartRelay, turnOnSwitch, unLockSwitch } from '../../Services/HomeAssistantConnection'
 import { toast } from 'react-toastify'
-import CameraStream from '../Cards/CameraStream'
-import WebRTCCamera from '../Cards/WebRTCCamera'
-import { getCameraStreamUrl } from '../../Services/HomeAssistantConnection'
-import FlameAlert from '../Cards/FlameAlert'
-import { ProductsContext } from '../../Contexts/ProductsContext'
-import useProductStore from '../../Store/productStore'
-import RGBColorPicker from '../Cards/RGBColorPicker'
-import FanStatus from '../Cards/FanStatus'
-import SmartRelayStatus from '../Cards/SmartRelayStatus'
 import WaterMoistureStatus from '../Cards/WaterMoistureStatus'
-import useUsersStore from '../../Store/usersStore'
 import EastIcon from '@mui/icons-material/East';
 import { useAuth } from '../../Contexts/AuthContext'
 import axios from 'axios'
-import useDeviceStatusStore from '../../Store/deviceStateStore'
 import { useSockets } from '../../Contexts/SocketProvider'
 import CameraCard from '../HomeCards/CameraCard'
 import MotionStatus from '../Cards/MotionStatus'
 import FlameStatus from '../Cards/FlameStatus'
 
 
-const BASE_URL = process.env.REACT_APP_HA_BASE_URL
-const TOKEN = process.env.REACT_APP_HA_TOKEN
 const url = process.env.REACT_APP_URL
 
 export default function ProductsTable() {
@@ -41,11 +27,9 @@ export default function ProductsTable() {
     const { sensorsData } = useSockets();
 
 
-    const contextData = useContext(SearchContext)
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(null);
 
-    const [products, setProducts] = useState([])
     const [userProducts, setUserProducts] = useState([])
     const [userProductsByAdmin, setuserProductsByAdmin] = useState([])
     const [productInfo, setProductInfo] = useState([])
@@ -53,29 +37,15 @@ export default function ProductsTable() {
     const [isPending, setIsPending] = useState(true)
 
     const [isSwitchOn, setIsSwitchOn] = useState(null)
-    const [fanStatus, setFanStatus] = useState(null)
-    const { allProducts, updateProductState } = useDeviceStatusStore()
 
     const [isSmartRelayOn, setIsSmartRelayOn] = useState(null)
     const [isSwitchLock, setIsSwitchLock] = useState(true)
-    const [temperature, setTemperature] = useState(0)
-    const [humadity, setHumadity] = useState(0)
-    const [waterMoisture, setWaterMoisture] = useState(0)
-    const [waterStatus, setWaterStatus] = useState(0)
-    const [flame, setFlame] = useState(false)
-    const [isShowRGBColorPicker, setIsShowRGBColorPicker] = useState(true)
-
-    const socketRef = useRef(null);
-    const reconnectTimerRef = useRef(null);
-    const nextIdRef = useRef(1);
-
     const { isUserAdmin, username } = useAuth()
 
 
     useEffect(() => {
         getUserProducts()
         getUsers()
-
     }, [])
 
 
@@ -146,17 +116,33 @@ export default function ProductsTable() {
         }
     }
 
-    async function fetchTurnOnLight(entityID) {
+    async function fetchTurnOnLight(product) {
+        const deviceId = product.entity_id;
+        const deviceType = product.deviceType || 'sensor'
+        const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
+
         try {
-            if (isSwitchOn) {
+            if (product?.state == 'on') {
                 toast.warn('لامپ در حال حاضر روشن است !', { className: 'toast-center' });
                 return
             }
-            await turnOnSwitch(entityID)
-            toast.success('لامپ روشن شد', { className: 'toast-center' })
+            const res = await turnOnSwitch(deviceId, deviceType, 'on')
+            console.log('turn on fan => ', res);
+            
+            if (res.status === 200) {
+                product.state = 'on'
+                setProductInfo(product)
+                toast.success('لامپ روشن شد', { className: 'toast-center' });
+                // Update State in Database
+                await axios.put(`${url}/api/devices/${deviceId}`, { state: 'on' });
+            }
         } catch (error) {
-            console.error("Failed to fetch product:", error);
-            toast.error('روشن کردن لامپ با مشکل مواجه شد', { className: 'toast-center' });
+            console.error("Failed to turn on light:", error.response || error);
+            if (error.response && error.response.status === 403) {
+                toast.error('دسترسی غیرمجاز. لطفاً وارد شوید', { className: 'toast-center' });
+            } else {
+                toast.error('روشن کردن لامپ با مشکل مواجه شد', { className: 'toast-center' });
+            }
         } finally {
             setIsPending(false)
         }
@@ -358,17 +344,13 @@ export default function ProductsTable() {
                                                             <button className='users-table-btn' onClick={() => {
                                                                 fetchTurnOnLight(product)
                                                                 setProductInfo(product)
-                                                                // fetchEntityById(product.data.entity_id)
                                                             }}>روشن</button>
                                                             <button className='users-table-btn' onClick={() => {
                                                                 fetchTurnOffLight(product)
                                                                 setProductInfo(product)
-                                                                // fetchEntityById(product.data.entity_id)
                                                             }}>خاموش</button>
                                                         </>
                                                     )}
-
-
 
                                                     {product?.deviceClass === 'flame' && (
                                                         <>
@@ -414,7 +396,6 @@ export default function ProductsTable() {
                                                             }}>دوربین</button>
                                                         </>
                                                     )}
-
 
                                                 </td>
                                             </tr>
@@ -527,6 +508,10 @@ export default function ProductsTable() {
                 return (
                     <DetailsModal closeModal={closeDetailsModal}>
                         <div className="edit_form_wrapper">
+                            {productInfo?.deviceClass === "light" && (
+                                <LightControl deviceState={deviceState} />
+                            )}
+
                             {productInfo?.deviceClass === "water" && (
                                 <WaterMoistureStatus deviceState={deviceState} />
                             )}
