@@ -94,6 +94,7 @@ export default function Home() {
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
+                                    deviceInfo={sensorsData[deviceId]}
                                 />
                             );
                         case "water":

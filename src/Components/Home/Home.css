@@ -4,8 +4,9 @@
     border-radius: 5px;
     /* background-color: var(--box-color) !important; */
     background-color: var(--white) !important;
-    backdrop-filter: blur(12px);   
+    backdrop-filter: blur(12px);
     padding: 25px 25px 20px;
+    position: relative;
 }
 
 .home-wrapper {
@@ -19,9 +20,141 @@
     padding: 30px 0;
 }
 
-
-
 .home-title {
     font-size: 30px;
     padding: 100px 0;
+}
+
+.more-info {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 150ms ease-in;
+    border-radius: 10px;
+    color: var(--text-color);
+}
+
+.more-info:hover {
+    background-color: var(--blue);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal {
+    background-color: var(--white-50);
+    padding: 20px;
+    border-radius: 10px;
+    color: var(--text-color);
+    width: 90%;
+    max-width: 450px;
+    max-height: 65vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    animation: slideDown 0.3s ease-in-out;
+}
+
+/* optional: scroll bar زیباتر */
+.modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal::-webkit-scrollbar-track {
+    background: var(scrollbar);
+    border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+    background-color: var(--blue);
+    border-radius: 4px;
+}
+
+
+.modal h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--blue);
+    font-size: 20px;
+}
+
+.modal ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    list-style: none;
+    padding-left: 0;
+    margin: 30px 0 10px;
+}
+
+.modal li {}
+
+.close-btn {
+    margin-top: 15px;
+    padding: 8px 12px;
+    background-color: var(--blue);
+    border: none;
+    border-radius: 5px;
+    color: var(--text-color) !important;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.close-btn:hover {
+    opacity: 0.9;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.info-table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid var(--blue);
+}
+
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
+.info-table td:first-child {
+    font-weight: bold;
+    width: 40%;
+    color: var(--text-color);
+}
+
+.info-table td:last-child {
+    color: var(--text-color);
+}
+
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
