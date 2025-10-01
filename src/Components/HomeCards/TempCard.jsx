@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Thermometer, Droplets } from 'lucide-react';
 import './TempCard.css';
 
-export default function TempCard({ product, isUserAdmin, deviceState }) {
+function TempCard({ product, isUserAdmin, deviceState }) {
     const [temperature, setTemperature] = useState("Loading");
     const [humidity, setHumidity] = useState("Loading");
 
@@ -49,3 +49,12 @@ export default function TempCard({ product, isUserAdmin, deviceState }) {
         </>
     );
 }
+
+
+export default React.memo(TempCard, (prevProps, nextProps) => {
+    return (
+        prevProps.deviceState === nextProps.deviceState &&
+        prevProps.isUserAdmin === nextProps.isUserAdmin &&
+        prevProps.product.entity_id === nextProps.product.entity_id
+    );
+});

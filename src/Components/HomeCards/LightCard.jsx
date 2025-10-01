@@ -148,7 +148,6 @@ function LightCard({ product, isUserAdmin, deviceState }) {
     );
 }
 
-
 export default React.memo(LightCard, (prevProps, nextProps) => {
     return (
         prevProps.deviceState === nextProps.deviceState &&

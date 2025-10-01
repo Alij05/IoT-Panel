@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './MotionDetectionCard.css'
 
-export default function MotionDetectionCard({ product, isUserAdmin, deviceState }) {
+function MotionDetectionCard({ product, isUserAdmin, deviceState }) {
     const [motionStatus, setMotionStatus] = useState(deviceState === 'motion' ? 'on' : 'off')
 
     useEffect(() => {
@@ -32,3 +32,12 @@ export default function MotionDetectionCard({ product, isUserAdmin, deviceState 
         </div>
     )
 }
+
+
+export default React.memo(MotionDetectionCard, (prevProps, nextProps) => {
+    return (
+        prevProps.deviceState === nextProps.deviceState &&
+        prevProps.isUserAdmin === nextProps.isUserAdmin &&
+        prevProps.product.entity_id === nextProps.product.entity_id
+    );
+});

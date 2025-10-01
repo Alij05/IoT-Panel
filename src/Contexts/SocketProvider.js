@@ -37,7 +37,6 @@ export function WebSocketProvider({ children }) {
                             [data.deviceId]: data,
                         }));
                         // Update Database When State Changed
-                        // updateStateByDeviceId(data.deviceId, data.state)
 
                     }
                     if (data.device_class === 'flame') {

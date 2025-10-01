@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './WaterCard.css'
 
-export default function WaterCard({ product, isUserAdmin, deviceState }) {
+function WaterCard({ product, isUserAdmin, deviceState }) {
     const [isWet, setIsWet] = useState(deviceState ? 'on' : 'off')
 
     useEffect(() => {
@@ -32,3 +32,12 @@ export default function WaterCard({ product, isUserAdmin, deviceState }) {
         </div>
     )
 }
+
+
+export default React.memo(WaterCard, (prevProps, nextProps) => {
+    return (
+        prevProps.deviceState === nextProps.deviceState &&
+        prevProps.isUserAdmin === nextProps.isUserAdmin &&
+        prevProps.product.entity_id === nextProps.product.entity_id
+    );
+});

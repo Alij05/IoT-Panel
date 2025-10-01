@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './FlameCard.css'
 
-export default function FlameCard({ product, isUserAdmin, deviceState }) {
+function FlameCard({ product, isUserAdmin, deviceState }) {
     const [flameStatus, setFlameStatus] = useState(deviceState ? 'on' : 'off')
 
     useEffect(() => {
@@ -32,3 +32,11 @@ export default function FlameCard({ product, isUserAdmin, deviceState }) {
     )
 }
 
+
+export default React.memo(FlameCard, (prevProps, nextProps) => {
+    return (
+        prevProps.deviceState === nextProps.deviceState &&
+        prevProps.isUserAdmin === nextProps.isUserAdmin &&
+        prevProps.product.entity_id === nextProps.product.entity_id
+    );
+});
