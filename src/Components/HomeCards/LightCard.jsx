@@ -1,15 +1,14 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
 
-export default function LightCard({ product, isUserAdmin, deviceState }) {
+function LightCard({ product, isUserAdmin, deviceState }) {
     const [lightStatus, setLightStatus] = useState(deviceState);
     const [isPending, setIsPending] = useState(false);
 
-    const deviceType = product.deviceType || 'sensor'
-    const deviceId = product.entity_id
+    const deviceType = product.deviceType || 'sensor';
+    const deviceId = product.entity_id;
 
     const token = localStorage.getItem('token');
 
@@ -17,8 +16,24 @@ export default function LightCard({ product, isUserAdmin, deviceState }) {
         setLightStatus(deviceState);
     }, [deviceState]);
 
-    const turnOnLight = async () => {
+    useEffect(() => {
+        async function deviceInitState() {
+            try {
+                const res = await fetch(`${BASE_URL}/api/status/${deviceType}/${deviceId}`);
+                const data = await res.json();
+                if (res.ok) {
+                    console.log('Device Init State', data.state);
+                    setLightStatus(data.state);
+                }
+            } catch (error) {
+                console.log(`❌ Get status failed: ${error.message}`, 'error');
+            }
+        }
 
+        deviceInitState();
+    }, [deviceType, deviceId]);
+
+    const turnOnLight = async () => {
         try {
             setIsPending(true);
             const res = await fetch(`${BASE_URL}/api/control`, {
@@ -47,7 +62,6 @@ export default function LightCard({ product, isUserAdmin, deviceState }) {
     };
 
     const turnOffLight = async () => {
-
         try {
             setIsPending(true);
             const res = await fetch(`${BASE_URL}/api/control`, {
@@ -76,7 +90,7 @@ export default function LightCard({ product, isUserAdmin, deviceState }) {
     };
 
     const handleToggle = () => {
-        if (isPending) return; // جلوگیری از کلیک‌های پشت سر هم
+        if (isPending) return;
         if (lightStatus === 'on') {
             turnOffLight();
         } else {
@@ -86,26 +100,59 @@ export default function LightCard({ product, isUserAdmin, deviceState }) {
 
     return (
         <div
-            style={{ textAlign: 'center', cursor: 'pointer' }}
+            style={{ textAlign: 'center', cursor: lightStatus === 'unknown' ? 'auto' : 'pointer' }}
             className='home-box'
-            onClick={handleToggle}
-        >
+            onClick={lightStatus === 'unknown' ? undefined : handleToggle} >
+
             {isUserAdmin ? (
-                <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{
+                    display: "flex",
+                    marginBottom: '15px',
+                    gap: "10px 12px",
+                    fontSize: "16px",
+                    color: "var(--text-color)",
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
                     <span>مکان : {product.deviceLocationName}</span> |
                     <span>مالک : {product.user}</span>
                 </div>
             ) : (
-                <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{
+                    display: "flex",
+                    marginBottom: '15px',
+                    gap: "10px 12px",
+                    fontSize: "16px",
+                    color: "var(--text-color)",
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
                     <span>{product.deviceName} در {product.deviceLocationName}</span>
                 </div>
             )}
 
             <img
-                src={lightStatus === 'on' ? 'svgs/light-on.svg' : 'svgs/light-off.svg'}
+                src={
+                    lightStatus === 'on'
+                        ? 'svgs/light-on.svg'
+                        : (lightStatus === 'off'
+                            ? 'svgs/light-off.svg'
+                            : 'svgs/light-disable.svg')
+                }
                 alt={lightStatus === 'on' ? 'روشن' : 'خاموش'}
                 style={{ width: '110px', transition: '0.3s ease-in-out' }}
             />
         </div>
     );
 }
+
+
+export default React.memo(LightCard, (prevProps, nextProps) => {
+    return (
+        prevProps.deviceState === nextProps.deviceState &&
+        prevProps.isUserAdmin === nextProps.isUserAdmin &&
+        prevProps.product.entity_id === nextProps.product.entity_id
+    );
+});

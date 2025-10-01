@@ -178,7 +178,8 @@ export default function AddNewProduct() {
             entity_id: token,
             deviceClass: deviceClass,
             deviceName: deviceName || 'بدون نام',
-            deviceLocationName
+            deviceLocationName,
+            state: ''
         };
 
         try {

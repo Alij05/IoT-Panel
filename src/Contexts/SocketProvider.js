@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const WebSocketContext = createContext(null);
@@ -11,6 +12,8 @@ export function WebSocketProvider({ children }) {
 
     const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
     const wsUrl = `${BASE_URL.replace(/^https?/, "wss")}/ws`;
+    const url = process.env.REACT_APP_URL;
+
 
 
     useEffect(() => {
@@ -28,11 +31,14 @@ export function WebSocketProvider({ children }) {
                     const data = JSON.parse(event.data);
                     console.log("[WSS] Message:", data);
 
-                    if (data.deviceId) {
+                    if (data.deviceId && data.messageType === 'status') {
                         setSensorsData((prev) => ({
                             ...prev,
                             [data.deviceId]: data,
                         }));
+                        // Update Database When State Changed
+                        // updateStateByDeviceId(data.deviceId, data.state)
+
                     }
                     if (data.device_class === 'flame') {
                         setFlamesData((prev) => ({

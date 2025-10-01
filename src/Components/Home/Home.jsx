@@ -29,11 +29,6 @@ export default function Home() {
         }
     }, [isUserAdmin]);
 
-    useEffect(() => {
-        // console.log(sensorsData);
-
-    }, [])
-
     async function getUserProducts() {
         const token = localStorage.getItem("token");
         try {
@@ -41,8 +36,6 @@ export default function Home() {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 200) setUserProducts(res.data);
-            console.log('res.data', res.data);
-
         } catch (err) {
             console.log(err);
         }
@@ -70,61 +63,66 @@ export default function Home() {
         <div className="home-wrapper">
             <MasonryGrid>
                 <WeatherWidget />
+
                 {productsToShow.map((product) => {
                     const deviceId = product.entity_id;
                     const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
-                    // console.log('deviceState', deviceState);
-                    // console.log("product", product);
-                    return (
-                        <div key={product.entity_id}>
-                            {product.deviceClass === "light" && (
+
+                    switch (product.deviceClass) {
+                        case "light":
+                            return (
                                 <LightCard
+                                    key={deviceId}
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
                                 />
-                            )}
-                            {product.deviceClass === "flame" && (
+                            );
+                        case "flame":
+                            return (
                                 <FlameCard
+                                    key={deviceId}
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
                                 />
-                            )}
-                            {product.deviceClass === "temperature" && (
+                            );
+                        case "temperature":
+                            return (
                                 <TempCard
+                                    key={deviceId}
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
                                 />
-                            )}
-                            {product.deviceClass === "water" && (
+                            );
+                        case "water":
+                            return (
                                 <WaterCard
+                                    key={deviceId}
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
                                 />
-                            )}
-                            {product.deviceClass === "motion" && (
+                            );
+                        case "motion":
+                            return (
                                 <MotionDetectionCard
+                                    key={deviceId}
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
                                 />
-                            )}
-
-                            {product.deviceClass === "camera" && (
-                                <div
-                                    key={`camera-${product.entity_id}`}
-                                    className="btn-cell"
-                                    style={{ minHeight: "200px" }}
-                                >
-                                    <CameraCard cameraId={product.entity_id} />
+                            );
+                        case "camera":
+                            return (
+                                <div key={deviceId} className="btn-cell" style={{ minHeight: "200px" }}>
+                                    <CameraCard cameraId={deviceId} />
                                 </div>
-                            )}
-                        </div>
-                    );
-
+                            );
+                        default:
+                            return null;
+                    }
                 })}
             </MasonryGrid>
         </div>
