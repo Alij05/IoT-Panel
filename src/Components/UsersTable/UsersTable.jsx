@@ -10,6 +10,7 @@ import axios from 'axios'
 import { SearchContext } from '../../Contexts/SearchContext'
 import { toast } from 'react-toastify';
 import useUsersStore from '../../Store/usersStore'
+import { useAuth } from '../../Contexts/AuthContext'
 
 const url = process.env.REACT_APP_URL
 
@@ -18,6 +19,8 @@ const url = process.env.REACT_APP_URL
 export default function UsersTable() {
 
     const contextData = useContext(SearchContext)
+    const { isUserAdmin } = useAuth();
+
 
     const [users, setUsers] = useState([])
     const [id, setId] = useState('')
@@ -39,7 +42,9 @@ export default function UsersTable() {
     }
 
     useEffect(() => {
-        getData()
+        if (isUserAdmin) {
+            getData()
+        }
     }, [])
 
     useEffect(() => {

@@ -9,7 +9,7 @@ function FlameCard({ product, isUserAdmin, deviceState }) {
     }, [deviceState])
 
     return (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }} className='home-box' >
+        <div style={{ textAlign: 'center' }} className='home-box' >
             {isUserAdmin ? (
                 <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                     <span>مکان : {product.deviceLocationName}</span>
@@ -24,8 +24,13 @@ function FlameCard({ product, isUserAdmin, deviceState }) {
             )}
 
             <img
-                src={flameStatus === 'on' ? 'svgs/fire-on.svg' : 'svgs/fire-off.svg'}
-                alt={flameStatus === 'on' ? 'فعال' : 'غیرفعال'}
+                src={
+                    flameStatus === 'on'
+                        ? 'svgs/fire-on.svg'
+                        : (flameStatus === 'off'
+                            ? 'svgs/fire-off.svg'
+                            : 'svgs/fire-disable.svg')
+                } alt={flameStatus === 'on' ? 'فعال' : 'غیرفعال'}
                 style={{ width: '90px', transition: '0.3s ease-in-out' }}
             />
         </div>

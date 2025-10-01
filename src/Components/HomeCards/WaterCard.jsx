@@ -9,7 +9,7 @@ function WaterCard({ product, isUserAdmin, deviceState }) {
     }, [deviceState])
 
     return (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }} className='home-box' >
+        <div style={{ textAlign: 'center' }} className='home-box' >
             {isUserAdmin ? (
                 <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                     <span>مکان : {product.deviceLocationName}</span>
@@ -23,7 +23,13 @@ function WaterCard({ product, isUserAdmin, deviceState }) {
                 </div>
             )}
             <img
-                src={isWet === 'on' ? 'svgs/water-on.svg' : 'svgs/water-off.svg'}
+               src={
+                isWet === 'on'
+                    ? 'svgs/water-on.svg'
+                    : (isWet === 'off'
+                        ? 'svgs/water-off.svg'
+                        : 'svgs/water-disable.svg')
+            }
                 alt={isWet === 'on' ? 'خیس' : 'خشک'}
                 style={{ width: '85px', transition: '0.3s ease-in-out' }}
             />

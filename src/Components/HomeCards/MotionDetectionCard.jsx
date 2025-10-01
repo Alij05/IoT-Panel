@@ -25,8 +25,13 @@ function MotionDetectionCard({ product, isUserAdmin, deviceState }) {
                 </div>
             )}
             <img
-                src={motionStatus === 'on' ? 'svgs/motion-on.svg' : 'svgs/motion-off.svg'}
-                alt={motionStatus === 'on' ? 'متصل' : 'قطع'}
+                src={
+                    motionStatus === 'on'
+                        ? 'svgs/motion-on.svg'
+                        : (motionStatus === 'off'
+                            ? 'svgs/motion-off.svg'
+                            : 'svgs/motion-disable.svg')
+                } alt={motionStatus === 'on' ? 'متصل' : 'قطع'}
                 style={{ width: '120px', transition: '0.3s ease-in-out', transform: 'scale(1.15)', marginTop: '-15px' }}
             />
         </div>

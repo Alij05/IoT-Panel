@@ -120,7 +120,7 @@ function TempCard({ product, isUserAdmin, deviceState, deviceInfo }) {
                                 </tr>
                                 <tr>
                                     <td>فضای آزاد SD Card:</td>
-                                    <td>{deviceInfo.heap_free} Mb</td>
+                                    <td>{deviceInfo.heap_free} مگابایت</td>
                                 </tr>
                                 <tr>
                                     <td>مدت زمان فعالیت :</td>

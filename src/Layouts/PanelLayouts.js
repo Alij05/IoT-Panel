@@ -63,10 +63,12 @@ export default function PanelLayout() {
     }
 
     const getUsers = () => {
-        axios.get(`${url}/api/auth/users`)
-            .then(res => {
-                setAllUsers(res.data)
-            })
+        if (isUserAdmin) {
+            axios.get(`${url}/api/auth/users`)
+                .then(res => {
+                    setAllUsers(res.data)
+                })
+        }
     }
 
     const getAllDevices = async () => {

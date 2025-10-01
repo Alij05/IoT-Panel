@@ -50,12 +50,14 @@ export default function ProductsTable() {
 
 
     const getUsers = () => {
-        axios.get(`${url}/api/auth/users`)
-            .then(res => {
-                setUsers(res.data)
-                setIsPending(false)
-                // contextData.setSearchSourceData(res.data)
-            })
+        if (isUserAdmin) {
+            axios.get(`${url}/api/auth/users`)
+                .then(res => {
+                    setUsers(res.data)
+                    setIsPending(false)
+                    // contextData.setSearchSourceData(res.data)
+                })
+        }
     }
 
     async function getUserProducts() {
@@ -128,7 +130,7 @@ export default function ProductsTable() {
             }
             const res = await turnOnSwitch(deviceId, deviceType, 'on')
             console.log('turn on fan => ', res);
-            
+
             if (res.status === 200) {
                 product.state = 'on'
                 setProductInfo(product)
