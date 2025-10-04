@@ -1,160 +1,33 @@
-/* Table Container */
-.css-apqrd9-MuiTableBody-root,
-.css-w738fk-MuiTableRow-root {
-    background-color: var(--white) !important;
-}
-
-.css-1ex1afd-MuiTableCell-root {
-    font-family: inherit !important;
-    font-size: 1rem !important;
-    text-align: center !important;
-    color: var(--text-color) !important;
-}
-
-.css-1ihpmpn-MuiTableCell-root {
-    font-family: inherit !important;
-    text-align: center !important;
-}
-
-.css-1kw3y0a {
-    margin-bottom: 20px !important;
-    margin-top: 50px !important;
-}
-
-/* Excel Button */
-.css-mrh5xs-MuiButtonBase-root-MuiButton-root {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--blue) !important;
-}
-
-
-/* Empty Note */
-.css-1yhpg23-MuiTableCell-root,
-.css-1pnmrwp-MuiTypography-root {
-    font-family: inherit !important;
-    color: var(--text-color);
-}
-
-/* Text */
-.css-tjvwag-MuiTypography-root,
-.css-166d9p0-MuiChip-root {
-    color: var(--text-color) !important;
-    font-family: inherit !important;
-}
-
-.css-tjvwag-MuiTypography-root {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.css-mb5kj2-MuiChip-root,
-.css-xzff4p-MuiChip-root,
-.css-166d9p0-MuiChip-root {
-    color: white !important;
-    font-family: inherit !important;
-    font-weight: 300 !important;
-    width: 70px !important;
-}
-
-.css-xzff4p-MuiChip-root {
-    background-color: rgb(236, 64, 122) !important;
-}
-
-.css-mb5kj2-MuiChip-root {
-    background-color: rgb(0, 188, 212) !important;
-}
-
-.css-166d9p0-MuiChip-root {
-    background-color: rgb(134, 134, 134) !important;
-}
-
-.css-6od3lo-MuiChip-label {
-    padding-left: 2px !important;
-    padding-right: 2px !important;
-}
-
-.css-1d6wzja-MuiButton-startIcon {
-    margin: 0 !important;
-}
-
-
-
-
-
+/* ریسپانسیو جدول */
 @media (max-width: 576px) {
-    .css-tjvwag-MuiTypography-root {
+    .MuiTypography-root {
         font-size: 16px !important;
-        margin-top: 15px !important;
         text-align: center;
     }
 
-    .css-mrh5xs-MuiButtonBase-root-MuiButton-root {
+    .MuiButton-root {
         font-size: 12px !important;
         gap: 5px !important;
         padding: 6px 10px !important;
     }
 
-    .css-xzff4p-MuiChip-root,
-    .css-1ex1afd-MuiTableCell-root,
-    .css-1ex1afd-MuiTableCell-root {
+    .MuiChip-root {
+        width: 55px !important;
         font-size: 14px !important;
-    }
-
-    .css-xzff4p-MuiChip-root,
-    .css-mb5kj2-MuiChip-root,
-    .css-166d9p0-MuiChip-root {
         padding-left: 2px !important;
         padding-right: 2px !important;
-    }
-
-    .css-mrh5xs-MuiButtonBase-root-MuiButton-root {
-        /* flex-direction: column !important; */
-        flex-wrap: wrap !important;
-    }
-
-    .css-1kw3y0a {
-        display: flex;
-        gap: 10px;
-        justify-content: center !important;
-        align-items: center !important;
-        flex-wrap: wrap;
-    }
-
-    .css-mb5kj2-MuiChip-root,
-    .css-xzff4p-MuiChip-root,
-    .css-166d9p0-MuiChip-root {
-        width: 55px !important;
     }
 }
 
 @media (max-width: 400px) {
-
-    .css-xzff4p-MuiChip-root,
-    .css-1ex1afd-MuiTableCell-root,
-    .css-1ex1afd-MuiTableCell-root,
-    .css-166d9p0-MuiChip-root {
-        font-size: 13px !important;
-        padding-right: 0px !important;
-        padding-left: 0px !important;
-    }
-
-    .css-mb5kj2-MuiChip-root,
-    .css-xzff4p-MuiChip-root,
-    .css-166d9p0-MuiChip-root {
+    .MuiChip-root {
         width: 50px !important;
+        font-size: 13px !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
     }
 
-    .css-6od3lo-MuiChip-label {
-        font-size: 10.5px !important;
-        padding-left: 4px !important;
-        padding-right: 4px !important;
-    }
-
-    .css-tjvwag-MuiTypography-root {
+    .MuiTypography-root {
         font-size: 15px !important;
-        text-align: center;
     }
 }

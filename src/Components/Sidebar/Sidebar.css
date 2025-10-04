@@ -54,6 +54,7 @@
 
 .link {
     display: flex;
+    gap: 6px;
     justify-content: right;
     align-items: center;
     width: 100%;

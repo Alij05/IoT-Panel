@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.e2d25a4e.css",
-    "main.js": "/static/js/main.dde387fa.js",
+    "main.css": "/static/css/main.e8b47383.css",
+    "main.js": "/static/js/main.d08fff2f.js",
     "static/media/Lalezar-Regular.ttf": "/static/media/Lalezar-Regular.241ca811c53de4ed36a4.ttf",
     "static/media/flame.svg": "/static/media/flame.e5d0d4700ba52bfc80f59266e927488e.svg",
     "static/media/default.svg": "/static/media/default.9aaaa5560337018990df5f6db6ba7c7f.svg",
@@ -19,7 +19,7 @@
     "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.e2d25a4e.css",
-    "static/js/main.dde387fa.js"
+    "static/css/main.e8b47383.css",
+    "static/js/main.d08fff2f.js"
   ]
 }

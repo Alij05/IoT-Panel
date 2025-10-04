@@ -53,8 +53,8 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
           >
             <defs>
               <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ff5722" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#ff5722" stopOpacity={0} />
+                <stop offset="5%" stopColor="#26c6da" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#26c6da" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis
@@ -79,17 +79,17 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
             <Area
               type="monotone"
               dataKey="temperature"
-              stroke="#ff5722"
+              stroke="#26c6da"
               fillOpacity={0.5}
               fill="url(#tempGradient)"
             />
             <Brush
               dataKey="time"
               height={28}
-              stroke="#ff5722"
+              stroke="#26c6da"
               travellerWidth={10}
               tickFormatter={() => ''}
-              tick={{ fontSize: 11, fill: "#ff5722" }}
+              tick={{ fontSize: 11, fill: "#26c6da" }}
               tickMargin={20}
             />
           </AreaChart>
@@ -106,8 +106,8 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
           >
             <defs>
               <linearGradient id="humGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2196f3" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#2196f3" stopOpacity={0} />
+                <stop offset="5%" stopColor="#ec407a" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#ec407a" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis
@@ -132,17 +132,17 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
             <Area
               type="monotone"
               dataKey="humidity"
-              stroke="#2196f3"
+              stroke="#ec407a"
               fillOpacity={0.5}
               fill="url(#humGradient)"
             />
             <Brush
               dataKey="time"
               height={28}
-              stroke="#2196f3"
+              stroke="#ec407a"
               travellerWidth={10}
               tickFormatter={() => ''}
-              tick={{ fontSize: 11, fill: "#2196f3" }}
+              tick={{ fontSize: 11, fill: "#ec407a" }}
               tickMargin={20}
             />
           </AreaChart>
@@ -151,6 +151,7 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
 
     </Box>
   );
+
 };
 
 export default ChartDisplay;
