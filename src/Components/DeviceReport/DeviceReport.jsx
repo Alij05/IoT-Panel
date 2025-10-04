@@ -9,7 +9,7 @@ import ChartDisplay from "./ChartDisplay";
 import StateLogTable from "./StateLogTable";
 import { exportToExcel } from "./ExcelExport";
 
-const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass }) => {  
+const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [chartType, setChartType] = useState("instant");
   const setSelectedDate = useReportStore((state) => state.setSelectedDate);
@@ -50,7 +50,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
 
 
   const handleExportToExcel = () => {
-    exportToExcel(filteredData, deviceId);
+    exportToExcel(rawData, deviceId);
   };
 
   return (

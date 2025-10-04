@@ -33,7 +33,7 @@
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--white) !important;
   padding: 20px 30px 20px 40px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -51,5 +51,5 @@
   background: transparent;
   font-size: 20px;
   cursor: pointer;
-  color: #333;
+  color: var(--text-color)  ;
 }

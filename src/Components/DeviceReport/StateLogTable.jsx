@@ -31,6 +31,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
             gap: 1,
             fontFamily: "'Lalezar', sans-serif",
             fontSize: { xs: "16px", sm: "18px", md: "20px" },
+            color: 'var(--text-color)'
           }}
         >
           <DescriptionIcon /> لاگ وضعیت دستگاه ({deviceInfos.deviceName} در {deviceInfos.deviceLocationName})
@@ -46,12 +47,12 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
             alignItems: "center",
             gap: "6px",
             px: 2,
-            backgroundColor: "var(--blue)", // رنگ آبی ثابت
+            backgroundColor: "var(--blue)",
             color: "white",
             fontFamily: "'Lalezar', sans-serif",
             fontSize: { xs: "12px", sm: "14px", md: "16px" },
             "&:hover": {
-              backgroundColor: "#004aad", // رنگ آبی پررنگتر در هاور
+              backgroundColor: "#2daebc",
             },
           }}
         >
@@ -68,7 +69,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
           boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
         }}
       >
-        <Table>
+        <Table sx={{ background: 'var(--white-50)' }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: "var(--blue)" }}>
               <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif" }}>زمان</TableCell>
@@ -81,32 +82,38 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                 const stateLower = String(row.state).toLowerCase();
                 const isOn = stateLower === "on" || stateLower === "motion" || stateLower === "true";
                 const isOff = stateLower === "off" || stateLower === "clear" || stateLower === "false";
-
                 const chipLabel = isOn ? "روشن" : isOff ? "خاموش" : "غیر فعال";
 
                 return (
                   <TableRow
                     key={index}
                     sx={{
-                      backgroundColor: index % 2 === 0 ? "#f9f9f9" : "white",
-                      "&:hover": { backgroundColor: "#e3f2fd" },
-                      transition: "0.2s",
+                      backgroundColor: index % 2 === 0 ? "var(--white-50)" : "var(--white)",
+                      "&:hover": { backgroundColor: index % 2 === 0 ? "var(--white-50)" : "var(--white)" },
+                      transition: "none",
                     }}
                   >
-                    <TableCell sx={{ textAlign: "center", fontFamily: "'Lalezar', sans-serif" }}>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        fontFamily: "'Lalezar', sans-serif",
+                        color: "var(--text-color)",
+                        fontSize: '16px'
+                      }}
+                    >
                       {toJalaliDateString(row.timestamp)}
                     </TableCell>
                     <TableCell>
                       <Box
                         sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          height: '100%', // پر کردن ارتفاع سلول
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          height: "100%",
                         }}
                       >
                         <Chip
-                          label={chipLabel} // متن روشن یا خاموش
+                          label={chipLabel}
                           variant="filled"
                           sx={{
                             fontFamily: "'Lalezar', sans-serif",
@@ -119,22 +126,28 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                             alignItems: "center",
                             color: "white",
                             backgroundColor: isOn
-                              ? "rgb(0, 188, 212)"
+                              ? "#26c6da"  // روشن
                               : isOff
-                                ? "rgb(236, 64, 122)"
-                                : "rgb(134, 134, 134)",
+                                ? "#ec407a"  // خاموش
+                                : "#868686",  // غیر فعال
                             textAlign: "center",
                           }}
                         />
                       </Box>
                     </TableCell>
-
                   </TableRow>
                 );
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={2} align="center" sx={{ fontFamily: "'Lalezar', sans-serif", color: "var(--text-color)" }}>
+                <TableCell
+                  colSpan={2}
+                  align="center"
+                  sx={{
+                    fontFamily: "'Lalezar', sans-serif",
+                    color: "var(--text-color)",
+                  }}
+                >
                   هیچ لاگی برای نمایش وجود ندارد
                 </TableCell>
               </TableRow>

@@ -45,7 +45,7 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
 
       {/* نمودار دما */}
       <Box sx={{ width: "100%", height: 300, mb: 4 }}>
-        <h3>دمای دستگاه</h3>
+        <h3 style={{ color: 'var(--text-color)' }}>دمای دستگاه</h3>
         <ResponsiveContainer>
           <AreaChart
             data={processedData}
@@ -64,12 +64,13 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
             />
             <YAxis
               tick={({ x, y, payload }) => (
-                <text x={x} y={y} fill="black" textAnchor="end">
+                <text x={x} y={y} fill="var(--text-color)" textAnchor="end">
                   <tspan x={0} dy="0.3em">{formatTemperature(payload.value)}</tspan>
                 </text>
               )}
               domain={["auto", "auto"]}
             />
+
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip
               labelFormatter={(label) => `زمان: ${toJalaliDateString(label)}`}
@@ -98,7 +99,7 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
 
       {/* نمودار رطوبت */}
       <Box sx={{ width: "100%", height: 300 }}>
-        <h3>رطوبت دستگاه</h3>
+        <h3 style={{ color: 'var(--text-color)' }}>رطوبت دستگاه</h3>
         <ResponsiveContainer>
           <AreaChart
             data={processedData}
@@ -117,12 +118,13 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
             />
             <YAxis
               tick={({ x, y, payload }) => (
-                <text x={x} y={y} fill="black" textAnchor="end">
+                <text x={x} y={y} fill="var(--text-color)" textAnchor="end">
                   <tspan x={0} dy="0.3em">{formatHumidity(payload.value)}</tspan>
                 </text>
               )}
               domain={["auto", "auto"]}
             />
+
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip
               labelFormatter={(label) => `زمان: ${toJalaliDateString(label)}`}
