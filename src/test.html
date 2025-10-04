@@ -1,27 +1,82 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Smart Plug Test</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .container { max-width: 800px; margin: 0 auto; }
-    .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
-    .success { background-color: #d4edda; border-color: #c3e6cb; }
-    .error { background-color: #f8d7da; border-color: #f5c6cb; }
-    .info { background-color: #d1ecf1; border-color: #bee5eb; }
-    button { margin: 5px; padding: 10px 15px; cursor: pointer; }
-    input { margin: 5px; padding: 5px; }
-    .log-entry { margin: 5px 0; padding: 5px; background: #f8f9fa; border-left: 3px solid #007bff; }
-    .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
-    .connected { background-color: #d4edda; color: #155724; }
-    .disconnected { background-color: #f8d7da; color: #721c24; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .success {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+
+    .info {
+      background-color: #d1ecf1;
+      border-color: #bee5eb;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
+
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      background: #f8f9fa;
+      border-left: 3px solid #007bff;
+    }
+
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+
+    .connected {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .disconnected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>🧪 Smart Plug System Test</h1>
-    
+
     <div class="test-section info">
       <h3>Device Configuration</h3>
       <label>Device Type: <input type="text" id="deviceType" value="sensor"></label><br>
@@ -238,4 +293,5 @@
     };
   </script>
 </body>
+
 </html>
