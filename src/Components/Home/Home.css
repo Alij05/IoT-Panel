@@ -49,13 +49,13 @@
     position: absolute;
     right: 1rem;
     top: 1.1rem;
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
 }
 
 .status-dot.online {
-    background-color: #22c55e;
+    background-color: #45e641;
 }
 
 .status-dot.offline {

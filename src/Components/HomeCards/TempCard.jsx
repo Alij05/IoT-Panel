@@ -10,27 +10,30 @@ function TempCard({ product, isUserAdmin, deviceState, deviceInfo, deviceInitial
     const [humidity, setHumidity] = useState("Loading");
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
 
-    async function fetchInitialStatus() {
-        try {
-            const deviceType = product.deviceType || 'sensor';
-            const deviceId = product.entity_id;
+    console.log('deviceInitialStatus', deviceInitialStatus);
 
-            const response = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
-            if (!response.ok) return;
 
-            const data = await response.json();
-            if (data?.state && typeof data.state === "string" && data.state.includes("/")) {
-                const [t, h] = data.state.split("/");
-                setTemperature(t);
-                setHumidity(h);
-            }
-        } catch (error) {
-            console.error("❌ Error fetching initial status:", error.message);
-        }
-    }
+    const deviceType = product.deviceType || 'sensor';
+    const deviceId = product.entity_id;
 
     useEffect(() => {
-        fetchInitialStatus();
+        async function deviceInitState() {
+            try {
+                const res = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
+                const data = await res.json();
+                if (!res.ok) return;
+
+                if (data?.state && typeof data.state === "string" && data.state.includes("/")) {
+                    const [t, h] = data.state.split("/");
+                    setTemperature(t);
+                    setHumidity(h);
+                }
+            } catch (error) {
+                console.error("❌ Error fetching initial status:", error.message);
+            }
+        }
+
+        deviceInitState()
     }, []);
 
     useEffect(() => {
@@ -59,12 +62,12 @@ function TempCard({ product, isUserAdmin, deviceState, deviceInfo, deviceInitial
                     ...
                 </div>
 
-                    <div
-                        className={`status-dot ${deviceInitialStatus?.includes('Sensor status publish OK') || deviceInitialStatus?.includes('Heartbeat - device online')
-                            ? 'online'
-                            : 'offline'
-                            }`}
-                    ></div>
+                <div
+                    className={`status-dot ${deviceInitialStatus?.includes('Sensor status publish OK') || deviceInitialStatus?.includes('Heartbeat - device online')
+                        ? 'online'
+                        : 'offline'
+                        }`}
+                ></div>
 
 
                 <div className='sensor-cards-wrapper'>
@@ -122,6 +125,7 @@ export default React.memo(TempCard, (prevProps, nextProps) => {
     return (
         prevProps.deviceState === nextProps.deviceState &&
         prevProps.isUserAdmin === nextProps.isUserAdmin &&
-        prevProps.product.entity_id === nextProps.product.entity_id
+        prevProps.product.entity_id === nextProps.product.entity_id && 
+        prevProps.deviceInitialStatus == nextProps.deviceInitialStatus
     );
 });
