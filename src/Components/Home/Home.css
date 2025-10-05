@@ -55,7 +55,7 @@
 }
 
 .status-dot.online {
-    /* background-color: #45e641; */
+    /* background-color: #06ff00; */
     background-color: var(--blue);
 }
 

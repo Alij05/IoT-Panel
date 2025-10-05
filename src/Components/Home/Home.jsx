@@ -67,7 +67,8 @@ export default function Home() {
                 {productsToShow.map((product) => {
                     const deviceId = product.entity_id;
                     const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
-                    const deviceInitialStatus = deviceId ? sensorsLogsData?.[deviceId]?.msg : null;
+                    const deviceInfo = deviceId ? sensorsData?.[deviceId] : null;
+                    const deviceStatus = deviceId ? sensorsLogsData?.[deviceId]?.msg : null;
 
                     switch (product.deviceClass) {
                         case "light":
@@ -77,6 +78,8 @@ export default function Home() {
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
                                 />
                             );
                         case "flame":
@@ -86,6 +89,8 @@ export default function Home() {
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
                                 />
                             );
                         case "temperature":
@@ -95,8 +100,8 @@ export default function Home() {
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
-                                    deviceInfo={sensorsData[deviceId]}
-                                    deviceInitialStatus={deviceInitialStatus}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
                                 />
                             );
                         case "water":
@@ -106,6 +111,8 @@ export default function Home() {
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
                                 />
                             );
                         case "motion":
@@ -115,6 +122,8 @@ export default function Home() {
                                     product={product}
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
                                 />
                             );
                         case "camera":

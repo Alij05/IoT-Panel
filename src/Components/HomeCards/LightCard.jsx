@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
 
-function LightCard({ product, isUserAdmin, deviceState }) {
+function LightCard({ product, isUserAdmin, deviceState, deviceStatus }) {
     const [lightStatus, setLightStatus] = useState(deviceState);
     const [isPending, setIsPending] = useState(false);
 
