@@ -5,19 +5,15 @@ import { toJalaliDateString } from '../DeviceReport/DateUtils';
 
 const url = process.env.REACT_APP_URL
 
-function TempCard({ product, isUserAdmin, deviceState, deviceInfo }) {
+function TempCard({ product, isUserAdmin, deviceState, deviceInfo, deviceInitialStatus }) {
     const [temperature, setTemperature] = useState("Loading");
     const [humidity, setHumidity] = useState("Loading");
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
 
-    console.log('deviceInfo -->', deviceInfo);
-    console.log('PRODUCT -->', product);
-
-
     async function fetchInitialStatus() {
         try {
             const deviceType = product.deviceType || 'sensor';
-            const deviceId =  product.entity_id;
+            const deviceId = product.entity_id;
 
             const response = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
             if (!response.ok) return;
@@ -62,6 +58,14 @@ function TempCard({ product, isUserAdmin, deviceState, deviceInfo }) {
                 <div className='more-info' onClick={() => setIsShowMoreInfo(true)}>
                     ...
                 </div>
+
+                    <div
+                        className={`status-dot ${deviceInitialStatus?.includes('Sensor status publish OK') || deviceInitialStatus?.includes('Heartbeat - device online')
+                            ? 'online'
+                            : 'offline'
+                            }`}
+                    ></div>
+
 
                 <div className='sensor-cards-wrapper'>
                     <div className="sensor-card temperature-card">

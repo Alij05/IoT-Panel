@@ -8,6 +8,7 @@ export function WebSocketProvider({ children }) {
     const reconnectTimerRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [sensorsData, setSensorsData] = useState({});
+    const [sensorsLogsData, setSensorsLogsData] = useState({});
     const [flamesData, setFlamesData] = useState({});
 
     const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
@@ -45,6 +46,14 @@ export function WebSocketProvider({ children }) {
                             [data.deviceId]: data
                         }))
                     }
+
+                    if (data.deviceId && data.messageType === 'logs') {
+                        setSensorsLogsData((prev) => ({
+                            ...prev,
+                            [data.deviceId]: data,
+                        }));
+                    }
+
                 } catch (err) {
                     console.error("[WSS] Parse error:", err);
                 }
@@ -72,7 +81,7 @@ export function WebSocketProvider({ children }) {
 
     return (
         <WebSocketContext.Provider
-            value={{ socket: socketRef.current, isConnected, sensorsData, flamesData }}
+            value={{ socket: socketRef.current, isConnected, sensorsData, flamesData, sensorsLogsData }}
         >
             {children}
         </WebSocketContext.Provider>

@@ -16,7 +16,7 @@ import WeatherWidget from "../WeatherWidget/WeatherWidget";
 const url = process.env.REACT_APP_URL;
 
 export default function Home() {
-    const { sensorsData } = useSockets();
+    const { sensorsData, sensorsLogsData } = useSockets();
     const [allProducts, setAllProducts] = useState([]);
     const [userProducts, setUserProducts] = useState([]);
     const { isUserAdmin } = useAuth();
@@ -67,6 +67,7 @@ export default function Home() {
                 {productsToShow.map((product) => {
                     const deviceId = product.entity_id;
                     const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
+                    const deviceInitialStatus = deviceId ? sensorsLogsData?.[deviceId]?.msg : null;
 
                     switch (product.deviceClass) {
                         case "light":
@@ -95,6 +96,7 @@ export default function Home() {
                                     isUserAdmin={isUserAdmin}
                                     deviceState={deviceState}
                                     deviceInfo={sensorsData[deviceId]}
+                                    deviceInitialStatus={deviceInitialStatus}
                                 />
                             );
                         case "water":
