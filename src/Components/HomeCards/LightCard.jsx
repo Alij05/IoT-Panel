@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
 const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
 
-function LightCard({ product, isUserAdmin, deviceState, deviceStatus }) {
+function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) {
     const [lightStatus, setLightStatus] = useState(deviceState);
     const [isPending, setIsPending] = useState(false);
+    const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
+
 
     const deviceType = product.deviceType || 'sensor';
     const deviceId = product.entity_id;
@@ -99,52 +102,82 @@ function LightCard({ product, isUserAdmin, deviceState, deviceStatus }) {
     };
 
     return (
-        <div
-            style={{ textAlign: 'center', cursor: lightStatus === 'unknown' ? 'auto' : 'pointer' }}
-            className='home-box'
-            onClick={lightStatus === 'unknown' ? undefined : handleToggle} >
+        <>
+            <div
+                style={{ textAlign: 'center', cursor: lightStatus === 'unknown' ? 'auto' : 'pointer' }}
+                className='home-box'
+                onClick={lightStatus === 'unknown' ? undefined : handleToggle} >
 
-            {isUserAdmin ? (
-                <div style={{
-                    display: "flex",
-                    marginBottom: '15px',
-                    gap: "10px 12px",
-                    fontSize: "16px",
-                    color: "var(--text-color)",
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <span>مکان : {product.deviceLocationName}</span> |
-                    <span>مالک : {product.user}</span>
+                <div className='more-info' onClick={() => setIsShowMoreInfo(true)}>
+                    ...
                 </div>
-            ) : (
-                <div style={{
-                    display: "flex",
-                    marginBottom: '15px',
-                    gap: "10px 12px",
-                    fontSize: "16px",
-                    color: "var(--text-color)",
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <span>{product.deviceName} در {product.deviceLocationName}</span>
-                </div>
-            )}
 
-            <img
-                src={
-                    lightStatus === 'on'
-                        ? 'svgs/light-on.svg'
-                        : (lightStatus === 'off'
-                            ? 'svgs/light-off.svg'
-                            : 'svgs/light-disable.svg')
-                }
-                alt={lightStatus === 'on' ? 'روشن' : 'خاموش'}
-                style={{ width: '110px', transition: '0.3s ease-in-out' }}
-            />
-        </div>
+                <div
+                    className={`status-dot ${deviceStatus?.includes('Sensor status publish OK') || deviceStatus?.includes('Heartbeat - device online')
+                        ? 'online'
+                        : 'offline'
+                        }`}
+                ></div>
+
+                {isUserAdmin ? (
+                    <div style={{
+                        display: "flex",
+                        marginBottom: '15px',
+                        gap: "10px 12px",
+                        fontSize: "16px",
+                        color: "var(--text-color)",
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <span>مکان : {product.deviceLocationName}</span> |
+                        <span>مالک : {product.user}</span>
+                    </div>
+                ) : (
+                    <div style={{
+                        display: "flex",
+                        marginBottom: '15px',
+                        gap: "10px 12px",
+                        fontSize: "16px",
+                        color: "var(--text-color)",
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <span>{product.deviceName} در {product.deviceLocationName}</span>
+                    </div>
+                )}
+
+                <img
+                    src={
+                        lightStatus === 'on'
+                            ? 'svgs/light-on.svg'
+                            : (lightStatus === 'off'
+                                ? 'svgs/light-off.svg'
+                                : 'svgs/light-disable.svg')
+                    }
+                    alt={lightStatus === 'on' ? 'روشن' : 'خاموش'}
+                    style={{ width: '110px', transition: '0.3s ease-in-out' }}
+                />
+            </div>
+
+            {
+                isShowMoreInfo && (
+                    <div className="overlay" onClick={() => setIsShowMoreInfo(false)}>
+                        <div className="modal" onClick={(e) => e.stopPropagation()}>
+                            <h4>جزئیات سنسور</h4>
+                            <table className="info-table">
+                                <tbody>
+                                    <tr><td>حرکت :</td><td>{lightStatus === 'on' ? 'روشن' : 'خاموش'}</td></tr>
+                                    <DeviceMoreInfo deviceInfo={deviceInfo} product={product} />
+                                </tbody>
+                            </table>
+                            <button className="close-btn" onClick={() => setIsShowMoreInfo(false)}>بستن</button>
+                        </div>
+                    </div>
+                )
+            }
+        </>
     );
 }
 

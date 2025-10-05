@@ -4,7 +4,7 @@ import { toJalaliDateString } from '../DeviceReport/DateUtils'
 function DeviceMoreInfo({ deviceInfo, product }) {
     return (
         <>
-            <tr><td>شناسه دیوایس :</td><td>{deviceInfo?.deviceId || deviceInfo?.device_Id}</td></tr>
+            <tr><td>شناسه دیوایس :</td><td>{product.entity_id}</td></tr>
             <tr><td>نوع دیوایس :</td><td>{deviceInfo?.deviceType || 'سنسور'}</td></tr>
             <tr><td>کلاس دیوایس :</td><td>{product?.device_class || product?.deviceClass}</td></tr>
             <tr><td>نام دیوایس :</td><td>{product?.deviceName}</td></tr>
