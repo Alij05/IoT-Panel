@@ -55,7 +55,8 @@
 }
 
 .status-dot.online {
-    background-color: #45e641;
+    /* background-color: #45e641; */
+    background-color: var(--blue);
 }
 
 .status-dot.offline {

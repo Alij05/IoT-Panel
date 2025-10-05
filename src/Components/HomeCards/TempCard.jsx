@@ -10,12 +10,10 @@ function TempCard({ product, isUserAdmin, deviceState, deviceInfo, deviceInitial
     const [humidity, setHumidity] = useState("Loading");
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
 
-    console.log('deviceInitialStatus', deviceInitialStatus);
-
-
     const deviceType = product.deviceType || 'sensor';
     const deviceId = product.entity_id;
 
+    
     useEffect(() => {
         async function deviceInitState() {
             try {
