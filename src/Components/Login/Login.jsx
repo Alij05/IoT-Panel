@@ -8,7 +8,7 @@ import { useAuth } from '../../Contexts/AuthContext'
 const url = process.env.REACT_APP_URL
 
 export default function Login() {
-    const { isUserLoggedIn, login } = useAuth() // گرفتن وضعیت لاگین و متد login
+    const { isUserLoggedIn, login } = useAuth()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [phone, setPhone] = useState('')
@@ -63,7 +63,7 @@ export default function Login() {
             {showForgetPass ? (
                 <div className='login-form-container'>
                     <div className="login wrap">
-                        <div className="h1">فراموشی رمز عبور</div>
+                        <div className="h1">فراموشی رمز</div>
 
                         <div className='otp-inputs-wrapper'>
                             <div className="form-group" style={{ width: '70%', margin: '0 auto' }}>
@@ -91,7 +91,10 @@ export default function Login() {
             ) : (
                 <div className='login-form-container'>
                     <div className="login wrap">
-                        <div className="h1">ورود به حساب</div>
+                        <div className="login-image">
+                            <img src="./images/logo.png" alt="" />
+                        </div>
+                        {/* <div className="h1">ورود به حساب</div> */}
 
                         <div className='register-inputs-wrapper'>
                             <div className="form-group">

@@ -13,6 +13,14 @@
     --shadow-dark: rgba(0, 0, 0, 0.3);
 }
 
+.login-image {
+    margin: 0 0 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
 .login-form-container {
     position: fixed;
     left: 50%;
@@ -24,8 +32,8 @@
 
 .login {
     width: 500px;
-    background: rgba(255, 255, 255, 0.65);
-    /* سفید خیلی کم‌رنگ */
+    /* background: rgba(255, 255, 255, 0.65); */
+    background-color: color-mix(in oklab, var(--white) 55%, transparent) !important;
     padding: 50px 45px 55px 45px;
     color: var(--white);
     border-radius: 24px;
@@ -39,7 +47,7 @@
     animation: formAppear 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
     box-shadow:
         0 30px 60px -10px var(--shadow-dark),
-        0 20px 30px -5px var(--shadow-primary),
+        0 10px 20px -5px var(--link-active),
         inset 0 1px 0 rgba(255, 255, 255, 0.05),
         0 2px 5px rgba(0, 0, 0, 0.15);
 }
@@ -93,7 +101,7 @@
     font-size: 2em;
     font-weight: 700;
     text-align: center;
-    color: var(--primary-dark);
+    color: var(--blue);
     text-shadow:
         0 0 25px rgba(255, 255, 255, 1),
         0 0 35px var(--shadow-primary),
@@ -112,7 +120,7 @@
     position: relative;
     animation: inputSlide 0.6s ease-out both;
     opacity: 0;
-    border: 1PX solid var(--primary-dark);
+    border: 1PX solid var(--blue);
     border-radius: 10px;
 }
 
@@ -132,29 +140,28 @@
     border: 2px solid transparent;
     outline: none;
     background: var(---blue);
-    color: var(--primary-dark);
+    color: var(--blue);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(8px);
     position: relative;
 }
 
 .form-control::placeholder {
-    color: var(--text-secondary);
+    color: var(--blue) !important;
 }
 
 .form-control:focus {
     /* background: var(--input-focus); */
     /* border-color: var(--primary-cyan); */
-    transform: translateY(-2px);
-    box-shadow:
-        0 12px 30px -5px var(--shadow-primary),
+    /* transform: translateY(-2px); */
+    /* box-shadow:
+        0 12px 30px -5px var(--blue),
         0 0 0 4px rgba(38, 198, 218, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        inset 0 1px 0 rgba(255, 255, 255, 0.15); */
 }
 
 .form-control:hover:not(:focus) {
     background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
 }
 
 .form-label {
@@ -167,7 +174,7 @@
     padding: 6px 12px;
     border-radius: 12px;
     font-size: 0.95rem;
-    color: var(--primary-dark);
+    color: var(--blue);
     /* backdrop-filter: blur(8px); */
     /* border: 1px solid rgba(255, 255, 255, 0.2); */
 }
@@ -178,8 +185,8 @@
     transform: translateY(0) scale(0.85);
     padding: 4px 10px;
     background: linear-gradient(135deg,
-            var(--primary-cyan) 0%,
-            var(--primary-light) 100%);
+            var(--blue) 0%,
+            var(--blue) 100%);
     color: var(--white);
     font-weight: 600;
     box-shadow: 0 5px 15px var(--shadow-primary);
@@ -204,7 +211,7 @@
             var(--primary-cyan) 0%,
             var(--primary-dark) 50%,
             var(--primary-cyan) 100%); */
-    background: var(--primary-dark);
+    background: var(--blue);
     background-size: 200% 200%;
     width: 70%;
     margin: 35px auto 25px;
@@ -213,10 +220,10 @@
     opacity: 0;
     cursor: pointer;
     overflow: hidden;
-    box-shadow:
-        0 12px 35px -5px var(--shadow-primary),
+    /* box-shadow:
+        0 12px 35px -5px var(--blue),
         0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        inset 0 1px 0 rgba(255, 255, 255, 0.25); */
 }
 
 .button-modern::before {
@@ -238,11 +245,11 @@
 .button-modern:hover {
     transform: translateY(-3px);
     background-position: 100% 0;
-    /* box-shadow:
-        0 25px 45px -8px var(--shadow-primary),
+    box-shadow:
+        0 10px 10px -10px var(--link-active),
         0 0 0 1px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.35); */
-    background: var(--blue);
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    /* background: var(--link-active); */
 }
 
 .button-modern:hover::before {
@@ -262,13 +269,13 @@
     animation: textAppear 0.6s ease-out both;
     animation-delay: 0.6s;
     opacity: 0;
-    color: var(--primary-dark);
+    color: var(--blue);
     text-align: center;
     line-height: 1.6;
 }
 
 .login-footer-text a {
-    color: var(--primary-cyan);
+    color: var(--link-active);
     font-size: 0.9rem;
     margin-right: 8px;
     text-decoration: none;
@@ -286,7 +293,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+    background: linear-gradient(90deg, var(--link-active), var(--blue));
     transition: width 0.3s ease;
 }
 
@@ -332,7 +339,7 @@
 }
 
 .otp-footer-text a {
-    color: var(--primary-cyan);
+    color: var(--link-active);
     font-size: 1.1rem;
     margin-right: 8px;
     text-decoration: none;
@@ -363,7 +370,7 @@
 .forgot-password {
     display: inline-block;
     font-size: 0.95rem;
-    color: var(--primary-cyan);
+    color: var(--link-active);
     text-align: right;
     padding: 5px 0;
     cursor: pointer;

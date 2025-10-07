@@ -69,11 +69,17 @@ html {
 /* صفحه بکگراند زیبا و متناسب */
 .auth-body {
     background: linear-gradient(135deg,
-            #1b2529 0%,
-            #87ced7 25%,
-            #9dc5d6 50%,
-            #87ced7 75%,
-            #1b2529 100%);
+            #0f172d 0%,
+            #0f172c 25%,
+            #172c6a 50%,
+            #0f172c 75%,
+            #0f172d 100%
+            /* #081432 0%,
+            #13224d 25%,
+            #254bb5 50%,
+            #13224d 75%,
+            #081432 100% */
+        );
 
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;

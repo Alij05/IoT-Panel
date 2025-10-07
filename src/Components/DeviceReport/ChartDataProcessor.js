@@ -36,19 +36,18 @@ export const processChartData = (rawData, chartType, selectedDate, useRange, ran
   }
 };
 
-const processHourlyData = (
-  rawData,
-  selectedDate,
-  useRange,
-  range,
-  getFormatted
-) => {
+const processHourlyData = (rawData, selectedDate, useRange, range, getFormatted) => {
   const hourlyMap = {};
 
   rawData.forEach((item) => {
     if (!item || item.state === "unavailable") return;
 
-    const itemDate = getFormatted(item.last_updated);
+    // استخراج دما و رطوبت از state
+    const [temp, hum] = item.state.split("/").map(Number);
+    if (isNaN(temp) || isNaN(hum)) return;
+
+    // انتخاب تاریخ
+    const itemDate = getFormatted(item.timestamp || item.last_updated);
     const fromStr = useRange ? getFormatted(range.from) : null;
     const toStr = useRange ? getFormatted(range.to) : null;
 
@@ -57,30 +56,46 @@ const processHourlyData = (
       if (toStr && itemDate > toStr) return;
     } else {
       const dateStr = getFormatted(selectedDate);
-      if (
-        !dayjs(item.last_updated)
-          .utcOffset(3.5)
-          .format("YYYY-MM-DD")
-          .startsWith(dateStr)
-      )
-        return;
+      if (!dayjs(item.timestamp || item.last_updated)
+        .utcOffset(3.5)
+        .format("YYYY-MM-DD")
+        .startsWith(dateStr)
+      ) return;
     }
 
-    const hourKey = dayjs(item.last_updated)
+    // کلید ساعت
+    const hourKey = dayjs(item.timestamp || item.last_updated)
       .utcOffset(3.5)
       .format("YYYY-MM-DD HH");
+
     if (!hourlyMap[hourKey]) {
-      hourlyMap[hourKey] = { sum: 0, count: 0 };
+      hourlyMap[hourKey] = { tempSum: 0, humSum: 0, count: 0 };
     }
-    hourlyMap[hourKey].sum += parseFloat(item.state);
+
+    hourlyMap[hourKey].tempSum += temp;
+    hourlyMap[hourKey].humSum += hum;
     hourlyMap[hourKey].count += 1;
   });
 
+  console.log('Hour ===',
+    Object.entries(hourlyMap)
+      .filter(([_, { count }]) => count > 0)
+      .map(([hourKey, { tempSum, humSum, count }]) => ({
+        time: toJalaliDateString(hourKey + ":00"),
+        temperature: (tempSum / count).toFixed(1),
+        humidity: (humSum / count).toFixed(1),
+      }))
+  );
+
+
+
+  // خروجی نهایی: میانگین دما و رطوبت برای هر ساعت
   return Object.entries(hourlyMap)
     .filter(([_, { count }]) => count > 0)
-    .map(([hourKey, { sum, count }]) => ({
+    .map(([hourKey, { tempSum, humSum, count }]) => ({
       time: toJalaliDateString(hourKey + ":00"),
-      value: (sum / count).toFixed(1),
+      temperature: (tempSum / count).toFixed(1),
+      humidity: (humSum / count).toFixed(1),
     }));
 };
 

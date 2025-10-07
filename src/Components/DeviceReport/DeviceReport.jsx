@@ -18,6 +18,8 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
   const { range, setRange } = useReportStore();
 
   // تشخیص نوع دیوایس
+  console.log('deviceClass ->', deviceClass);
+  
   const isSensor = deviceClass.includes("temperature") || deviceClass.includes("humidity") || deviceClass.includes("air_quality");
 
   const transformDeviceData = (rawData = []) => {
@@ -41,6 +43,8 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
     if (isSensor) {
       const processedData = processChartData(rawData || [], chartType, selectedDate, useRange, range);
       setFilteredData(processedData || []);
+      console.log('processed Data --->', rawData);
+      
 
     } else {
       const processedData = transformDeviceData(rawData);
