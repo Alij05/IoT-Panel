@@ -9,7 +9,7 @@ export default function MotionStatus({ product, deviceState }) {
     }, [deviceState])
 
     return (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }} >
+        <div style={{ textAlign: 'center', cursor: 'pointer', color: 'var(--text-color)' }} >
             <p style={{ marginBottom: '20px' }}>{motionStatus ? 'روشن' : 'خاموش'}</p>
             <img
                 src={motionStatus ? 'svgs/motion-on.svg' : 'svgs/motion-off.svg'}

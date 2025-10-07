@@ -9,7 +9,7 @@ export default function FlameStatus({ product, deviceState }) {
     }, [deviceState])
 
     return (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }} >
+        <div style={{ textAlign: 'center', cursor: 'pointer', color: 'var(--text-color)' }} >
             <p style={{ marginBottom: '20px' }}>{flameStatus ? 'روشن' : 'خاموش'}</p>
             <img
                 src={flameStatus ? 'svgs/flame-on.svg' : 'svgs/flame-off.svg'}

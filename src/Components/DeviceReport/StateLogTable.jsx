@@ -52,7 +52,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
             fontFamily: "'Lalezar', sans-serif",
             fontSize: { xs: "12px", sm: "14px", md: "16px" },
             "&:hover": {
-              backgroundColor: "#2daebc",
+              backgroundColor: "#041235",
             },
           }}
         >
@@ -69,11 +69,11 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
           boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
         }}
       >
-        <Table sx={{ background: 'var(--white-50)' }}>
+        <Table sx={{ background: 'var(--white-50)', borderCollapse: 'separate' }}>
           <TableHead>
             <TableRow sx={{ backgroundColor: "var(--blue)" }}>
-              <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif" }}>زمان</TableCell>
-              <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif" }}>وضعیت</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif", borderBottom: "1px solid rgba(255,255,255,0.3)" }}>زمان</TableCell>
+              <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif", borderBottom: "1px solid rgba(255,255,255,0.3)" }}>وضعیت</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -88,9 +88,10 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                   <TableRow
                     key={index}
                     sx={{
-                      backgroundColor: index % 2 === 0 ? "var(--white-50)" : "var(--white)",
-                      "&:hover": { backgroundColor: index % 2 === 0 ? "var(--white-50)" : "var(--white)" },
+                      backgroundColor: index % 2 === 0 ? "var(--white-50)" : "color-mix(in oklab, var(--white) 20%, transparent) !important",
+                      "&:hover": { backgroundColor: index % 2 === 0 ? "var(--white-50)" : "color-mix(in oklab, var(--white) 20%, transparent) !important" },
                       transition: "none",
+                      borderBottom: "none", // 🔹 حذف خط بین ردیف‌های Body
                     }}
                   >
                     <TableCell
@@ -98,12 +99,13 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                         textAlign: "center",
                         fontFamily: "'Lalezar', sans-serif",
                         color: "var(--text-color)",
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        borderBottom: "none",
                       }}
                     >
                       {toJalaliDateString(row.timestamp)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ borderBottom: "none" }}>
                       <Box
                         sx={{
                           display: "flex",
@@ -126,9 +128,9 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                             alignItems: "center",
                             color: "white",
                             backgroundColor: isOn
-                              ? "#26c6da"  // روشن
+                              ? "#00a053"  // روشن
                               : isOff
-                                ? "#ec407a"  // خاموش
+                                ? "#d9000e"  // خاموش
                                 : "#868686",  // غیر فعال
                             textAlign: "center",
                           }}
@@ -146,6 +148,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                   sx={{
                     fontFamily: "'Lalezar', sans-serif",
                     color: "var(--text-color)",
+                    borderBottom: "none",
                   }}
                 >
                   هیچ لاگی برای نمایش وجود ندارد

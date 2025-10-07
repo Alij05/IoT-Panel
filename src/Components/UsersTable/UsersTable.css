@@ -8,7 +8,7 @@
     margin-top: 30px;
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--white);
+    background-color: color-mix(in oklab, var(--white) 25%, transparent) !important;
     border-radius: 10px;
     text-align: center;
     box-shadow: var(--shadow) 0px 0px 8px 0px;
@@ -240,6 +240,7 @@
         word-wrap: break-word;
         /* جلوگیری از شکستن جدول */
     }
+
     /*   **************************   */
 
     .users-table-btn {

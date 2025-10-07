@@ -49,7 +49,7 @@
 }
 
 .search-box {
-    background-color: var(--white);
+    background-color: color-mix(in oklab, var(--white) 60%, transparent) !important;
     border-radius: 15px;
     width: 400px;
     height: 45px;
@@ -60,6 +60,10 @@
     box-shadow: rgba(149, 157, 165, 0.2) 0 2px 12px;
 }
 
+[data-theme='dark'] .search-box {
+    background-color: color-mix(in oklab, var(--white) 20%, transparent) !important;
+}
+
 .search-box input {
     outline: none;
     border: none;
@@ -67,7 +71,15 @@
     width: 100%;
     font-size: 1.1rem;
     padding: 10px 20px 10px 10px;
-    color: var(--text-color);
+    color: var(--sidebar);
+}
+
+.search-box input::placeholder {
+    color: var(--blue);
+}
+
+[data-theme='dark'] .search-box input::placeholder {
+    color: var(--sidebar);
 }
 
 .search-box button {
@@ -95,7 +107,7 @@
     background-color: var(--blue);
     color: var(--sidebar);
     height: 40px;
-    box-shadow: rgba(149, 157, 165, 0.5) 0 8px 24px;
+    box-shadow: rgba(149, 157, 165, 0.25) 0 6px 20px;
     cursor: pointer;
     border: none;
     outline: none;

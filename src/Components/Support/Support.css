@@ -9,8 +9,7 @@
 
 .add-support-form {
   margin-top: 30px;
-  background: var(--white);
-  display: flex;
+  background-color: color-mix(in oklab, var(--white) 30%, transparent) !important;  display: flex;
   gap: 80px;
   padding: 40px 50px;
   border-radius: 20px;
@@ -74,10 +73,11 @@
   height: 100%;
   border-radius: 12px;
   background: linear-gradient(to left,
-      hsl(183, 72%, 26%) 0%,
-      hsl(183, 72%, 45%) 8%,
-      hsl(183, 72%, 45%) 92%,
-      hsl(183, 72%, 26%) 100%);
+  hsl(231, 100%, 8%) 0%,
+  hsl(235, 95%, 15%) 10%,
+  hsl(240, 90%, 35%) 50%,
+  hsl(235, 95%, 15%) 90%,
+  hsl(231, 100%, 8%) 100%);
 }
 
 .add-products-submit .front {
@@ -87,7 +87,7 @@
   border-radius: 12px;
   font-size: 1.1rem;
   color: white;
-  background: rgb(38, 198, 218);
+  background: var(--blue);
   will-change: transform;
   transform: translateY(-4px);
   transition: transform 600ms cubic-bezier(.3, .7, .4, 1);

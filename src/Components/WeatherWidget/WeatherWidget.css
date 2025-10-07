@@ -3,10 +3,16 @@
     justify-content: center;
     gap: 12px;
     background: var(--white);
+    background-color: color-mix(in oklab, var(--white) 60%, transparent) !important;
+    border: 1px solid var(--white);
     padding: 30px 20px 25px;
-    border-radius: 5px;
+    border-radius: 10px;
     /* width: 75%;
     margin: 0 auto 20px; */
+}
+
+[data-theme= 'dark'] .weather-widget {
+    background-color: color-mix(in oklab, var(--white) 20%, transparent) !important;
 }
 
 .weather-card {
@@ -76,6 +82,7 @@
         padding: 7px 4px;
     }
 }
+
 /* @media (max-width: 1450px) {
     .weather-widget {
         gap: 6px;

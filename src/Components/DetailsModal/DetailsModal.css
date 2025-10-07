@@ -40,6 +40,7 @@
 
 .details-modal {
     padding: 30px;
-    background-color: var(--white);
+    background-color: var(--white-50);
+    /* background-color: color-mix(in oklab, var(--white) 20%, transparent) !important; */
     font-size: 1.3rem;
 }

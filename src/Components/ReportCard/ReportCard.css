@@ -1,6 +1,5 @@
 .report-card-container {
-  background-color: var(--white);
-  direction: ltr;
+  background-color: color-mix(in oklab, var(--white) 30%, transparent) !important;  direction: ltr;
   width: 100%;
   max-width: 220px;
   overflow: hidden;

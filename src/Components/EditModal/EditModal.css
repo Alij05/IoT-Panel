@@ -42,7 +42,7 @@
     margin-bottom: 5px;
     padding: 6px 10px;
     border-radius: 5px;
-    background-color: var(--white-50);
+    background-color: var(--white) !important;
 }
 
 .edit-modal-form h1 {

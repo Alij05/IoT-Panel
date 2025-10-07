@@ -11,7 +11,7 @@ export default function LightControl({ deviceState }) {
     }, [deviceState])
 
     return (
-        <div style={{ textAlign: 'center', cursor: 'pointer' }} >
+        <div style={{ textAlign: 'center', cursor: 'pointer', color: 'var(--text-color)' }} >
             <p>{lightStatus ? 'روشن' : 'خاموش'}</p>
             <img
                 src={lightStatus ? 'svgs/switch-light-on.svg' : 'svgs/switch-light-off.svg'}

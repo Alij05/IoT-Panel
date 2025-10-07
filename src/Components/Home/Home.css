@@ -1,12 +1,15 @@
 .home-box {
-    /* max-width: 320px !important; */
     max-width: 100% !important;
-    border-radius: 5px;
-    /* background-color: var(--box-color) !important; */
-    background-color: var(--white) !important;
+    border-radius: 10px;
+    border: 1px solid var(--white);
+    background-color: color-mix(in oklab, var(--white) 60%, transparent) !important;
     backdrop-filter: blur(12px);
     padding: 25px 25px 20px;
     position: relative;
+}
+
+[data-theme='dark'] .home-box {
+    background-color: color-mix(in oklab, var(--white) 20%, transparent) !important;
 }
 
 .home-wrapper {
@@ -43,6 +46,7 @@
 
 .more-info:hover {
     background-color: var(--blue);
+    color: #dddddd;
 }
 
 .status-dot {
@@ -56,11 +60,12 @@
 
 .status-dot.online {
     /* background-color: #06ff00; */
-    background-color: var(--blue);
+    background-color: #00a053;
 }
 
 .status-dot.offline {
-    background-color: #9ca3af;
+    /* background-color: #9ca3af; */
+    background-color: #d9000e;
 }
 
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button } from "@mui/material";
+import { Download } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -35,10 +36,35 @@ const ChartDisplay = ({ filteredData, setFilteredData, deviceId, exportToExcel }
     <Box className="report-chart-section" sx={{ width: "100%" }}>
 
       <div className="report-chart-buttons-section">
-        <Button sx={{ mt: 0.5 }} className="report-chart-restart-button" onClick={() => setFilteredData([...filteredData])}>
+        <Button
+          sx={{ mt: 0.5 }}
+          className="report-chart-restart-button"
+          onClick={() => setFilteredData([...filteredData])}
+        >
           {ReportLocalization.resetZoom}
         </Button>
-        <Button className="report-chart-exel-button" sx={{ mt: 0.5 }} onClick={exportToExcel}>
+
+        <Button
+          variant="contained"
+          startIcon={<Download size={18} />}
+          onClick={exportToExcel}
+          sx={{
+            mt: 0.5,
+            borderRadius: "12px",
+            textTransform: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            px: 2,
+            backgroundColor: "var(--blue)",
+            color: "white",
+            fontFamily: "'Lalezar', sans-serif",
+            fontSize: { xs: "12px", sm: "14px", md: "16px" },
+            "&:hover": {
+              backgroundColor: "#041235",
+            },
+          }}
+        >
           خروجی Excel
         </Button>
       </div>

@@ -11,7 +11,7 @@ const ChartHeader = ({ chartType, deviceId }) => {
       <h2
         className="report-chart-Name"
         style={{
-          color: "#26c6da",
+          color: "var(--blue)",
           margin: 0,
           fontFamily: "Lalezar, sans-serif"
         }}

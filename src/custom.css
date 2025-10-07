@@ -11,27 +11,31 @@
 
 :root {
     --white: #ffffff;
-    --white-50: #f0f0f0;
+    --white-50: #e1e1e1;
     --box-color: #e3e3e3;
-    --blue: rgb(38, 198, 218);
+    /* --blue: rgb(38, 198, 218); */
+    --blue: #13224d;
     --dark: #1a1a1a;
-    --text: #000000;
-    --sidebar: #000000;
+    /* --text: #b2b9c7; */
+    --sidebar: #fff;
     --shadow: rgba(0, 0, 0, 0.15);
-    --users: #000000;
-    --scrollbar: #f5f8f8;
+    --users: #b2b9c7;
+    --scrollbar: #e1e1e1;
+    --link-active: #254bb5;
 }
 
 [data-theme='dark'] {
-    --white: rgb(43, 43, 43);
-    --white-50: #1a1a1a;
+    /* --white: rgb(43, 43, 43); */
+    --white: #6c7eb2;
+    --white-50: #111d3c;
     --box-color: #dddddd;
     --text-color: #dddddd;
     --sidebar: #fff;
-    --text: rgb(118, 118, 118);
+    /* --text: rgb(118, 118, 118); */
     --shadow: rgba(255, 255, 255, 0.15);
     --users: rgb(159, 159, 161);
-    --scrollbar: rgb(57, 57, 57);
+    --scrollbar: #081432;
+    --link-active: #6c7eb2;
 }
 
 body {
@@ -99,15 +103,20 @@ html {
 
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: #0097a7;
+    background: #1e3a8a;
+    /* رنگ اسکرول */
+}
+
+[data-tehem="dark"] ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #6c7eb2;
     /* رنگ اسکرول */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #006b6f;
+    background: #254bb5;
     /* رنگ در حالت hover */
 }
-
 
 
 
