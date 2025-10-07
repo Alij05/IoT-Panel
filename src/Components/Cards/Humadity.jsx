@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from 'recharts';
 
-export default function Humadity({ deviceState }) {
-    const [humidity, setHumidity] = useState("Loading");
+const url = process.env.REACT_APP_URL
+
+export default function Humadity({ deviceState, product }) {
+    const [humidity, setHumidity] = useState(0);
+
+    const deviceType = product.deviceType || 'sensor';
+    const deviceId = product.entity_id;
+
+    useEffect(() => {
+        async function deviceInitState() {
+            try {
+                const res = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
+                const data = await res.json();
+                if (!res.ok) return;
+
+                if (data?.state && typeof data.state === "string" && data.state.includes("/")) {
+                    const [t, h] = data.state.split("/");
+                    setHumidity(h);
+                }
+            } catch (error) {
+                console.error("❌ Error fetching initial status:", error.message);
+            }
+        }
+
+        deviceInitState()
+    }, []);
 
     useEffect(() => {
         if (typeof deviceState === "string" && deviceState.includes("/")) {
             const [t, h] = deviceState.split("/");
-            
             setHumidity(Number(h));
         }
     }, [deviceState]);

@@ -1,13 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import './Temperature.css';
 
-export default function Temperature({ deviceState, min = 0, max = 50 }) {
+const url = process.env.REACT_APP_URL
+
+export default function Temperature({ deviceState, product, min = 0, max = 50 }) {
   console.log('deviceState', deviceState);
 
   const [mercuryHeight, setMercuryHeight] = useState(0);
   const [mercuryColor, setMercuryColor] = useState('#26c6da');
 
-  const [temperature, setTemperature] = useState("Loading");
+  const [temperature, setTemperature] = useState(0);
+
+  const deviceType = product.deviceType || 'sensor';
+  const deviceId = product.entity_id;
+
+  useEffect(() => {
+    async function deviceInitState() {
+      try {
+        const res = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
+        const data = await res.json();
+        if (!res.ok) return;
+
+        if (data?.state && typeof data.state === "string" && data.state.includes("/")) {
+          const [t, h] = data.state.split("/");
+          setTemperature(t);
+        }
+      } catch (error) {
+        console.error("❌ Error fetching initial status:", error.message);
+      }
+    }
+
+    deviceInitState()
+  }, []);
 
   useEffect(() => {
     if (typeof deviceState === "string" && deviceState.includes("/")) {

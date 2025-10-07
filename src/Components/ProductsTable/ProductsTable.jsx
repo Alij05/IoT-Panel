@@ -520,8 +520,8 @@ export default function ProductsTable() {
 
                             {productInfo?.deviceClass === "temperature" && (
                                 <>
-                                    <Temperature deviceState={deviceState} />
-                                    <Humadity deviceState={deviceState} />
+                                    <Temperature deviceState={deviceState} product={productInfo} />
+                                    <Humadity deviceState={deviceState} product={productInfo} />
                                 </>
                             )}
 
