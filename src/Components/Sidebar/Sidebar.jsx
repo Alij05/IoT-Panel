@@ -38,7 +38,9 @@ export default function Sidebar() {
 
         <ul className="sidebar-links">
           <li>
-            <NavLink to="/home" className={({ isActive }) => isActive ? "link active" : "link"}>
+            <NavLink to="/home" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
               <HomeRoundedIcon className="icon" />
               صفحه اصلی
             </NavLink>
@@ -46,13 +48,17 @@ export default function Sidebar() {
           {isUserAdmin &&
             <>
               <li>
-                <NavLink to="/users" className={({ isActive }) => isActive ? "link active" : "link"}>
+                <NavLink to="/users" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+                  isShowSidebar && mobileMenuClickHandler()
+                }}>
                   <PeopleAltIcon className="icon" />
                   کاربران
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/add-user" className={({ isActive }) => isActive ? "link active" : "link"}>
+                <NavLink to="/add-user" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+                  isShowSidebar && mobileMenuClickHandler()
+                }}>
                   <PersonAddAltRoundedIcon className="icon" />
                   افزودن کاربر
                 </NavLink>
@@ -60,25 +66,33 @@ export default function Sidebar() {
             </>
           }
           <li>
-            <NavLink to="/products" className={({ isActive }) => isActive ? "link active" : "link"}>
+            <NavLink to="/products" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
               <EdgesensorHighIcon className="icon" />
               دستگاه ها
             </NavLink>
           </li>
           <li>
-            <NavLink to="/add-product" className={({ isActive }) => isActive ? "link active" : "link"}>
+            <NavLink to="/add-product" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
               <QrCodeScannerRoundedIcon className="icon" />
               ثبت دستگاه
             </NavLink>
           </li>
           <li>
-            <NavLink to="/reports" className={({ isActive }) => isActive ? "link active" : "link"}>
+            <NavLink to="/reports" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
               <AssessmentIcon className="icon" />
               گزارش ها
             </NavLink>
           </li>
           <li>
-            <NavLink to="/support" className={({ isActive }) => isActive ? "link active" : "link"}>
+            <NavLink to="/support" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
               <SupportAgentIcon className="icon" />
               پشتیبانی
             </NavLink>

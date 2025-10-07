@@ -130,8 +130,12 @@
 .line {
     width: 30px;
     height: 3.5px;
-    background-color: var(--blue);
     border-radius: 4px;
+    background-color: var(--blue);
+}
+
+[data-theme='dark'] .line {
+    background-color: color-mix(in oklab, var(--white) 30%, transparent) !important;
 }
 
 
