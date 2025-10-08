@@ -1,11 +1,11 @@
-import DeviceReport from '../DeviceReport/DeviceReport'; 
+import DeviceReport from '../DeviceReport/DeviceReport';
 import { useReportStore } from '../../Store/dateStore';
 import "./DeviceReportModal.css";
 
-export default function DeviceReportModal({ isOpen, onClose, deviceId, data, deviceInfos, deviceClass}) {
+export default function DeviceReportModal({ isOpen, onClose, deviceId, data, deviceInfos, deviceClass }) {
   const selectedDate = useReportStore((state) => state.selectedDate);
 
-  console.log('deviceData', data);
+  console.log('DeviceReportModal', data);
 
 
   return (

@@ -18,9 +18,50 @@ import { toJalaliDateString } from "./DateUtils";
 
 const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
 
+  // helper برای بیرون کشیدن زمان از شی (چند احتمالی)
+  const extractTimestamp = (row) => {
+    if (!row) return null;
+    return row.timestamp
+      || row.time
+      || row.last_changed
+      || row.last_updated
+      || row.ts
+      || (row.extra && row.extra.timestamp)
+      || null;
+  };
+
+  const formatTime = (rawTs) => {
+    if (!rawTs) return "-";
+    try {
+      // اگر rawTs رشتهٔ قابل پارس باشه، تبدیل می‌کنیم
+      return toJalaliDateString(rawTs);
+    } catch (e) {
+      // اگر toJalaliDateString خطا داد (فرمت عجیب)، رشتهٔ خام را نمایش می‌دهیم
+      return String(rawTs);
+    }
+  };
+
+  const detectStateLabel = (stateVal) => {
+    if (stateVal === null || stateVal === undefined) return { label: "نامشخص", color: "#868686" };
+
+    const s = String(stateVal).trim().toLowerCase();
+
+    // موارد روشن
+    const onSet = new Set(["on", "true", "1", "motion", "open", "active"]);
+    const offSet = new Set(["off", "false", "0", "clear", "closed", "inactive"]);
+
+    if (onSet.has(s)) return { label: "روشن", color: "#00a053" };
+    if (offSet.has(s)) return { label: "خاموش", color: "#d9000e" };
+
+    // اگر مقدار عددی (مثلاً دما یا عدد دیگری) -> نمایش خود مقدار
+    if (!Number.isNaN(Number(s))) return { label: s, color: "#26c6da" };
+
+    // fallback: نمایش همان رشته
+    return { label: stateVal, color: "#868686" };
+  };
+
   return (
     <Box sx={{ mb: 4, fontFamily: "'Lalezar', sans-serif" }}>
-      {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="wrap" gap={1}>
         <Typography
           variant="h6"
@@ -34,7 +75,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
             color: 'var(--text-color)'
           }}
         >
-          <DescriptionIcon /> لاگ وضعیت دستگاه ({deviceInfos.deviceName} در {deviceInfos.deviceLocationName})
+          <DescriptionIcon /> لاگ وضعیت دستگاه ({deviceInfos?.deviceName || ""} در {deviceInfos?.deviceLocationName || ""})
         </Typography>
         <Button
           variant="contained"
@@ -60,7 +101,6 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
         </Button>
       </Box>
 
-      {/* Table */}
       <TableContainer
         component={Paper}
         sx={{
@@ -77,12 +117,13 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.length > 0 ? (
+            {data && data.length > 0 ? (
               data.map((row, index) => {
-                const stateLower = String(row.state).toLowerCase();
-                const isOn = stateLower === "on" || stateLower === "motion" || stateLower === "true";
-                const isOff = stateLower === "off" || stateLower === "clear" || stateLower === "false";
-                const chipLabel = isOn ? "روشن" : isOff ? "خاموش" : "غیر فعال";
+                const ts = extractTimestamp(row);
+                const timeStr = formatTime(ts);
+
+                const stateVal = row.state ?? row.value ?? row.value_text ?? row._orig?.state ?? null;
+                const { label: chipLabel, color: chipColor } = detectStateLabel(stateVal);
 
                 return (
                   <TableRow
@@ -91,7 +132,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                       backgroundColor: index % 2 === 0 ? "var(--white-50)" : "color-mix(in oklab, var(--white) 20%, transparent) !important",
                       "&:hover": { backgroundColor: index % 2 === 0 ? "var(--white-50)" : "color-mix(in oklab, var(--white) 20%, transparent) !important" },
                       transition: "none",
-                      borderBottom: "none", // 🔹 حذف خط بین ردیف‌های Body
+                      borderBottom: "none",
                     }}
                   >
                     <TableCell
@@ -103,7 +144,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                         borderBottom: "none",
                       }}
                     >
-                      {toJalaliDateString(row.timestamp)}
+                      {timeStr}
                     </TableCell>
                     <TableCell sx={{ borderBottom: "none" }}>
                       <Box
@@ -127,11 +168,7 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                             justifyContent: "center",
                             alignItems: "center",
                             color: "white",
-                            backgroundColor: isOn
-                              ? "#00a053"  // روشن
-                              : isOff
-                                ? "#d9000e"  // خاموش
-                                : "#868686",  // غیر فعال
+                            backgroundColor: chipColor,
                             textAlign: "center",
                           }}
                         />

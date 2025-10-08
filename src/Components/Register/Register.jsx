@@ -193,7 +193,10 @@ export default function Register() {
 
         <div className='login-form-container'>
           <div className="login wrap">
-            <div className="h1">ایجاد حساب</div>
+            {/* <div className="h1">ایجاد حساب</div> */}
+            <div className="login-image">
+              <img src="./images/logo.png" alt="" />
+            </div>
             <div className="register-inputs-wrapper">
 
               <div className="form-group">

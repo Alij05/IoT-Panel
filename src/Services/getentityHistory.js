@@ -14,7 +14,7 @@ export default async function getEntityHistory(deviceId, deviceType = "sensor", 
       },
     });
 
-    console.log('response.data.logs ::', response.data.logs);
+    // console.log('response.data.logs ::', response.data.logs);
 
 
     return response.data.logs || [];
