@@ -172,7 +172,7 @@ export default function AddNewProduct() {
             return;
         }
 
-        const deviceLocationName = locations.find(loc => loc.value === deviceLocation)?.name || "نامشخص";
+        const deviceLocationName = deviceLocation || "نامشخص";
 
         const deviceObject = {
             entity_id: token,
@@ -266,17 +266,24 @@ export default function AddNewProduct() {
                             className='location-name-input'
                             type="text"
                             placeholder='نام سنسور'
+                            value={deviceName}
                             onChange={(e) => setDeviceName(e.target.value)}
                         />
 
-                        <div className="custom-select-wrapper">
+                        <input
+                            className='location-name-input'
+                            type="text"
+                            placeholder='مکان دستگاه'
+                            value={deviceLocation}
+                            onChange={(e) => setDeviceLocation(e.target.value)}
+                            style={{ marginTop: '10px' }}
+                        />
+
+                        {/* <div className="custom-select-wrapper">
                             <select onChange={handleAddLocation} defaultValue="-1">
-                                <option value="-1">انتخاب مکان</option>
-                                {locations.map(loc => (
-                                    <option key={loc.value} value={loc.value}>{loc.name}</option>
-                                ))}
+                                <option value="-1">انتخاب مکان</option> {locations.map(loc => (<option key={loc.value} value={loc.value}>{loc.name}</option>))}
                             </select>
-                        </div>
+                        </div> */}
 
                         <button className='confirm-location-btn' onClick={addDevicesToDashboard}>تایید</button>
                     </div>

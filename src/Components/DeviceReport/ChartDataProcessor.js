@@ -1,7 +1,10 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import axios from "axios";
 import "dayjs/locale/fa.js";
 import { toJalaliDateString } from "./DateUtils";
+
+let url = process.env.REACT_APP_URL
 
 dayjs.extend(utc);
 dayjs.locale("fa");
@@ -18,15 +21,6 @@ const localDayjs = (d) => dayjs(d).utcOffset(3.5);
 // -------------------- اصلی --------------------
 
 export const processChartData = (rawData, chartType, selectedDate, useRange, range) => {
-  console.log("🟢 processChartData called with:", {
-    chartType,
-    selectedDate,
-    useRange,
-    range,
-    rawSampleCount: Array.isArray(rawData) ? rawData.length : 0,
-    rawDataSample: Array.isArray(rawData) ? rawData.slice(0, 2) : [],
-  });
-
   if (!Array.isArray(rawData)) return [];
   if (useRange && (!range?.from || !range?.to)) return [];
 
@@ -218,7 +212,6 @@ const processInstantData = (rawData, selectedDate, useRange, range) => {
 
   const getDay = localDayStr;
 
-  // حالت بازه (inclusive: from startOf day, to endOf day)
   if (useRange) {
     const fromTime = localDayjs(range.from).startOf("day");
     const toTime = localDayjs(range.to).endOf("day");
@@ -248,7 +241,6 @@ const processInstantData = (rawData, selectedDate, useRange, range) => {
     return filtered;
   }
 
-  // حالت single-day: سعی کن ابتدا براساس selectedDate فیلتر کنی
   let targetDay = getDay(selectedDate);
 
   // تلاش اولیه براساس selectedDate (اگر داده‌ای پیدا شد)
@@ -343,4 +335,29 @@ export const getHourDetails = (rawData, selectedBucketKey) => {
       humidity: isNaN(hum) ? null : hum,
     };
   });
+
+};
+
+
+export const fetchDeviceLogsByDate = async (deviceId, date) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${url}/mqtt/api/logs/device/sensor/${deviceId}?limit=5`,
+      { date }, // بدنه درخواست
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log('انتخاب دستی زمان', response);
+
+    const filteredData = response.data.logs.filter(data => data.messageType === 'status')
+    return filteredData;
+  } catch (error) {
+    console.error("خطا در دریافت داده‌ها:", error);
+    return [];
+  }
 };

@@ -51,5 +51,23 @@
   background: transparent;
   font-size: 20px;
   cursor: pointer;
-  color: var(--text-color)  ;
+  color: var(--text-color);
+}
+
+@media (max-width: 795px) {
+  .modal-content {
+    padding: 30px 30px 20px 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    padding: 35px 30px 20px 40px;
+  }
+}
+
+@media (max-width: 496px) {
+  .modal-content {
+    padding: 40px 30px 20px 40px;
+  }
 }

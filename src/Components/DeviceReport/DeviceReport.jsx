@@ -1,79 +1,134 @@
-import React, { useEffect, useState } from "react";
+// DeviceReport.jsx
+import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
 import "./DeviceReport.css";
 import { useReportStore } from "../../Store/dateStore";
-import { processChartData } from "./ChartDataProcessor";
+import { fetchDeviceLogsByDate, processChartData } from "./ChartDataProcessor";
 import ChartHeader from "./ChartHeader";
 import ChartControls from "./ChartControls";
 import ChartDisplay from "./ChartDisplay";
 import StateLogTable from "./StateLogTable";
 import { exportToExcel } from "./ExcelExport";
+import dayjs from "dayjs";
 
-const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass }) => {
+/**
+ * DeviceReport (rewritten)
+ *
+ * Props:
+ * - rawData: array (incoming realtime/history payloads)
+ * - deviceId: string
+ * - deviceInfos: object (for StateLogTable header)
+ * - deviceClass: string (used to decide isSensor)
+ *
+ * Behavior:
+ * - initial: show instant data processed from rawData
+ * - date selected (single day): fetch server logs for that day (POST), use them if returned, otherwise fallback to local rawData
+ * - useRange: if true and both from/to set -> use local rawData filtered by date range
+ * - chartType toggles between "instant" and "hourly" and triggers re-processing
+ */
+
+const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceClass = "" }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [chartType, setChartType] = useState("instant");
+  const [loading, setLoading] = useState(false);
 
-  console.log('DeviceReport', rawData); // its OK
-
-
-  const setSelectedDate = useReportStore((state) => state.setSelectedDate);
-  const selectedDate = useReportStore((state) => state.selectedDate);
-  const [useRange, setUseRange] = useState(false);
+  // store (date picker + range) from your zustand store
+  const setSelectedDate = useReportStore((s) => s.setSelectedDate);
+  const selectedDate = useReportStore((s) => s.selectedDate);
   const { range, setRange } = useReportStore();
+  const [useRange, setUseRange] = useState(false);
 
-  const isSensor =
-    deviceClass.includes("temperature") ||
-    deviceClass.includes("humidity") ||
-    deviceClass.includes("air_quality");
+  const isSensor = typeof deviceClass === "string" && (deviceClass.includes("temperature") || deviceClass.includes("humidity") || deviceClass.includes("air_quality"));
 
-  // ---- تابع تبدیل داده‌های غیر سنسوری ----
-  // داخل DeviceReport، جایگزین نسخهٔ قبلی کن
-  const transformDeviceData = (rawData = []) => {
-    const seen = new Set();
-    return rawData
-      .map((item) => {
-        const ts = item.last_changed || item.last_updated || item.timestamp || (item.extra && item.extra.timestamp) || new Date().toISOString();
-        return {
-          state: item.state ?? item.value ?? "-",   // نگه داشتن state اصلی
-          timestamp: ts,                             // همیشه timestamp درج می‌شود
-          name: item.attributes?.friendly_name || item.entity_id || item.deviceId || "",
-          _orig: item,
-        };
-      })
-      .filter((item) => {
-        const key = `${item.timestamp}|${item.state}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      })
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  };
+  // keep a ref to latest rawData to avoid stale closures
+  const rawDataRef = useRef(rawData);
+  useEffect(() => { rawDataRef.current = rawData; }, [rawData]);
 
-
-  // ---- پردازش داده‌ها ----
-  useEffect(() => {
-    if (isSensor) {
-      const processedData = processChartData(
-        rawData || [],
-        chartType,
-        selectedDate,
-        useRange,
-        range
-      );
-      setFilteredData(processedData || []);
-      console.log("✅ DeviceReport(processed Data) -->", processedData);
-    } else {
-      const processedData = transformDeviceData(rawData);
-      setFilteredData(processedData);
+  // helper to transform rawData fallback into the processed shape when needed
+  const applyProcessing = (dataSource, chartType, selectedDate, useRange, range) => {
+    try {
+      return processChartData(Array.isArray(dataSource) ? dataSource : [], chartType, selectedDate, useRange, range) || [];
+    } catch (e) {
+      console.error("processChartData error:", e);
+      return [];
     }
-  }, [selectedDate, rawData, chartType, useRange, range, isSensor]);
-
-  // ---- خروجی به اکسل ----
-  const handleExportToExcel = () => {
-    exportToExcel(rawData, deviceId);
   };
 
-  // ---- رندر ----
+  // ---------- Initial / reactive processing logic ----------
+  // We separate three modes:
+  // 1) single selected date (useRange === false && selectedDate set) --> try server fetch
+  // 2) range mode (useRange === true && range.from/to set) --> process local rawData within range
+  // 3) default (no selected date and no range) --> show instant processed from local rawData
+  //
+  // Important: avoid racing — we use an abort flag per invocation
+
+  useEffect(() => {
+    if (!deviceId) return;
+    let cancelled = false;
+    const fetchDataForDate = async () => {
+      setLoading(true);
+
+      // single date mode
+      if (!useRange && selectedDate) {
+        const formattedDate = dayjs(selectedDate).format("YYYY-MM-DD");
+        try {
+          const serverLogs = await fetchDeviceLogsByDate(deviceId, formattedDate); // بادی: { date: "YYYY-MM-DD" }
+          if (cancelled) return;
+
+          const dataToUse =
+            Array.isArray(serverLogs) && serverLogs.length > 0
+              ? serverLogs
+              : rawDataRef.current; // fallback local rawData
+
+          const processed = applyProcessing(dataToUse, chartType, selectedDate, useRange, range);
+          if (cancelled) return;
+          setFilteredData(processed);
+        } catch (err) {
+          console.error("fetchDeviceLogsByDate error:", err);
+          if (cancelled) return;
+          const fallback = applyProcessing(rawDataRef.current, chartType, selectedDate, useRange, range);
+          setFilteredData(fallback);
+        } finally {
+          if (!cancelled) setLoading(false);
+        }
+        return;
+      }
+
+      // range mode
+      if (useRange && range?.from && range?.to) {
+        const processed = applyProcessing(rawDataRef.current, chartType, selectedDate, true, range);
+        if (!cancelled) setFilteredData(processed);
+        if (!cancelled) setLoading(false);
+        return;
+      }
+
+      // default: instant data
+      const processed = applyProcessing(rawDataRef.current, chartType, selectedDate, useRange, range);
+      if (!cancelled) setFilteredData(processed);
+      if (!cancelled) setLoading(false);
+    };
+
+    fetchDataForDate();
+
+    return () => { cancelled = true; };
+  }, [selectedDate, useRange, range?.from, range?.to, chartType, deviceId]);
+
+
+  // ---------- When incoming rawData changes and we are in default mode (no selectedDate & no range),
+  // reprocess so user sees live updates ----------
+  useEffect(() => {
+    if (!selectedDate && !useRange) {
+      const out = applyProcessing(rawData, chartType, selectedDate, useRange, range);
+      setFilteredData(out);
+    }
+    // keep rawDataRef updated (handled above)
+  }, [rawData, chartType, selectedDate, useRange, range]);
+
+  // ---------- Export ----------
+  const handleExportToExcel = () => {
+    exportToExcel(rawDataRef.current, deviceId);
+  };
+
   return (
     <Box className="report-chart-container" sx={{ margin: "50px auto" }}>
       {isSensor ? (
@@ -90,7 +145,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
             setRange={setRange}
           />
 
-          {/* ✅ اینجا داده‌های پردازش‌شده رو بده نه rawData */}
+          {/* ChartDisplay expects processed data: an array of { time, temperature, humidity, ... } */}
           <ChartDisplay
             filteredData={filteredData}
             setFilteredData={setFilteredData}
@@ -99,7 +154,12 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos, deviceClass })
           />
         </>
       ) : (
-        <StateLogTable data={filteredData} deviceId={deviceId} exportToExcel={handleExportToExcel} deviceInfos={deviceInfos} />
+        <StateLogTable
+          data={filteredData}
+          deviceId={deviceId}
+          exportToExcel={handleExportToExcel}
+          deviceInfos={deviceInfos}
+        />
       )}
     </Box>
   );

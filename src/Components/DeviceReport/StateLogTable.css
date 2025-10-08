@@ -1,4 +1,12 @@
 /* ریسپانسیو جدول */
+
+@media (max-width: 792px) {
+    .modal-close {
+        top: 10px;
+        right: 20px;
+    }
+}
+
 @media (max-width: 576px) {
     .MuiTypography-root {
         font-size: 16px !important;

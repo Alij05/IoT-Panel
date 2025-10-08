@@ -6,57 +6,66 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import { ReportLocalization } from "../../Constants/Localizations/Localizations";
 import "./DeviceReport.css";
 
-const ChartControls = ({ chartType, setChartType, selectedDate, setSelectedDate, useRange, setUseRange, range, setRange}) => {
+const ChartControls = ({ chartType, setChartType, selectedDate, setSelectedDate, useRange, setUseRange, range, setRange }) => {
+  console.log('ReportLocalization.hChart', ReportLocalization.hChart);
+
+  const buttons = [
+    { value: "hourly", label: ReportLocalization.hChart },
+    { value: "instant", label: ReportLocalization.Chart }
+  ];
+
   return (
     <>
-      <Box className="report-chart-type-section">
+      <Box className="report-chart-type-section" sx={{ display: "flex", gap: 8, mb: 2 }}>
         <ToggleButtonGroup
-          className="toggle-group"
           value={chartType}
           exclusive
           onChange={(e, val) => val && setChartType(val)}
+          sx={{ display: "flex", gap: 2 }}
         >
           <ToggleButton
             value="hourly"
-            className="report-chart-type-button"
             sx={{
               padding: "8px 16px",
-              backgroundColor: "rgb(218, 218, 218)",
-              border: "none",
               borderRadius: "4px",
-              cursor: "pointer",
+              color: "var(--white)",
+              textTransform: "none",
+              fontFamily: "'Lalezar', sans-serif",
+              backgroundColor: "#bfbfbf",
               "&.Mui-selected": {
-                backgroundColor: "#26a69a",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#20907f",
-                },
+                backgroundColor: "var(--blue)",
+                color: "var(--white)",
+              },
+              "&:hover": {
+                backgroundColor: "var(--blue)",
               },
             }}
           >
-            {ReportLocalization.hChart}
+            {"نمودار ساعتی"}
           </ToggleButton>
+
           <ToggleButton
             value="instant"
-            className="report-chart-type-button"
             sx={{
               padding: "8px 16px",
-              backgroundColor: "rgb(218, 218, 218)",
-              border: "none",
               borderRadius: "4px",
-              cursor: "pointer",
+              color: "var(--white)",
+              textTransform: "none",
+              fontFamily: "'Lalezar', sans-serif",
+              backgroundColor: "#bfbfbf",
               "&.Mui-selected": {
-                backgroundColor: "#26a69a",
-                color: "white",
-                "&:hover": {
-                  backgroundColor: "#20907f",
-                },
+                backgroundColor: "var(--blue)",
+                color: "var(--white)",
+              },
+              "&:hover": {
+                backgroundColor: "var(--blue)",
               },
             }}
           >
-            {ReportLocalization.Chart}
+            {"نمودار لحظه‌ای"}
           </ToggleButton>
         </ToggleButtonGroup>
+
       </Box>
 
       <Box className="report-chart-datePicker-section">
@@ -90,7 +99,7 @@ const ChartControls = ({ chartType, setChartType, selectedDate, setSelectedDate,
         </div>
 
         {useRange && (
-          <Box className="range-pickers">
+          <Box className="range-pickers" sx={{ display: "flex", gap: 1 }}>
             <DatePicker
               placeholder={ReportLocalization.fromDate}
               calendar={persian}
