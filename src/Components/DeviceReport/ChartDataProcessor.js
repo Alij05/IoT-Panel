@@ -210,7 +210,6 @@ const processInstantData = (rawData, selectedDate, useRange, range) => {
     })
     .sort((a, b) => new Date(a.time) - new Date(b.time));
 
-  console.log("🔵 processInstantData -> final matched count:", result.length, "targetDay:", targetDay);
   return result;
 };
 
