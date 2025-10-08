@@ -7,7 +7,6 @@ import { ReportLocalization } from "../../Constants/Localizations/Localizations"
 import "./DeviceReport.css";
 
 const ChartControls = ({ chartType, setChartType, selectedDate, setSelectedDate, useRange, setUseRange, range, setRange }) => {
-  console.log('ReportLocalization.hChart', ReportLocalization.hChart);
 
   const buttons = [
     { value: "hourly", label: ReportLocalization.hChart },

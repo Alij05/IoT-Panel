@@ -10,9 +10,6 @@ const ChartHeader = ({ chartType, deviceId }) => {
   const { devicesClass } = useEntityStore()
   const deviceClass = devicesClass[deviceId].deviceClass
 
-  console.log(deviceClass);
-
-
   const hHumidityLabel = "دما و رطوبت ساعتی";
   const hAirQualityLabel = ReportLocalization?.hAirQualityCart || "کیفیت هوا ساعتی";
   const temperatureLabel = "دما و رطوبت لحظه ای";

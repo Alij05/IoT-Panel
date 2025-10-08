@@ -1,9 +1,8 @@
-// DeviceReport.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
 import "./DeviceReport.css";
 import { useReportStore } from "../../Store/dateStore";
-import { fetchDeviceLogsByDate, processChartData } from "./ChartDataProcessor";
+import { fetchDeviceLogsByDate, fetchDeviceLogsByRange, processChartData } from "./ChartDataProcessor";
 import ChartHeader from "./ChartHeader";
 import ChartControls from "./ChartControls";
 import ChartDisplay from "./ChartDisplay";
@@ -55,7 +54,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceCla
   };
 
   // ---------- Initial / reactive processing logic ----------
-  // We separate three modes:
+  // Three modes:
   // 1) single selected date (useRange === false && selectedDate set) --> try server fetch
   // 2) range mode (useRange === true && range.from/to set) --> process local rawData within range
   // 3) default (no selected date and no range) --> show instant processed from local rawData
@@ -65,57 +64,67 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceCla
   useEffect(() => {
     if (!deviceId) return;
     let cancelled = false;
-    const fetchDataForDate = async () => {
+
+    const fetchData = async () => {
       setLoading(true);
 
-      // single date mode
+      // ---------- Single selected day ----------
       if (!useRange && selectedDate) {
         const formattedDate = dayjs(selectedDate).format("YYYY-MM-DD");
         try {
-          const serverLogs = await fetchDeviceLogsByDate(deviceId, formattedDate); // بادی: { date: "YYYY-MM-DD" }
+          const serverLogs = await fetchDeviceLogsByDate(deviceId, formattedDate);
           if (cancelled) return;
-
-          const dataToUse =
-            Array.isArray(serverLogs) && serverLogs.length > 0
-              ? serverLogs
-              : rawDataRef.current; // fallback local rawData
-
+          const dataToUse = (Array.isArray(serverLogs) && serverLogs.length > 0)
+            ? serverLogs
+            : rawDataRef.current;
           const processed = applyProcessing(dataToUse, chartType, selectedDate, useRange, range);
           if (cancelled) return;
           setFilteredData(processed);
         } catch (err) {
-          console.error("fetchDeviceLogsByDate error:", err);
-          if (cancelled) return;
-          const fallback = applyProcessing(rawDataRef.current, chartType, selectedDate, useRange, range);
-          setFilteredData(fallback);
-        } finally {
-          if (!cancelled) setLoading(false);
-        }
+          console.error(err);
+          if (!cancelled) setFilteredData(applyProcessing(rawDataRef.current, chartType, selectedDate, useRange, range));
+        } finally { if (!cancelled) setLoading(false); }
         return;
       }
 
-      // range mode
+      // ---------- Range selection ----------
       if (useRange && range?.from && range?.to) {
-        const processed = applyProcessing(rawDataRef.current, chartType, selectedDate, true, range);
-        if (!cancelled) setFilteredData(processed);
-        if (!cancelled) setLoading(false);
+
+        try {
+          // fetch server
+          const startDate = dayjs(range.from).format("YYYY-MM-DD");
+          const endDate = dayjs(range.to).format("YYYY-MM-DD");
+          const deviceType = deviceClass || "sensor"; // or any mapping needed
+          const serverLogs = await fetchDeviceLogsByRange(deviceType, deviceId, startDate, endDate);
+          if (cancelled) return;
+
+          const dataToUse = (Array.isArray(serverLogs) && serverLogs.length > 0)
+            ? serverLogs
+            : rawDataRef.current.filter(item => {
+              const ts = item.timestamp || item.last_updated;
+              return ts && dayjs(ts).isBetween(startDate, endDate, "day", "[]");
+            });
+
+          const processed = applyProcessing(dataToUse, chartType, selectedDate, true, range);
+          if (!cancelled) setFilteredData(processed);
+        } catch (err) {
+          console.error(err);
+          if (!cancelled) setFilteredData(applyProcessing(rawDataRef.current, chartType, selectedDate, true, range));
+        } finally { if (!cancelled) setLoading(false); }
         return;
       }
 
-      // default: instant data
+      // ---------- Default ----------
       const processed = applyProcessing(rawDataRef.current, chartType, selectedDate, useRange, range);
       if (!cancelled) setFilteredData(processed);
       if (!cancelled) setLoading(false);
     };
 
-    fetchDataForDate();
-
+    fetchData();
     return () => { cancelled = true; };
   }, [selectedDate, useRange, range?.from, range?.to, chartType, deviceId]);
 
-
-  // ---------- When incoming rawData changes and we are in default mode (no selectedDate & no range),
-  // reprocess so user sees live updates ----------
+  // ---------- Reprocess live updates when incoming rawData changes in default mode ----------
   useEffect(() => {
     if (!selectedDate && !useRange) {
       const out = applyProcessing(rawData, chartType, selectedDate, useRange, range);
@@ -129,6 +138,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceCla
     exportToExcel(rawDataRef.current, deviceId);
   };
 
+  
   return (
     <Box className="report-chart-container" sx={{ margin: "50px auto" }}>
       {isSensor ? (

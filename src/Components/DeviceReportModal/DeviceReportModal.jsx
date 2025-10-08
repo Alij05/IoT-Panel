@@ -5,9 +5,6 @@ import "./DeviceReportModal.css";
 export default function DeviceReportModal({ isOpen, onClose, deviceId, data, deviceInfos, deviceClass }) {
   const selectedDate = useReportStore((state) => state.selectedDate);
 
-  console.log('DeviceReportModal', data);
-
-
   return (
     <div className="modal-overlay">
       <div className="modal-content">
