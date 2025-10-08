@@ -135,7 +135,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceCla
 
   // ---------- Export ----------
   const handleExportToExcel = () => {
-    exportToExcel(rawDataRef.current, deviceId);
+    exportToExcel(filteredData, deviceId);
   };
 
   
@@ -161,6 +161,7 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceCla
             setFilteredData={setFilteredData}
             deviceId={deviceId}
             exportToExcel={handleExportToExcel}
+            loading={loading}
           />
         </>
       ) : (

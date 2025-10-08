@@ -17,67 +17,55 @@ import { toJalaliDateString } from "./DateUtils";
 import "./DeviceReport.css";
 
 /**
- * ChartDisplay (with loader)
+ * ChartDisplay component (dynamic labels for value1/value2)
  */
-const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToExcel }) => {
+const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToExcel, loading = false }) => {
   const originalRef = useRef([]);
   const [localData, setLocalData] = useState([]);
+  const [labels, setLabels] = useState({ value1: "مقدار ۱", value2: "مقدار ۲" });
 
-  // keep a stable copy of the original incoming data so reset works
+  // Keep a stable copy of original data
   useEffect(() => {
     originalRef.current = Array.isArray(filteredData) ? filteredData : [];
-    setLocalData(normalizeData(filteredData));
+    const normalized = normalizeData(filteredData);
+    setLocalData(normalized);
+
+    // Determine labels dynamically
+    if (normalized.length > 0) {
+      const first = normalized[0];
+      if (first.value1 && first.value2) {
+        // Check if values are numeric and likely temp/humidity
+        if (!isNaN(first.value1) && !isNaN(first.value2)) {
+          setLabels({ value1: "دمای دستگاه", value2: "رطوبت دستگاه" });
+        } else {
+          setLabels({ value1: "مقدار ۱", value2: "مقدار ۲" });
+        }
+      } else {
+        setLabels({ value1: "مقدار", value2: null });
+      }
+    }
   }, [filteredData]);
 
-  // Normalization helper
-  function normalizeData(data) {
+  // Normalize data to consistent format for charts
+  const normalizeData = (data) => {
     if (!Array.isArray(data)) return [];
-
-    const normalized = data
+    return data
       .map((item) => {
-        if (item && (item.temperature !== undefined || item.humidity !== undefined) && item.time) {
-          return {
-            time: item.time,
-            temperature: Number(item.temperature),
-            humidity: Number(item.humidity),
-            _orig: item,
-          };
-        }
-        if (item && typeof item.state === "string" && (item.timestamp || item.last_updated)) {
-          const ts = item.timestamp || item.last_updated;
-          const parts = item.state.split("/").map((v) => Number(v));
-          const [temperature, humidity] = parts.length >= 2 ? parts : [parts[0], undefined];
-          return {
-            time: ts,
-            temperature: Number(temperature),
-            humidity: Number(humidity),
-            _orig: item,
-          };
-        }
-        if (item && item.time && (item.temperature !== undefined || item.humidity !== undefined)) {
-          return {
-            time: item.time,
-            temperature: Number(item.temperature),
-            humidity: Number(item.humidity),
-            _orig: item,
-          };
-        }
-        return null;
+        if (!item || !item.time || item.value === undefined) return null;
+        const val = String(item.value);
+        const parts = val.includes("/") ? val.split("/") : [val];
+        return {
+          time: item.time,
+          value1: parts[0],
+          value2: parts[1],
+          _orig: item,
+        };
       })
       .filter(Boolean)
-      .sort((a, b) => {
-        const ta = Date.parse(a.time);
-        const tb = Date.parse(b.time);
-        if (!isNaN(ta) && !isNaN(tb)) return ta - tb;
-        if (!isNaN(ta)) return -1;
-        if (!isNaN(tb)) return 1;
-        return 0;
-      });
+      .sort((a, b) => new Date(a.time) - new Date(b.time));
+  };
 
-    return normalized;
-  }
-
-  // processedData memoized
+  // Processed data for chart
   const processedData = useMemo(() => {
     return localData.map((d) => {
       let displayTime = d.time;
@@ -87,25 +75,19 @@ const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToEx
     });
   }, [localData]);
 
-  const formatTemperature = (val) =>
-    val === undefined || val === null ? "-" : `${parseFloat(val).toFixed(1)}°`;
-  const formatHumidity = (val) =>
-    val === undefined || val === null ? "-" : `${parseFloat(val).toFixed(1)}%`;
+  const formatValue = (val) => (val === undefined || val === null ? "-" : val);
 
+  // Reset chart
   const handleReset = () => {
     setLocalData(normalizeData(originalRef.current));
-    if (typeof setFilteredData === "function") {
-      setFilteredData(originalRef.current);
-    }
+    if (typeof setFilteredData === "function") setFilteredData(originalRef.current);
   };
 
-  // ✅ شرط نمایش لودر
-  const isLoading = !filteredData || filteredData.length === 0;
+  const isLoading = loading || !filteredData || filteredData.length === 0;
 
   return (
     <Box className="report-chart-section" sx={{ width: "100%" }}>
       {isLoading ? (
-        // حالت لودینگ
         <Box
           sx={{
             display: "flex",
@@ -122,7 +104,6 @@ const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToEx
           </Typography>
         </Box>
       ) : (
-        // حالت عادی نمودارها
         <>
           <div className="report-chart-buttons-section">
             <Button sx={{ mt: 0.5 }} className="report-chart-restart-button" onClick={handleReset}>
@@ -152,103 +133,51 @@ const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToEx
             </Button>
           </div>
 
-          {/* Temperature Chart */}
+          {/* First Value Chart */}
           <Box sx={{ width: "100%", height: 300, mb: 4 }}>
-            <h3 style={{ color: "var(--text-color)" }}>دمای دستگاه</h3>
+            <h3 style={{ color: "var(--text-color)" }}>{labels.value1}</h3>
             <ResponsiveContainer>
               <AreaChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="value1Gradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#26c6da" stopOpacity={0.8} />
                     <stop offset="95%" stopColor="#26c6da" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-
-                <XAxis
-                  dataKey="displayTime"
-                  tickFormatter={(timeStr) => (timeStr ? timeStr : "")}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis
-                  tick={({ x, y, payload }) => (
-                    <text x={x} y={y} fill="var(--text-color)" textAnchor="end">
-                      <tspan x={0} dy="0.3em">{formatTemperature(payload.value)}</tspan>
-                    </text>
-                  )}
-                  domain={["auto", "auto"]}
-                />
+                <XAxis dataKey="displayTime" tickFormatter={(timeStr) => (timeStr ? timeStr : "")} tick={{ fontSize: 12 }} />
+                <YAxis />
                 <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip
-                  labelFormatter={(label) => `زمان: ${label}`}
-                  formatter={(value) => [formatTemperature(value)]}
-                />
+                <Tooltip labelFormatter={(label) => `زمان: ${label}`} formatter={(value) => [formatValue(value)]} />
                 <Legend />
-                <Area
-                  type="monotone"
-                  dataKey="temperature"
-                  stroke="#26c6da"
-                  fillOpacity={0.5}
-                  fill="url(#tempGradient)"
-                />
-                <Brush
-                  dataKey="displayTime"
-                  height={28}
-                  stroke="#26c6da"
-                  travellerWidth={10}
-                  tickFormatter={() => ""}
-                />
+                <Area type="monotone" dataKey="value1" stroke="#26c6da" fillOpacity={0.5} fill="url(#value1Gradient)" />
+                <Brush dataKey="displayTime" height={28} stroke="#26c6da" travellerWidth={10} tickFormatter={() => ""} />
               </AreaChart>
             </ResponsiveContainer>
           </Box>
 
-          {/* Humidity Chart */}
-          <Box sx={{ width: "100%", height: 300 }}>
-            <h3 style={{ color: "var(--text-color)" }}>رطوبت دستگاه</h3>
-            <ResponsiveContainer>
-              <AreaChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="humGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ec407a" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#ec407a" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-
-                <XAxis
-                  dataKey="displayTime"
-                  tickFormatter={(timeStr) => (timeStr ? timeStr : "")}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis
-                  tick={({ x, y, payload }) => (
-                    <text x={x} y={y} fill="var(--text-color)" textAnchor="end">
-                      <tspan x={0} dy="0.3em">{formatHumidity(payload.value)}</tspan>
-                    </text>
-                  )}
-                  domain={["auto", "auto"]}
-                />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip
-                  labelFormatter={(label) => `زمان: ${label}`}
-                  formatter={(value) => [formatHumidity(value)]}
-                />
-                <Legend />
-                <Area
-                  type="monotone"
-                  dataKey="humidity"
-                  stroke="#ec407a"
-                  fillOpacity={0.5}
-                  fill="url(#humGradient)"
-                />
-                <Brush
-                  dataKey="displayTime"
-                  height={28}
-                  stroke="#ec407a"
-                  travellerWidth={10}
-                  tickFormatter={() => ""}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </Box>
+          {/* Second Value Chart (only if value2 exists) */}
+          {labels.value2 && (
+            <Box sx={{ width: "100%", height: 300 }}>
+              <h3 style={{ color: "var(--text-color)" }}>{labels.value2}</h3>
+              <ResponsiveContainer>
+                <AreaChart data={processedData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="value2Gradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ec407a" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#ec407a" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="displayTime" tickFormatter={(timeStr) => (timeStr ? timeStr : "")} tick={{ fontSize: 12 }} />
+                  <YAxis />
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <Tooltip labelFormatter={(label) => `زمان: ${label}`} formatter={(value) => [formatValue(value)]} />
+                  <Legend />
+                  <Area type="monotone" dataKey="value2" stroke="#ec407a" fillOpacity={0.5} fill="url(#value2Gradient)" />
+                  <Brush dataKey="displayTime" height={28} stroke="#ec407a" travellerWidth={10} tickFormatter={() => ""} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Box>
+          )}
         </>
       )}
     </Box>

@@ -30,7 +30,6 @@ export const processChartData = (rawData, chartType, selectedDate, useRange, ran
 };
 
 // -------------------- Hourly Averaging (30-minute buckets) --------------------
-
 const processHourlyData = (rawData, selectedDate, useRange, range) => {
   const getDay = localDayStr;
   const bucketMap = {};
@@ -40,9 +39,8 @@ const processHourlyData = (rawData, selectedDate, useRange, range) => {
     const ts = item.timestamp || item.last_updated;
     if (!ts) return;
 
-    const parts = (item.state || "").split("/").map(Number);
-    const [temp, hum] = parts;
-    if (isNaN(temp) || isNaN(hum)) return;
+    const value = item.state ?? item.value ?? item.value_text ?? null;
+    if (value === null) return;
 
     // --- Filter by date or range ---
     const itemDay = getDay(ts);
@@ -57,29 +55,20 @@ const processHourlyData = (rawData, selectedDate, useRange, range) => {
 
     const dt = localDayjs(ts);
 
-    // ---  Half-hour buckets (active) ---
+    // --- Half-hour buckets ---
     const minuteBucket = Math.floor(dt.minute() / 30) * 30; // 0 or 30
     const bucketKey = dt.startOf("hour").add(minuteBucket, "minute").format("YYYY-MM-DD HH:mm");
 
-    // ---  Hourly version (commented out) ---
-    // const bucketKey = dt.format("YYYY-MM-DD HH"); // old hourly key
+    if (!bucketMap[bucketKey]) bucketMap[bucketKey] = { values: [], items: [] };
 
-    if (!bucketMap[bucketKey]) bucketMap[bucketKey] = { tempSum: 0, humSum: 0, count: 0, items: [] };
-
-    bucketMap[bucketKey].tempSum += temp;
-    bucketMap[bucketKey].humSum += hum;
-    bucketMap[bucketKey].count += 1;
+    bucketMap[bucketKey].values.push(value);
     bucketMap[bucketKey].items.push(item);
   });
 
   // --- Fallback if no data found for selected day ---
   if (!useRange && Object.keys(bucketMap).length === 0) {
     const days = rawData
-      .map((it) =>
-        it && (it.timestamp || it.last_updated)
-          ? getDay(it.timestamp || it.last_updated)
-          : null
-      )
+      .map((it) => (it && (it.timestamp || it.last_updated) ? getDay(it.timestamp || it.last_updated) : null))
       .filter(Boolean)
       .sort();
 
@@ -91,34 +80,27 @@ const processHourlyData = (rawData, selectedDate, useRange, range) => {
         if (!ts) return;
         const itemDay = getDay(ts);
         if (itemDay !== lastDay) return;
-        const parts = (item.state || "").split("/").map(Number);
-        const [temp, hum] = parts;
-        if (isNaN(temp) || isNaN(hum)) return;
-        const dt = localDayjs(ts);
 
-        //  Half-hour buckets
+        const value = item.state ?? item.value ?? item.value_text ?? null;
+        if (value === null) return;
+
+        const dt = localDayjs(ts);
         const minuteBucket = Math.floor(dt.minute() / 30) * 30;
         const bucketKey = dt.startOf("hour").add(minuteBucket, "minute").format("YYYY-MM-DD HH:mm");
 
-        //  Hourly version (commented)
-        // const bucketKey = dt.format("YYYY-MM-DD HH");
-
-        if (!bucketMap[bucketKey]) bucketMap[bucketKey] = { tempSum: 0, humSum: 0, count: 0, items: [] };
-        bucketMap[bucketKey].tempSum += temp;
-        bucketMap[bucketKey].humSum += hum;
-        bucketMap[bucketKey].count += 1;
+        if (!bucketMap[bucketKey]) bucketMap[bucketKey] = { values: [], items: [] };
+        bucketMap[bucketKey].values.push(value);
         bucketMap[bucketKey].items.push(item);
       });
     }
   }
 
   const result = Object.entries(bucketMap)
-    .filter(([_, { count }]) => count > 0)
-    .map(([bucketKey, { tempSum, humSum, count, items }]) => ({
+    .filter(([_, { values }]) => values.length > 0)
+    .map(([bucketKey, { values, items }]) => ({
       time: toJalaliDateString(bucketKey + ":00"),
       bucketKey,
-      temperature: parseFloat((tempSum / count).toFixed(1)),
-      humidity: parseFloat((humSum / count).toFixed(1)),
+      value: values.join(" / "), // join multiple values in bucket
       items,
     }))
     .sort((a, b) => (a.bucketKey < b.bucketKey ? -1 : 1));
@@ -126,11 +108,8 @@ const processHourlyData = (rawData, selectedDate, useRange, range) => {
   return result;
 };
 
-
 // -------------------- Instant (Real-time) Data Function --------------------
-
 const processInstantData = (rawData, selectedDate, useRange, range) => {
-
   const getDay = localDayStr;
 
   // Handle range mode: filter by start/end dates
@@ -144,19 +123,14 @@ const processInstantData = (rawData, selectedDate, useRange, range) => {
         const ts = item.timestamp || item.last_updated;
         if (!ts) return false;
         const itemTime = localDayjs(ts);
-        if (itemTime.isBefore(fromTime) || itemTime.isAfter(toTime)) return false;
-        return true;
+        return !(itemTime.isBefore(fromTime) || itemTime.isAfter(toTime));
       })
-      .map((item) => {
-        const [temp, hum] = (item.state || "").split("/").map(Number);
-        const ts = item.timestamp || item.last_updated;
-        return {
-          time: localDayjs(ts).toISOString(),
-          temperature: isNaN(temp) ? null : temp,
-          humidity: isNaN(hum) ? null : hum,
-          _orig: item,
-        };
-      })
+      .map((item) => ({
+        time: localDayjs(item.timestamp || item.last_updated).toISOString(),
+        value: item.state ?? item.value ?? item.value_text ?? null,
+        _orig: item,
+      }))
+      .filter((d) => d.value !== null)
       .sort((a, b) => new Date(a.time) - new Date(b.time));
 
     return filtered;
@@ -164,20 +138,19 @@ const processInstantData = (rawData, selectedDate, useRange, range) => {
 
   let targetDay = getDay(selectedDate);
 
-  // Initial attempt based on selectedDate (if data found)
-  let matched = rawData
-    .filter((item) => {
-      if (!item || item.state === "unavailable") return false;
-      const ts = item.timestamp || item.last_updated;
-      if (!ts) return false;
-      const itemDay = getDay(ts);
-      return targetDay ? itemDay === targetDay : true;
-    });
+  // Initial attempt based on selectedDate
+  let matched = rawData.filter((item) => {
+    if (!item || item.state === "unavailable") return false;
+    const ts = item.timestamp || item.last_updated;
+    if (!ts) return false;
+    const itemDay = getDay(ts);
+    return targetDay ? itemDay === targetDay : true;
+  });
 
-  // If selectedDate was specified but no items found -> fallback to last available day
+  // Fallback if no items found
   if (targetDay && matched.length === 0) {
     const days = rawData
-      .map((it) => it && (it.timestamp || it.last_updated) ? getDay(it.timestamp || it.last_updated) : null)
+      .map((it) => (it && (it.timestamp || it.last_updated) ? getDay(it.timestamp || it.last_updated) : null))
       .filter(Boolean)
       .sort();
     const lastDay = days.length ? days[days.length - 1] : null;
@@ -190,28 +163,21 @@ const processInstantData = (rawData, selectedDate, useRange, range) => {
         const itemDay = getDay(ts);
         return itemDay === targetDay;
       });
-      console.log("🔁 processInstantData: selectedDate had no items, fallback to lastDay:", lastDay, "matched:", matched.length);
-    } else {
-      console.log("⚠️ processInstantData: no days available in rawData");
     }
   }
 
-  // If selectedDate was empty or matched with targetDay was obtained, build final map
   const result = matched
-    .map((item) => {
-      const [temp, hum] = (item.state || "").split("/").map(Number);
-      const ts = item.timestamp || item.last_updated;
-      return {
-        time: localDayjs(ts).toISOString(),
-        temperature: isNaN(temp) ? null : temp,
-        humidity: isNaN(hum) ? null : hum,
-        _orig: item,
-      };
-    })
+    .map((item) => ({
+      time: localDayjs(item.timestamp || item.last_updated).toISOString(),
+      value: item.state ?? item.value ?? item.value_text ?? null,
+      _orig: item,
+    }))
+    .filter((d) => d.value !== null)
     .sort((a, b) => new Date(a.time) - new Date(b.time));
 
   return result;
 };
+
 
 // Get detailed data for a specific 30-minute bucket
 export const getHourDetails = (rawData, selectedBucketKey) => {
