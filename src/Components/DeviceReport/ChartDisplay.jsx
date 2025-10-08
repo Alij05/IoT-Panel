@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { Download } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import {
   AreaChart,
   Area,
@@ -17,24 +19,23 @@ import { toJalaliDateString } from "./DateUtils";
 import "./DeviceReport.css";
 
 /**
- * ChartDisplay component (dynamic labels for value1/value2)
+ * ChartDisplay component (dynamic labels for value1/value2 + Excel & PDF export)
  */
 const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToExcel, loading = false }) => {
+  const chartContainerRef = useRef(null); // Ref for entire chart section
   const originalRef = useRef([]);
   const [localData, setLocalData] = useState([]);
   const [labels, setLabels] = useState({ value1: "مقدار ۱", value2: "مقدار ۲" });
 
-  // Keep a stable copy of original data
+  // Keep a stable copy of original data and determine dynamic labels
   useEffect(() => {
     originalRef.current = Array.isArray(filteredData) ? filteredData : [];
     const normalized = normalizeData(filteredData);
     setLocalData(normalized);
 
-    // Determine labels dynamically
     if (normalized.length > 0) {
       const first = normalized[0];
       if (first.value1 && first.value2) {
-        // Check if values are numeric and likely temp/humidity
         if (!isNaN(first.value1) && !isNaN(first.value2)) {
           setLabels({ value1: "دمای دستگاه", value2: "رطوبت دستگاه" });
         } else {
@@ -83,11 +84,39 @@ const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToEx
     if (typeof setFilteredData === "function") setFilteredData(originalRef.current);
   };
 
+  // Export PDF
+  const handleExportPDF = async () => {
+    if (!chartContainerRef.current) return;
+
+    try {
+      const element = chartContainerRef.current;
+      const canvas = await html2canvas(element, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgProps = {
+        width: canvas.width,
+        height: canvas.height,
+      };
+      const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+      const imgWidth = imgProps.width * ratio;
+      const imgHeight = imgProps.height * ratio;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save(`Report-${deviceId || "Device"}.pdf`);
+    } catch (err) {
+      console.error("PDF export failed:", err);
+    }
+  };
+
   const isLoading = loading || !filteredData || filteredData.length === 0;
 
   return (
-    <Box className="report-chart-section" sx={{ width: "100%" }}>
+    <Box ref={chartContainerRef} className="report-chart-section" sx={{ width: "100%" }}>
       {isLoading ? (
+        // Loading state
         <Box
           sx={{
             display: "flex",
@@ -105,32 +134,59 @@ const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToEx
         </Box>
       ) : (
         <>
+          {/* Buttons: Reset, Excel, PDF */}
           <div className="report-chart-buttons-section">
             <Button sx={{ mt: 0.5 }} className="report-chart-restart-button" onClick={handleReset}>
               {ReportLocalization.resetZoom}
             </Button>
 
-            <Button
-              variant="contained"
-              startIcon={<Download size={18} />}
-              onClick={exportToExcel}
-              sx={{
-                mt: 0.5,
-                borderRadius: "12px",
-                textTransform: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                px: 2,
-                backgroundColor: "var(--blue)",
-                color: "white",
-                fontFamily: "'Lalezar', sans-serif",
-                fontSize: { xs: "12px", sm: "14px", md: "16px" },
-                "&:hover": { backgroundColor: "#041235" },
-              }}
-            >
-              خروجی Excel
-            </Button>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '5px' }}>
+              <Button
+                variant="contained"
+                startIcon={<Download size={18} />}
+                onClick={exportToExcel}
+                sx={{
+                  mt: 0.5,
+                  borderRadius: "12px",
+                  textTransform: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: 'center',
+                  gap: "10px",
+                  px: 2,
+                  backgroundColor: "var(--blue)",
+                  color: "white",
+                  fontFamily: "'Lalezar', sans-serif",
+                  fontSize: { xs: "12px", sm: "14px", md: "16px" },
+                  "&:hover": { backgroundColor: "#041235" },
+                }}
+              >
+                خروجی Excel
+              </Button>
+
+              <Button
+                variant="contained"
+                startIcon={<Download size={18} />}
+                onClick={handleExportPDF}
+                sx={{
+                  mt: 0.5,
+                  borderRadius: "12px",
+                  textTransform: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: 'center',
+                  gap: "10px",
+                  px: 2,
+                  backgroundColor: "var(--blue)",
+                  color: "white",
+                  fontFamily: "'Lalezar', sans-serif",
+                  fontSize: { xs: "12px", sm: "14px", md: "16px" },
+                  "&:hover": { backgroundColor: "#041235" },
+                }}
+              >
+                خروجی PDF
+              </Button>
+            </div>
           </div>
 
           {/* First Value Chart */}
