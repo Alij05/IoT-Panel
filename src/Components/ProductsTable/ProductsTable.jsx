@@ -35,6 +35,9 @@ export default function ProductsTable() {
     const [productInfo, setProductInfo] = useState([])
     const [isShowDetailsModal, setIsShowDetailsModal] = useState(false)
     const [isPending, setIsPending] = useState(true)
+    const [deleteProductInfo, setDeleteProductInfo] = useState({})
+    const [isShowDeleteModal, setIsShowDeleteModal] = useState(false)
+
 
     const [isSwitchOn, setIsSwitchOn] = useState(null)
 
@@ -100,7 +103,6 @@ export default function ProductsTable() {
             }
         }
     }
-
 
     async function fetchTurnOffLight(entityID) {
         try {
@@ -258,6 +260,13 @@ export default function ProductsTable() {
         } finally {
             setIsPending(false)
         }
+    }
+
+
+
+
+    const closeDeleteModal = () => {
+        setIsShowDeleteModal(false)
     }
 
 
@@ -422,6 +431,7 @@ export default function ProductsTable() {
                                 <th>نام دستگاه</th>
                                 <th>مکان دستگاه</th>
                                 <th>عملیات</th>
+                                <th>حذف دستگاه</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -495,52 +505,176 @@ export default function ProductsTable() {
                                         )}
 
                                     </td>
+                                    <td>
+                                        <button className='users-table-btn red-delete-btn' onClick={(e) => {
+                                            setIsShowDeleteModal(true)
+                                            setDeleteProductInfo(product)
+                                            // deleteProductHandler(product)
+                                        }
+                                        }> حذف</button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+
+                    <div className="users-mobile-view">
+                        {userProducts.map((product) => (
+                            <div className="user-card-mobile" key={product.entity_id}>
+                                <h3>{product.deviceName}</h3>
+                                <p>{product.deviceLocationName}</p>
+
+                                <div className="mobile-btns">
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}>
+
+                                        {product?.deviceClass === 'light' && (
+                                            <>
+                                                <button className="users-table-btn" onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product);
+                                                }}
+                                                >
+                                                    نمایش
+                                                </button>
+                                                <button className="users-table-btn" onClick={() => {
+                                                    fetchTurnOnLight(product);
+                                                    setProductInfo(product);
+                                                }}
+                                                >
+                                                    روشن
+                                                </button>
+                                                <button className="users-table-btn" onClick={() => {
+                                                    fetchTurnOffLight(product);
+                                                    setProductInfo(product);
+                                                }}
+                                                >
+                                                    خاموش
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {product?.deviceClass === 'flame' && (
+                                            <button
+                                                className="users-table-btn"
+                                                onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product);
+                                                }}
+                                            >
+                                                شعله
+                                            </button>
+                                        )}
+
+                                        {product?.deviceClass === 'motion' && (
+                                            <button
+                                                className="users-table-btn"
+                                                onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product);
+                                                }}
+                                            >
+                                                حرکت
+                                            </button>
+                                        )}
+
+                                        {product?.deviceClass === 'temperature' && (
+                                            <button
+                                                className="users-table-btn"
+                                                onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product);
+                                                }}
+                                            >
+                                                دما و رطوبت
+                                            </button>
+                                        )}
+
+                                        {product?.deviceClass === 'water' && (
+                                            <button
+                                                className="users-table-btn"
+                                                onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product);
+                                                }}
+                                            >
+                                                وضعیت
+                                            </button>
+                                        )}
+
+                                        {product?.deviceClass === 'camera' && (
+                                            <button
+                                                className="users-table-btn"
+                                                onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product);
+                                                }}
+                                            >
+                                                دوربین
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="delete-btn-wrapper">
+                                        <button
+                                            className="users-table-btn red-delete-btn"
+                                            onClick={() => deleteProductHandler(product)}
+                                        >
+                                            حذف
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                 </>
-            )}
+            )
+            }
 
 
-            {isShowDetailsModal && (() => {
-                const deviceId = productInfo.entity_id;
-                const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
+            {
+                isShowDetailsModal && (() => {
+                    const deviceId = productInfo.entity_id;
+                    const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
 
-                return (
-                    <DetailsModal closeModal={closeDetailsModal}>
-                        <div className="edit_form_wrapper">
-                            {productInfo?.deviceClass === "light" && (
-                                <LightControl deviceState={deviceState} />
-                            )}
+                    return (
+                        <DetailsModal closeModal={closeDetailsModal}>
+                            <div className="edit_form_wrapper">
+                                {productInfo?.deviceClass === "light" && (
+                                    <LightControl deviceState={deviceState} />
+                                )}
 
-                            {productInfo?.deviceClass === "water" && (
-                                <WaterMoistureStatus deviceState={deviceState} />
-                            )}
+                                {productInfo?.deviceClass === "water" && (
+                                    <WaterMoistureStatus deviceState={deviceState} />
+                                )}
 
-                            {productInfo?.deviceClass === "temperature" && (
-                                <>
-                                    <Temperature deviceState={deviceState} product={productInfo} />
-                                    <Humadity deviceState={deviceState} product={productInfo} />
-                                </>
-                            )}
+                                {productInfo?.deviceClass === "temperature" && (
+                                    <>
+                                        <Temperature deviceState={deviceState} product={productInfo} />
+                                        <Humadity deviceState={deviceState} product={productInfo} />
+                                    </>
+                                )}
 
-                            {productInfo?.deviceClass === "motion" && (
-                                <MotionStatus product={productInfo} deviceState={deviceState} />
-                            )}
+                                {productInfo?.deviceClass === "motion" && (
+                                    <MotionStatus product={productInfo} deviceState={deviceState} />
+                                )}
 
-                            {productInfo?.deviceClass === "flame" && (
-                                <FlameStatus product={productInfo} deviceState={deviceState} />
-                            )}
+                                {productInfo?.deviceClass === "flame" && (
+                                    <FlameStatus product={productInfo} deviceState={deviceState} />
+                                )}
 
-                            {productInfo?.deviceClass === "camera" && (
-                                <CameraCard cameraId={productInfo.entity_id} deviceState={deviceState} />
-                            )}
-                        </div>
-                    </DetailsModal>
-                );
-            })()}
+                                {productInfo?.deviceClass === "camera" && (
+                                    <CameraCard cameraId={productInfo.entity_id} deviceState={deviceState} />
+                                )}
+                            </div>
+                        </DetailsModal>
+                    );
+                })()
+            }
 
+            {
+                isShowDeleteModal && (<DeleteModal closeModal={closeDeleteModal} submitModal={() => deleteProductHandler(deleteProductInfo)} msg="آیا میخواهید دستگاه را حذف کنید؟" />)
+            }
         </>
     );
 

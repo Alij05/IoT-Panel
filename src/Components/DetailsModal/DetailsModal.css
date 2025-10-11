@@ -44,3 +44,9 @@
     /* background-color: color-mix(in oklab, var(--white) 20%, transparent) !important; */
     font-size: 1.3rem;
 }
+
+@media(max-width: 500px) {
+    .details-modal {
+        padding: 20px;
+    }
+}
