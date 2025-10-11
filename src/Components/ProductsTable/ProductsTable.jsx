@@ -262,7 +262,48 @@ export default function ProductsTable() {
         }
     }
 
+    async function deleteProductHandler(product) {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                toast.error("توکن یافت نشد. لطفاً دوباره وارد شوید.", { className: 'toast-center' });
+                return;
+            }
 
+            const res = await axios.post(
+                `${url}/api/devices/delete/${product.entity_id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (res.status === 200) {
+                toast.success("دستگاه با موفقیت حذف شد.", { className: 'toast-center' });
+                setUserProducts(prev => prev.filter(p => p.entity_id !== product.entity_id));
+                closeDeleteModal();
+            }
+        } catch (error) {
+            if (error.response) {
+                const status = error.response.status;
+                if (status === 401) {
+                    toast.error("توکن نامعتبر یا منقضی شده است. لطفاً دوباره وارد شوید.", { className: 'toast-center' });
+                } else if (status === 403) {
+                    toast.warn("شما اجازه حذف این دستگاه را ندارید.", { className: 'toast-center' });
+                } else if (status === 404) {
+                    toast.error("دستگاه مورد نظر یافت نشد.", { className: 'toast-center' });
+                } else {
+                    toast.error("خطای ناشناخته‌ای رخ داد.", { className: 'toast-center' });
+                }
+            } else {
+                toast.error("خطا در ارتباط با سرور.", { className: 'toast-center' });
+                console.error("Error deleting device:", error);
+            }
+        }
+    }
 
 
     const closeDeleteModal = () => {
