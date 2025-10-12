@@ -135,7 +135,7 @@
 }
 
 [data-theme='dark'] .line {
-    background-color: color-mix(in oklab, var(--white) 30%, transparent) !important;
+    background-color: color-mix(in oklab, var(--white) 70%, transparent) !important;
 }
 
 
