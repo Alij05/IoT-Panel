@@ -34,7 +34,7 @@ export default function Sidebar() {
     <>
       <div className={`sidebar ${isShowSidebar && 'sidebar-active'}`}>
         <div className={`sidebar-icon ${isShowSidebar && 'sidebar-icon-active'}`} onClick={mobileMenuClickHandler}>X</div>
-        <h1 className="sidebar-title">به داشبورد خود خوش آمدید</h1>
+        <h1 className="sidebar-title">به داشبورد خوش آمدید</h1>
 
         <ul className="sidebar-links">
           <li>

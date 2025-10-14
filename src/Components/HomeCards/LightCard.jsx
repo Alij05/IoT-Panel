@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
-const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
+const url = process.env.REACT_APP_URL;
 
 function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) {
     const [lightStatus, setLightStatus] = useState(deviceState);
+    const [autoToggleStatus, setAutoToggleStatus] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
-
 
     const deviceType = product.deviceType || 'sensor';
     const deviceId = product.entity_id;
@@ -22,7 +22,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
     useEffect(() => {
         async function deviceInitState() {
             try {
-                const res = await fetch(`${BASE_URL}/api/status/${deviceType}/${deviceId}`);
+                const res = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
                 const data = await res.json();
                 if (res.ok) {
                     console.log('Device Init State', data.state);
@@ -39,7 +39,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
     const turnOnLight = async () => {
         try {
             setIsPending(true);
-            const res = await fetch(`${BASE_URL}/api/control`, {
+            const res = await fetch(`${url}/mqtt/api/control`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,6 +47,9 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'on' })
             });
+
+            console.log('res ======', res);
+
 
             if (res.status === 200) {
                 setLightStatus('on');
@@ -67,7 +70,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
     const turnOffLight = async () => {
         try {
             setIsPending(true);
-            const res = await fetch(`${BASE_URL}/api/control`, {
+            const res = await fetch(`${url}/mqtt/api/control`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,6 +78,9 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'off' })
             });
+
+            console.log('res ======', res);
+
 
             if (res.status === 200) {
                 setLightStatus('off');
@@ -101,6 +107,66 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
         }
     };
 
+
+    // ===== Auto Toggle Functions =====
+    const turnOnAuto = async () => {
+        if (isPending) return;
+        try {
+            setIsPending(true);
+            const res = await fetch(`${url}/mqtt/api/control`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ deviceType, deviceId, command: 'AUTOON' })
+            });
+
+            if (res.status === 200) {
+                setAutoToggleStatus(true);
+                toast.success('Auto ON فعال شد', { className: 'toast-center' });
+            }
+        } catch (error) {
+            console.error("Failed to turn on Auto:", error.response || error);
+            toast.error('فعال سازی Auto ON با مشکل مواجه شد', { className: 'toast-center' });
+        } finally {
+            setIsPending(false);
+        }
+    };
+
+    const turnOffAuto = async () => {
+        if (isPending) return;
+        try {
+            setIsPending(true);
+            const res = await fetch(`${url}/mqtt/api/control`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ deviceType, deviceId, command: 'AUTOOFF' })
+            });
+
+            if (res.status === 200) {
+                setAutoToggleStatus(false);
+                toast.success('Auto OFF فعال شد', { className: 'toast-center' });
+            }
+        } catch (error) {
+            console.error("Failed to turn off Auto:", error.response || error);
+            toast.error('فعال سازی Auto OFF با مشکل مواجه شد', { className: 'toast-center' });
+        } finally {
+            setIsPending(false);
+        }
+    };
+
+    const handleAutoToggle = () => {
+        if (autoToggleStatus) {
+            turnOffAuto();
+        } else {
+            turnOnAuto();
+        }
+    };
+
     return (
         <>
             <div
@@ -108,7 +174,10 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 className='home-box'
                 onClick={lightStatus === 'unknown' ? undefined : handleToggle} >
 
-                <div className='more-info' onClick={() => setIsShowMoreInfo(true)}>
+                <div className='more-info' onClick={(event) => {
+                    event.stopPropagation(); // Prevent the click event from bubbling up to the parent div
+                    setIsShowMoreInfo(true)
+                }}>
                     ...
                 </div>
 
@@ -120,46 +189,45 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 ></div>
 
                 {isUserAdmin ? (
-                    <div style={{
-                        display: "flex",
-                        marginBottom: '15px',
-                        gap: "10px 12px",
-                        fontSize: "16px",
-                        color: "var(--text-color)",
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
+                    <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                         <span>مکان : {product.deviceLocationName}</span> |
                         <span>مالک : {product.user}</span>
                     </div>
                 ) : (
-                    <div style={{
-                        display: "flex",
-                        marginBottom: '15px',
-                        gap: "10px 12px",
-                        fontSize: "16px",
-                        color: "var(--text-color)",
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
+                    <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
                         <span>{product.deviceName} در {product.deviceLocationName}</span>
                     </div>
                 )}
 
-                <img
-                    src={
-                        lightStatus === 'on'
-                            ? 'svgs/light-on.svg'
-                            : (lightStatus === 'off'
-                                ? 'svgs/light-off.svg'
-                                : 'svgs/light-disable.svg')
-                    }
-                    alt={lightStatus === 'on' ? 'روشن' : 'خاموش'}
-                    style={{ width: '110px', transition: '0.3s ease-in-out' }}
-                />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                    <img
+                        src={
+                            lightStatus === 'on'
+                                ? 'svgs/light-on.svg'
+                                : (lightStatus === 'off'
+                                    ? 'svgs/light-off.svg'
+                                    : 'svgs/light-disable.svg')
+                        }
+                        alt={lightStatus === 'on' ? 'روشن' : 'خاموش'}
+                        style={{ width: '110px', transition: '0.3s ease-in-out' }}
+                    />
+
+                    <button
+                        className={`auto-toggle-btn ${autoToggleStatus ? 'active' : 'inactive'}`}
+                        disabled={isPending || lightStatus === 'unknown'}
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent the click event from bubbling up to the parent div
+                            handleAutoToggle();
+                        }}
+                    >
+                        {autoToggleStatus ? 'Auto ON' : 'Auto OFF'}
+                    </button>
+
+                </div>
             </div>
+
+
 
             {
                 isShowMoreInfo && (

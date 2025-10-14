@@ -32,6 +32,7 @@ export default function AddNewProduct() {
     const [userLocations, setUserLocations] = useState([]);
     const [deviceName, setDeviceName] = useState('');
     const [deviceLocation, setDeviceLocation] = useState('');
+    const [deviceType, setDeviceType] = useState('');
 
     const setAllProducts = useProductStore((state) => state.setAllProducts)
     const navigate = useNavigate()
@@ -70,6 +71,7 @@ export default function AddNewProduct() {
                                 // از device_id استفاده کن
                                 setToken(deviceData.device_id);
                                 setDeviceClass(deviceData.deviceClass);
+                                setDeviceType(deviceData.deviceType);
 
                                 setIsScanned(true);
                                 toast.success('دستگاه با موفقیت اسکن شد!', { className: 'toast-center' });
@@ -179,7 +181,8 @@ export default function AddNewProduct() {
             deviceClass: deviceClass,
             deviceName: deviceName || 'بدون نام',
             deviceLocationName,
-            state: ''
+            state: '',
+            deviceType
         };
 
         try {
