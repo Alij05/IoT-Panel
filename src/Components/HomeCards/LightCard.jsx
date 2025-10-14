@@ -30,9 +30,11 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
             try {
                 const res = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
                 const data = await res.json();
+
                 if (res.ok) {
                     console.log('Device Init State', data.state);
                     setLightStatus(data.state);
+                    setLightAutoStatus(data.extra.auto_enabled);
                 }
             } catch (error) {
                 console.log(`❌ Get status failed: ${error.message}`, 'error');
