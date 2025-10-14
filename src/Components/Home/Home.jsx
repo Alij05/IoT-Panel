@@ -80,6 +80,7 @@ export default function Home() {
                                     deviceState={deviceState}
                                     deviceInfo={deviceInfo}
                                     deviceStatus={deviceStatus}
+                                    deiviceAutoStatus={sensorsData?.[deviceId]?.auto_enabled}
                                 />
                             );
                         case "flame":

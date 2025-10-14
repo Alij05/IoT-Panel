@@ -4,9 +4,11 @@ import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
 const url = process.env.REACT_APP_URL;
 
-function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) {
+function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus, deiviceAutoStatus }) {
+    console.log('lightAutoStatus', deiviceAutoStatus);
+
     const [lightStatus, setLightStatus] = useState(deviceState);
-    const [autoToggleStatus, setAutoToggleStatus] = useState(false);
+    const [lightAutoStatus, setLightAutoStatus] = useState(deiviceAutoStatus);
     const [isPending, setIsPending] = useState(false);
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
 
@@ -18,6 +20,10 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
     useEffect(() => {
         setLightStatus(deviceState);
     }, [deviceState]);
+
+    useEffect(() => {
+        setLightAutoStatus(deiviceAutoStatus)
+    }, [deiviceAutoStatus])
 
     useEffect(() => {
         async function deviceInitState() {
@@ -123,12 +129,12 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
             });
 
             if (res.status === 200) {
-                setAutoToggleStatus(true);
-                toast.success('Auto ON فعال شد', { className: 'toast-center' });
+                setLightAutoStatus(true);
+                toast.success('Auto on فعال شد', { className: 'toast-center' });
             }
         } catch (error) {
             console.error("Failed to turn on Auto:", error.response || error);
-            toast.error('فعال سازی Auto ON با مشکل مواجه شد', { className: 'toast-center' });
+            toast.error('فعال سازی Auto on با مشکل مواجه شد', { className: 'toast-center' });
         } finally {
             setIsPending(false);
         }
@@ -148,19 +154,19 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
             });
 
             if (res.status === 200) {
-                setAutoToggleStatus(false);
-                toast.success('Auto OFF فعال شد', { className: 'toast-center' });
+                setLightAutoStatus(false);
+                toast.success('Auto off فعال شد', { className: 'toast-center' });
             }
         } catch (error) {
             console.error("Failed to turn off Auto:", error.response || error);
-            toast.error('فعال سازی Auto OFF با مشکل مواجه شد', { className: 'toast-center' });
+            toast.error('فعال سازی Auto off با مشکل مواجه شد', { className: 'toast-center' });
         } finally {
             setIsPending(false);
         }
     };
 
     const handleAutoToggle = () => {
-        if (autoToggleStatus) {
+        if (lightAutoStatus) {
             turnOffAuto();
         } else {
             turnOnAuto();
@@ -213,16 +219,20 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                         style={{ width: '110px', transition: '0.3s ease-in-out' }}
                     />
 
-                    <button
-                        className={`auto-toggle-btn ${autoToggleStatus ? 'active' : 'inactive'}`}
-                        disabled={isPending || lightStatus === 'unknown'}
-                        onClick={(e) => {
-                            e.stopPropagation(); // Prevent the click event from bubbling up to the parent div
-                            handleAutoToggle();
-                        }}
-                    >
-                        {autoToggleStatus ? 'Auto ON' : 'Auto OFF'}
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
+                        <p style={{ color: 'var(--text-color)' }}>حالت اتوماتیک</p>
+                        <div
+                            className={`auto-toggle-switch ${lightAutoStatus ? 'active' : ''}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (isPending || lightStatus === 'unknown') return;
+                                handleAutoToggle();
+                            }}
+                        >
+                            <div className="switch-circle"></div>
+                        </div>
+
+                    </div>
 
                 </div>
             </div>
