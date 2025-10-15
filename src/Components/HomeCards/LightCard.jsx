@@ -127,11 +127,11 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
 
             if (res.status === 200) {
                 setLightAutoStatus(true);
-                toast.success('Auto on فعال شد', { className: 'toast-center' });
+                toast.success('حالت اتوماتیک فعال شد', { className: 'toast-center' });
             }
         } catch (error) {
             console.error("Failed to turn on Auto:", error.response || error);
-            toast.error('فعال سازی Auto on با مشکل مواجه شد', { className: 'toast-center' });
+            toast.error('فعال سازی حالت اتوماتیک با مشکل مواجه شد', { className: 'toast-center' });
         } finally {
             setIsPending(false);
         }
@@ -152,11 +152,11 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
 
             if (res.status === 200) {
                 setLightAutoStatus(false);
-                toast.success('Auto off فعال شد', { className: 'toast-center' });
+                toast.success('حالت اتوماتیک غیرفعال شد', { className: 'toast-center' });
             }
         } catch (error) {
             console.error("Failed to turn off Auto:", error.response || error);
-            toast.error('فعال سازی Auto off با مشکل مواجه شد', { className: 'toast-center' });
+            toast.error('غیرفعال سازی حالت اتوماتیک با مشکل مواجه شد', { className: 'toast-center' });
         } finally {
             setIsPending(false);
         }
