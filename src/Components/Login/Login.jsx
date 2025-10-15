@@ -15,7 +15,6 @@ export default function Login() {
     const [showForgetPass, setShowForgetPass] = useState(false)
     const navigate = useNavigate()
 
-    // اگر کاربر قبلا لاگین کرده، مستقیم ریدایرکت به /home
     if (isUserLoggedIn) {
         document.body.classList.remove('auth-body')
         return <Navigate to="/home" replace />
@@ -63,7 +62,7 @@ export default function Login() {
             {showForgetPass ? (
                 <div className='login-form-container'>
                     <div className="login wrap">
-                        <div className="h1">فراموشی رمز</div>
+                        <div className="h1">فراموشی رمز عبور</div>
 
                         <div className='otp-inputs-wrapper'>
                             <div className="form-group" style={{ width: '70%', margin: '0 auto' }}>
@@ -91,27 +90,30 @@ export default function Login() {
             ) : (
                 <div className='login-form-container'>
                     <div className="login wrap">
-                        <div className="login-image">
+                        {/* <div className="login-image">
                             <img src="./images/logo.png" alt="" />
-                        </div>
-                        {/* <div className="h1">ورود به حساب</div> */}
+                        </div> */}
 
-                        <div className='register-inputs-wrapper'>
-                            <div className="form-group">
-                                <input type="text" className="form-control" placeholder=" " id="username" value={username} onChange={(e) => {
-                                    setUsername(e.target.value)
-                                }} />
-                                <label htmlFor="username" className="form-label">نام کاربری</label>
-                            </div>
+                        <div className="h1">ورود به حساب</div>
+                        <form onSubmit={loginHandler}>
+                            <div className='register-inputs-wrapper' >
+                                <div className="form-group">
+                                    <input type="text" className="form-control" placeholder=" " id="username" value={username} onChange={(e) => {
+                                        setUsername(e.target.value)
+                                    }} />
+                                    <label htmlFor="username" className="form-label">نام کاربری</label>
+                                </div>
 
-                            <div className="form-group">
-                                <input type="password" className="form-control" placeholder=" " id="passwordNumber" value={password} onChange={(e) => {
-                                    setPassword(e.target.value)
-                                }} />
-                                <label htmlFor="passwordNumber" className="form-label">رمز عبور</label>
+                                <div className="form-group">
+                                    <input type="password" className="form-control" placeholder=" " id="passwordNumber" value={password} onChange={(e) => {
+                                        setPassword(e.target.value)
+                                    }} />
+                                    <label htmlFor="passwordNumber" className="form-label">رمز عبور</label>
+                                </div>
                             </div>
-                        </div>
-                        <button className='button-modern' onClick={loginHandler}>ورود</button>
+                            <button className='button-modern'>ورود</button>
+                        </form>
+                        {/* <button className='button-modern' onClick={loginHandler}>ورود</button> */}
 
                         <span className="forgot-password" onClick={() => {
                             setShowForgetPass(true)
