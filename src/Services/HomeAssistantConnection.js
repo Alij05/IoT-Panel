@@ -41,15 +41,19 @@ export async function getEntities() {
 // }
 
 
-export async function turnOffSwitch(entityID) {
-    const res = await axios.post(`${BASE_URL}/api/services/switch/turn_off`, {
-        entity_id: entityID,
-    }, {
+export async function turnOffSwitch(deviceId, deviceType, state) {
+    const token = localStorage.getItem('token')
+    const res = await fetch(`${BASE_URL}/api/control`, {
+        method: 'POST',
         headers: {
-            Authorization: `Bearer ${TOKEN}`,
-            "Content-Type": "application/json",
-        }
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ deviceType, deviceId, command: state })
     });
+
+    return res
+
 }
 
 export async function turnOnSwitch(deviceId, deviceType, state) {

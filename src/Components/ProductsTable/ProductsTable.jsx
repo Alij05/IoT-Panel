@@ -104,17 +104,33 @@ export default function ProductsTable() {
         }
     }
 
-    async function fetchTurnOffLight(entityID) {
+    async function fetchTurnOffLight(product) {
+        const deviceId = product.entity_id;
+        const deviceType = product.deviceType || 'sensor'
+        const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
+
         try {
-            if (!isSwitchOn) {
+            // if (product?.state == 'off') {
+            if (deviceState === 'off') {
                 toast.warn('لامپ در حال حاضر خاموش است !', { className: 'toast-center' });
                 return
             }
-            await turnOffSwitch(entityID)
-            toast.success('لامپ خاموش شد', { className: 'toast-center' })
+            const res = await turnOffSwitch(deviceId, deviceType, 'off')
+
+            if (res.status === 200) {
+                product.state = 'off'
+                setProductInfo(product)
+                toast.success('لامپ خاموش شد', { className: 'toast-center' });
+                await axios.put(`${url}/api/devices/${deviceId}`, { state: 'off' });  // Update State in Database
+
+            }
         } catch (error) {
-            console.error("Failed to fetch product:", error);
-            toast.error('خاموش کردن لامپ با مشکل مواجه شد', { className: 'toast-center' });
+            console.error("Failed to turn on light:", error.response || error);
+            if (error.response && error.response.status === 403) {
+                toast.error('دسترسی غیرمجاز. لطفاً وارد شوید', { className: 'toast-center' });
+            } else {
+                toast.error('خاموش کردن لامپ با مشکل مواجه شد', { className: 'toast-center' });
+            }
         } finally {
             setIsPending(false)
         }
@@ -126,19 +142,18 @@ export default function ProductsTable() {
         const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
 
         try {
-            if (product?.state == 'on') {
+            // if (product?.state == 'on') {
+            if (deviceState === 'on') {
                 toast.warn('لامپ در حال حاضر روشن است !', { className: 'toast-center' });
                 return
             }
             const res = await turnOnSwitch(deviceId, deviceType, 'on')
-            console.log('turn on fan => ', res);
 
             if (res.status === 200) {
                 product.state = 'on'
                 setProductInfo(product)
                 toast.success('لامپ روشن شد', { className: 'toast-center' });
-                // Update State in Database
-                await axios.put(`${url}/api/devices/${deviceId}`, { state: 'on' });
+                await axios.put(`${url}/api/devices/${deviceId}`, { state: 'on' });  // Update State in Database
             }
         } catch (error) {
             console.error("Failed to turn on light:", error.response || error);
@@ -566,7 +581,7 @@ export default function ProductsTable() {
                                 <p>{product.deviceLocationName}</p>
 
                                 <div className="mobile-btns">
-                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'}}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
 
                                         {product?.deviceClass === 'light' && (
                                             <>

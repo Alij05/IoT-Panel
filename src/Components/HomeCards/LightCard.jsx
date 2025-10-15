@@ -5,8 +5,6 @@ import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 const url = process.env.REACT_APP_URL;
 
 function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus, deiviceAutoStatus }) {
-    console.log('lightAutoStatus', deiviceAutoStatus);
-
     const [lightStatus, setLightStatus] = useState(deviceState);
     const [lightAutoStatus, setLightAutoStatus] = useState(deiviceAutoStatus);
     const [isPending, setIsPending] = useState(false);
@@ -55,9 +53,6 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'on' })
             });
-
-            console.log('res ======', res);
-
 
             if (res.status === 200) {
                 setLightStatus('on');
@@ -265,6 +260,7 @@ export default React.memo(LightCard, (prevProps, nextProps) => {
     return (
         prevProps.deviceState === nextProps.deviceState &&
         prevProps.isUserAdmin === nextProps.isUserAdmin &&
-        prevProps.product.entity_id === nextProps.product.entity_id
+        prevProps.product.entity_id === nextProps.product.entity_id &&
+        prevProps.deiviceAutoStatus === nextProps.deiviceAutoStatus
     );
 });
