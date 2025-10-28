@@ -77,6 +77,19 @@
     font-size: 1.2rem;
 }
 
+.sidebar-link-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    bottom: 1rem;
+}
+
+.sidebar-link {
+    color: var(--white);
+    text-decoration: none;
+}
+
 
 /* ==================== RESPONSIVE DESIGN ==================== */
 

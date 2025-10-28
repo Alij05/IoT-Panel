@@ -106,6 +106,20 @@ export default function Sidebar() {
             </div>
           </li>
         </ul>
+        <div className="sidebar-link-container">
+          <img
+            src="/images/pars-pardaz.png"
+            alt="Pardaz Logo"
+            style={{ width: '35px', height: '35px', display: 'block', borderRadius: '15px' }}
+          />
+          <a
+            href="https://pars-pardaz.com/"
+            className="sidebar-link"
+            target="_blank"
+          >
+            شرکت پارس پرداز (v1.1.0)
+          </a>
+        </div>
       </div>
 
       {isShowDeleteModal && (<DeleteModal closeModal={closeDeleteModal} submitModal={logoutHandler} msg="آیا میخواهید از حساب خود خارج شوید؟" />)}
