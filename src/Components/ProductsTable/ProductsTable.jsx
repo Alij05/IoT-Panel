@@ -18,6 +18,7 @@ import { useSockets } from '../../Contexts/SocketProvider'
 import CameraCard from '../HomeCards/CameraCard'
 import MotionStatus from '../Cards/MotionStatus'
 import FlameStatus from '../Cards/FlameStatus'
+import useProductStore from '../../Store/productStore'
 
 
 const url = process.env.REACT_APP_URL
@@ -26,11 +27,11 @@ export default function ProductsTable() {
 
     const { sensorsData } = useSockets();
 
-
     const [users, setUsers] = useState([])
     const [selectedUser, setSelectedUser] = useState(null);
 
-    const [userProducts, setUserProducts] = useState([])
+    // const [userProducts, setUserProducts] = useState([])
+    const { products: userProducts, setProducts: setUserProducts } = useProductStore();
     const [userProductsByAdmin, setuserProductsByAdmin] = useState([])
     const [productInfo, setProductInfo] = useState([])
     const [isShowDetailsModal, setIsShowDetailsModal] = useState(false)
@@ -47,7 +48,7 @@ export default function ProductsTable() {
 
 
     useEffect(() => {
-        getUserProducts()
+        // getUserProducts()
         getUsers()
     }, [])
 

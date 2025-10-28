@@ -12,20 +12,21 @@ import WaterCard from "../HomeCards/WaterCard";
 import MotionDetectionCard from "../HomeCards/MotionDetectionCard";
 import CameraCard from "../HomeCards/CameraCard";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
+import useProductStore from "../../Store/productStore";
 
 const url = process.env.REACT_APP_URL;
 
 export default function Home() {
     const { sensorsData, sensorsLogsData } = useSockets();
     const [allProducts, setAllProducts] = useState([]);
-    const [userProducts, setUserProducts] = useState([]);
+    const { products: userProducts, setProducts: setUserProducts } = useProductStore();
     const { isUserAdmin } = useAuth();
 
     useEffect(() => {
         if (isUserAdmin) {
             getAllProducts();
         } else {
-            getUserProducts();
+            // getUserProducts();
         }
     }, [isUserAdmin]);
 

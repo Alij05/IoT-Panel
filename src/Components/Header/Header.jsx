@@ -29,28 +29,7 @@ export default function Header() {
     const dateStr = today.format("jYYYY/jMM/jDD"); // تاریخ شمسی
     const token = localStorage.getItem('token')
 
-
-    async function getHomeScreenUser() {
-        try {
-            const res = await axios.post(`${url}/api/auth/homescreen`,
-                {},
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-        } catch (err) {
-            console.log(err.response?.data || err.message);
-        }
-    }
-
-
-    useEffect(() => {
-        getHomeScreenUser()
-    }, [])
-
-
+    
     return (
         <header className='header'>
 

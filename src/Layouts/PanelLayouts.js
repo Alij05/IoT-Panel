@@ -24,6 +24,8 @@ export default function PanelLayout() {
     const setAllUsers = useUsersStore((state) => state.setAllUsers)
     const { setProducts } = useProductStore()
 
+    const { isUserLoggedIn } = useAuth()
+
 
 
     const { isUserAdmin } = useAuth()
@@ -41,24 +43,30 @@ export default function PanelLayout() {
 
     }, [navigate]);
 
+    //! Previous Function
+    // async function getHomeScreenUser() {
+    //     const token = localStorage.getItem('token')
+
+    //     try {
+    //         const res = await axios.post(`${url}/api/auth/homescreen`,
+    //             {},
+    //             {
+    //                 headers: {
+    //                     'Authorization': `Bearer ${token}`
+    //                 }
+    //             }
+    //         );
+    //         if (!res.data.isLogin) {
+    //             navigate('/login')
+    //         }
+    //     } catch (err) {
+    //         console.log(err.response?.data || err.message);
+    //     }
+    // }
 
     async function getHomeScreenUser() {
-        const token = localStorage.getItem('token')
-
-        try {
-            const res = await axios.post(`${url}/api/auth/homescreen`,
-                {},
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
-            if (!res.data.isLogin) {
-                navigate('/login')
-            }
-        } catch (err) {
-            console.log(err.response?.data || err.message);
+        if (!isUserLoggedIn) {
+            navigate('/login')
         }
     }
 

@@ -47,7 +47,7 @@ export default function Register() {
       }, 1000);
     }
 
-    return () => clearInterval(interval); // پاک‌سازی
+    return () => clearInterval(interval);
   }, [showOtp, timer]);
 
 
