@@ -90,7 +90,7 @@ export default function PanelLayout() {
                     }
                 })
                 if (res.status === 200) {
-                    setProducts(res.data)
+                    //! setProducts(res.data)
                 }
 
             } catch (err) {
@@ -105,6 +105,8 @@ export default function PanelLayout() {
                     }
                 })
                 if (res.status === 200) {
+                    console.log(res.data);
+                    
                     setProducts(res.data)
                 }
 

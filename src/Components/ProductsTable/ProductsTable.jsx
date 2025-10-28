@@ -31,7 +31,7 @@ export default function ProductsTable() {
     const [selectedUser, setSelectedUser] = useState(null);
 
     // const [userProducts, setUserProducts] = useState([])
-    const { products: userProducts, setProducts: setUserProducts } = useProductStore();
+    const { products: userProducts, setProducts: setUserProducts, deleteProduct } = useProductStore();
     const [userProductsByAdmin, setuserProductsByAdmin] = useState([])
     const [productInfo, setProductInfo] = useState([])
     const [isShowDetailsModal, setIsShowDetailsModal] = useState(false)
@@ -299,7 +299,8 @@ export default function ProductsTable() {
 
             if (res.status === 200) {
                 toast.success("دستگاه با موفقیت حذف شد.", { className: 'toast-center' });
-                setUserProducts(prev => prev.filter(p => p.entity_id !== product.entity_id));
+                // setUserProducts(prev => prev.filter(p => p.entity_id !== product.entity_id));
+                deleteProduct(product.entity_id)
                 closeDeleteModal();
             }
         } catch (error) {

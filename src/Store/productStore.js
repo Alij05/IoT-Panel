@@ -5,7 +5,17 @@ const useProductStore = create((set, get) => ({
 
   setProducts: (products) => set({ products }),
 
-  // آپدیت کردن وضعیت یک محصول مشخص
+  addProduct: (newProduct) =>
+    set((state) => ({
+      products: [...state.products, newProduct],
+    })),
+
+  deleteProduct: (entity_id) =>
+    set((state) => ({
+      products: state.products.filter((p) => p.entity_id !== entity_id),
+    })),
+
+
   updateProductState: (entity_id, newState) =>
     set((state) => ({
       products: state.products.map((p) =>
@@ -13,25 +23,9 @@ const useProductStore = create((set, get) => ({
       ),
     })),
 
-  // گرفتن یک محصول مشخص با entity_id
   getProductById: (entity_id) => {
     return get().products.find((p) => p.entity_id === entity_id);
   },
 }));
 
 export default useProductStore;
-
-
-// import { create } from "zustand";
-
-// const useProductStore = create((set) => ({
-//     products: [],
-//     setAllProducts: (productList) => set({ products: productList }),
-//     addProduct: (newProduct) => set((state) => ({ products: [...state.products, newProduct] })),
-//     clearProducts: () => set({ products: [] }),
-// }))
-
-
-// export default useProductStore
-
-// store/productStore.js

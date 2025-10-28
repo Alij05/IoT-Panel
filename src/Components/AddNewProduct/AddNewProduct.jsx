@@ -34,7 +34,8 @@ export default function AddNewProduct() {
     const [deviceLocation, setDeviceLocation] = useState('');
     const [deviceType, setDeviceType] = useState('');
 
-    const setAllProducts = useProductStore((state) => state.setAllProducts)
+    const addProduct = useProductStore((state) => state.addProduct);
+    
     const navigate = useNavigate()
 
     const html5QrCodeRef = useRef(null);
@@ -200,6 +201,7 @@ export default function AddNewProduct() {
                 setDeviceName('');
                 setDeviceLocation('');
                 setIsScanned(false);
+                addProduct(deviceObject)
                 navigate('/products');
             }
 
