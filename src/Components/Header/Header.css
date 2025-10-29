@@ -139,6 +139,182 @@
 }
 
 
+/* ==================== NOTIFICATION MENU (منوی کوچک بالای صفحه) ==================== */
+
+.notification-icon {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease-in-out;
+}
+
+/* Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff3b3b;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 50%;
+    padding: 2px 5px;
+    min-width: 16px;
+    text-align: center;
+    box-shadow: 0 0 6px rgba(255, 0, 0, 0.4);
+}
+
+/* Box container */
+.notification-box {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    width: 330px;
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    animation: fadeInDropdown 0.25s ease-in-out;
+    z-index: 1000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .notification-box {
+    background-color: #2b2b2b;
+    border: 1px solid #3a3a3a;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Header */
+.notification-header {
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    text-align: right;
+}
+
+[data-theme='dark'] .notification-header {
+    border-bottom: 1px solid #3a3a3a;
+    color: #66b2ff;
+}
+
+/* List */
+.notification-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.notification-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background-color: rgba(120, 120, 120, 0.4);
+    border-radius: 10px;
+}
+
+/* Item - برای منوی کوچک */
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+    margin: 6px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.notification-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'] .notification-item {
+    background-color: #333;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+[data-theme='dark'] .notification-item:hover {
+    background-color: #3b3b3b;
+}
+
+/* Level colors - برای منوی کوچک */
+.notification-item.danger {
+    border-left: 4px solid #ff4c4c;
+    background: rgba(255, 76, 76, 0.07);
+}
+
+.notification-item.warning {
+    border-left: 4px solid #f8b84e;
+    background: rgba(248, 184, 78, 0.08);
+}
+
+.notification-item.info {
+    border-left: 4px solid #4ea3ff;
+    background: rgba(78, 163, 255, 0.08);
+}
+
+/* Icon - برای منوی کوچک */
+.notification-item .notif-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Message text */
+.notif-message {
+    font-size: 0.93rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+/* Details */
+.notif-details {
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Empty */
+.no-notifications {
+    text-align: center;
+    padding: 18px 0;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Animation for dropdown */
+@keyframes fadeInDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
 /* ==================== RESPONSIVE DESIGN ==================== */
 
 @media (max-width: 1128px) {

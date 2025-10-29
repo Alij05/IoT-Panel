@@ -1,6 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
 import BedtimeOutlinedIcon from '@mui/icons-material/BedtimeOutlined';
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Search from '../Search/Search';
 import './Header.css'
 import { ThemeContext } from '../../Contexts/ThemeContexts';
@@ -11,15 +15,21 @@ import axios from 'axios';
 import { useAuth } from '../../Contexts/AuthContext';
 
 const url = process.env.REACT_APP_URL
+const iotUrl = process.env.REACT_APP_IOT
 
 export default function Header() {
 
     const { theme, toggleTheme } = useContext(ThemeContext)
     const { mobileMenuClickHandler } = useContext(MobileMenuContext)
-    const {username, isUserAdmin} = useAuth()
+    const { username, isUserAdmin } = useAuth()
 
     const params = useLocation()
     const isShowHeader = (params.pathname === '/users' || params.pathname === '/products')
+
+    // ---------------- Notifications ----------------
+    const [isOpen, setIsOpen] = useState(false);
+    const notifRef = useRef(null);
+    const [alerts, setAlerts] = useState([])
 
     // Persian Date
     moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
@@ -29,7 +39,27 @@ export default function Header() {
     const dateStr = today.format("jYYYY/jMM/jDD"); // تاریخ شمسی
     const token = localStorage.getItem('token')
 
-    
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (notifRef.current && !notifRef.current.contains(e.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const getAlertsHandler = async () => {
+        try {
+            const res = await axios.get(`${iotUrl}/api/alerts`);
+            console.log(res.data.alerts);
+            setAlerts(res.data.alerts.slice(0, 25))
+        } catch (err) {
+            console.error("Error fetching alerts:", err);
+        }
+    };
+
     return (
         <header className='header'>
 
@@ -49,6 +79,68 @@ export default function Header() {
             </div>
 
             <div className='header-left-section'>
+                <div
+                    className="notification-icon"
+                    onClick={() => {
+                        setIsOpen(!isOpen);
+                        getAlertsHandler();
+                    }}
+                    title="نوتیفیکیشن‌ها"
+                >
+                    <NotificationsNoneOutlinedIcon
+                        style={{
+                            fontSize: "26px",
+                            color: theme === "dark" ? "#fff" : "#333",
+                        }}
+                    />
+                    {alerts.length > 0 && (
+                        <span className="notification-badge">{alerts.length}</span>
+                    )}
+
+                    {isOpen && (
+                        <div className="notification-box">
+                            <div className="notification-header">نوتیفیکیشن‌ها</div>
+
+                            {alerts.length > 0 ? (
+                                <ul className="notification-list">
+                                    {alerts.map((notif) => (
+                                        <li
+                                            key={notif._id}
+                                            className={`notification-item ${notif.level === "Danger"
+                                                ? "danger"
+                                                : notif.level === "Warning"
+                                                    ? "warning"
+                                                    : "info"
+                                                }`}
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <div className="notif-icon">
+                                                {notif.level === "Danger" ? (
+                                                    <ErrorOutlineIcon style={{ color: "#ff4c4c" }} />
+                                                ) : notif.level === "Warning" ? (
+                                                    <WarningAmberIcon style={{ color: "#f8b84e" }} />
+                                                ) : (
+                                                    <InfoOutlinedIcon style={{ color: "#4ea3ff" }} />
+                                                )}
+                                            </div>
+
+                                            <div className="notif-content">
+                                                <p className="notif-message">{notif.message}</p>
+                                                <div className="notif-details">
+                                                    <span>دستگاه: {notif.deviceId}</span>
+                                                    <span>{moment(notif.extra.timestamp).format("HH:mm:ss")}</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div className="no-notifications">هیچ نوتیفیکیشنی وجود ندارد</div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
                 <div className=''>
                     {isShowHeader && <Search />}
                 </div>

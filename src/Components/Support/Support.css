@@ -9,7 +9,7 @@
 
 .add-support-form {
   margin-top: 30px;
-  background-color: color-mix(in oklab, var(--white) 30%, transparent) !important;  display: flex;
+  background-color: color-mix(in oklab, var(--white) 60%, transparent) !important;  display: flex;
   gap: 80px;
   padding: 40px 50px;
   border-radius: 20px;
@@ -134,7 +134,7 @@
 }
 
 #support-question {
-  background-color: var(--white);
+  background-color: var(--white-50);
   color: var(--text-color);
   width: 500px;
   height: 250px;
