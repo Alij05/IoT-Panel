@@ -9,6 +9,7 @@ import QrCodeScannerRoundedIcon from '@mui/icons-material/QrCodeScannerRounded';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import "./Sidebar.css";
 import { Link, NavLink } from "react-router-dom";
 import { MobileMenuContext } from "../../Contexts/MobileMenuContext";
@@ -87,6 +88,14 @@ export default function Sidebar() {
             }}>
               <AssessmentIcon className="icon" />
               گزارش ها
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/notifs" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
+              <NotificationsNoneOutlinedIcon className="icon" />
+              اعلان ها
             </NavLink>
           </li>
           <li>

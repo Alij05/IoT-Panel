@@ -12,6 +12,8 @@ import Products from './Components/Products/Products';
 import AddNewProduct from './Components/AddNewProduct/AddNewProduct';
 import Support from './Components/Support/Support';
 import Reports from './Components/Reports/Reports';
+import Notifications from './Components/Notifications/Notifications';
+
 
 const adminRoutes = [
     { path: 'users', element: <PrivateRoute adminOnly={true}><Users /></PrivateRoute> },
@@ -24,6 +26,7 @@ const userRoutes = [
     { path: 'add-product', element: <PrivateRoute><AddNewProduct /></PrivateRoute> },
     { path: 'support', element: <PrivateRoute><Support /></PrivateRoute> },
     { path: 'reports', element: <PrivateRoute><Reports /></PrivateRoute> },
+    { path: 'notifs', element: <PrivateRoute><Notifications /></PrivateRoute> },
 ];
 
 const routes = [

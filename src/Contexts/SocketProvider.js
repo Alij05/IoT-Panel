@@ -8,14 +8,13 @@ export function WebSocketProvider({ children }) {
     const reconnectTimerRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [sensorsData, setSensorsData] = useState({});
+    const [sensorsAlert, setSensorsAlert] = useState({});
     const [sensorsLogsData, setSensorsLogsData] = useState({});
     const [flamesData, setFlamesData] = useState({});
 
     const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
     const wsUrl = `${BASE_URL.replace(/^https?/, "wss")}/ws`;
     const url = process.env.REACT_APP_URL;
-
-
 
     useEffect(() => {
         const connect = () => {

@@ -1,0 +1,186 @@
+.notif-page {
+    min-height: 100vh;
+    direction: rtl;
+}
+
+.notif-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: var(--text-color);
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.5px;
+}
+
+/* حالت خالی */
+.notif-empty {
+    background-color: color-mix(in oklab, var(--white) 70%, transparent);
+    border: 1px solid var(--input-bg);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* جدول نوتیف‌ها */
+.notif-table-wrapper {
+    background-color: color-mix(in oklab, var(--white) 70%, transparent);
+    border: 1px solid var(--input-bg);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-top: 30px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+/* جدول اصلی */
+.notif-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+    table-layout: fixed;
+}
+
+/* تیتر جدول */
+.notif-table thead tr {
+    background: color-mix(in oklab, var(--white) 85%, transparent);
+    border-bottom: 1px solid var(--input-bg);
+}
+
+.notif-table th,
+.notif-table td {
+    text-align: center;
+    padding: 12px 6px;
+    /* پدینگ چپ و راست کمتر */
+    word-wrap: break-word;
+    font-size: 0.95rem;
+    border: none;
+    vertical-align: middle;
+}
+
+/* ست کردن عرض برای فیلدها */
+.notif-table th:nth-child(1),
+.notif-table td:nth-child(1) {
+    /* width: 10%; */
+    overflow: hidden;
+}
+
+.notif-table th:nth-child(2),
+.notif-table td:nth-child(2) {
+    width: 45%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notif-table th:nth-child(3),
+.notif-table td:nth-child(3) {
+    width: 20%;
+}
+
+.notif-table th:nth-child(4),
+.notif-table td:nth-child(4) {
+    width: 25%;
+}
+
+/* ردیف‌های جدول */
+.notif-table tbody tr {
+    background: color-mix(in oklab, var(--white) 60%, transparent);
+    border: 1px solid var(--input-bg);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+/* حذف هاور */
+.notif-table tbody tr:hover {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-color: var(--input-bg);
+}
+
+/* سلول‌ها */
+.notif-table tbody td {
+    color: var(--text-color);
+    vertical-align: middle;
+}
+
+/* آیکون نوتیف */
+.notif-table .notif-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notif-table .notif-icon svg {
+    font-size: 1.5rem;
+    display: inline-block;
+    margin: 0 auto;
+    transform: translateY(1px);
+    max-width: 100%;
+    height: auto;
+}
+
+/* رنگ آیکون‌ها */
+.notif-table .notif-item.danger .notif-icon svg {
+    color: #d9000e;
+}
+
+.notif-table .notif-item.warning .notif-icon svg {
+    color: #ffd93d;
+}
+
+.notif-table .notif-item.info .notif-icon svg {
+    color: #007aff;
+}
+
+/* فاصله بین ردیف‌ها */
+.notif-table tbody tr+tr {
+    margin-top: 0.75rem;
+}
+
+/* ریسپانسیو */
+@media (max-width: 1024px) {
+    .notif-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .notif-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .notif-page {
+        padding: 1rem;
+    }
+
+    .notif-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .notif-table-wrapper {
+        padding: 1rem;
+        border-radius: 14px;
+    }
+
+    .notif-table th,
+    .notif-table td {
+        padding: 8px 4px;
+        font-size: 0.85rem;
+    }
+
+    .notif-table .notif-icon svg {
+        font-size: 1.3rem;
+        transform: none;
+    }
+}
