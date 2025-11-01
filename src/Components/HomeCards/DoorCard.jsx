@@ -57,6 +57,7 @@ function DoorCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus,
                 />
 
                 <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isWet === 'on' ? 'باز' : 'بسته'}</p>
+
                 <div
                     className='open-count'
                     style={{
