@@ -95,6 +95,21 @@ export default function Home() {
                                     deviceStatus={deviceStatus}
                                 />
                             );
+
+	        case "reed":
+                            let open_count = sensorsLogsData[deviceId]?.open_count
+                            return (
+                                <DoorCard
+                                    key={deviceId}
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
+                                    open_count={open_count}
+                                />
+                            );
+
                         case "temperature":
                             return (
                                 <TempCard
