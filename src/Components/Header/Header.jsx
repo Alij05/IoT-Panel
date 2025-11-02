@@ -43,8 +43,10 @@ export default function Header() {
     const token = localStorage.getItem('token')
 
 
+    // بستن با کلیک بیرون
     useEffect(() => {
         const handleClickOutside = (e) => {
+            // بررسی کردیم آیا کلیک خارج از محدوده‌ی نوتیف بوده یا نه
             if (notifRef.current && !notifRef.current.contains(e.target)) {
                 setIsOpen(false);
             }
@@ -52,7 +54,6 @@ export default function Header() {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
 
     const getInitAlerts = async () => {
         try {
@@ -85,41 +86,42 @@ export default function Header() {
 
 
     return (
-        <header className='header'>
-
-            {/* Hamburger Menu */}
+        <header className="header">
+            {/* ---------- Hamburger Menu ---------- */}
             <div className="mobile-menu-wrapper" onClick={mobileMenuClickHandler}>
                 <div className="line"></div>
                 <div className="line"></div>
                 <div className="line"></div>
             </div>
 
+            {/* ---------- Admin Profile ---------- */}
             <div className="admin-profile">
                 <img src="/images/user.webp" alt="Admin Profile" />
                 <div>
                     <h1>{username}</h1>
-                    <h3>{isUserAdmin ? 'ادمین' : 'کاربر'}</h3>
+                    <h3>{isUserAdmin ? "ادمین" : "کاربر"}</h3>
                 </div>
             </div>
 
-            <div className='header-left-section'>
-                <div
-                    className="notification-icon"
-                    onClick={() => {
-                        setIsOpen(!isOpen);
-                        // getAlertsHandler();
-                    }}
-                    title="نوتیفیکیشن‌ها"
-                >
-                    <NotificationsNoneOutlinedIcon
-                        style={{
-                            fontSize: "26px",
-                            color: theme === "dark" ? "#fff" : "#333",
-                        }}
-                    />
-                    {alerts.length > 0 && (
-                        <span className="notification-badge">{alerts.length}</span>
-                    )}
+            {/* ---------- Left Section ---------- */}
+            <div className="header-left-section">
+                {/* ---------- Notifications ---------- */}
+                <div className="notification-wrapper" ref={notifRef}>
+                    <div
+                        className="notification-icon"
+                        onClick={() => setIsOpen(!isOpen)}
+                        title="نوتیفیکیشن‌ها"
+                    >
+                        <NotificationsNoneOutlinedIcon
+                            style={{
+                                fontSize: "26px",
+                                color: theme === "dark" ? "#fff" : "#333",
+                            }}
+                        />
+                        {alerts.length > 0 && (
+                            <span className="notification-badge">{alerts.length}</span>
+                        )}
+                    </div>
 
                     {isOpen && (
                         <div className="notification-box">
@@ -152,36 +154,48 @@ export default function Header() {
                                                 <p className="notif-message">{notif.message}</p>
                                                 <div className="notif-details">
                                                     <span>دستگاه: {notif.deviceId}</span>
-                                                    <span>{moment(notif?.timestamp).format("HH:mm:ss")}</span>
+                                                    <span>
+                                                        {moment(notif?.timestamp).format("HH:mm:ss")}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </li>
                                     ))}
                                 </ul>
                             ) : (
-                                <div className="no-notifications">هیچ نوتیفیکیشنی وجود ندارد</div>
+                                <div className="no-notifications">
+                                    هیچ نوتیفیکیشنی وجود ندارد
+                                </div>
                             )}
                         </div>
                     )}
                 </div>
 
-                <div className=''>
-                    {isShowHeader && <Search />}
-                </div>
-                <div className='header-left-icon header-date'>
-                    <div style={{ padding: "10px", textAlign: "center", fontWeight: "bold" }}>
+                {/* ---------- Search ---------- */}
+                {isShowHeader && <Search />}
+
+                {/* ---------- Date ---------- */}
+                <div className="header-left-icon header-date">
+                    <div
+                        style={{
+                            padding: "10px",
+                            textAlign: "center",
+                            fontWeight: "bold",
+                        }}
+                    >
                         {dateStr} , {dayName}
                     </div>
                 </div>
-                <button className='header-left-icon header-theme' onClick={toggleTheme}>
-                    {theme === 'light' ? (
+
+                {/* ---------- Theme Toggle ---------- */}
+                <button className="header-left-icon header-theme" onClick={toggleTheme}>
+                    {theme === "light" ? (
                         <BedtimeOutlinedIcon />
                     ) : (
                         <WbSunnyOutlinedIcon />
                     )}
                 </button>
             </div>
-
         </header>
-    )
+    );
 }

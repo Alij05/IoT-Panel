@@ -141,6 +141,10 @@
 
 /* ==================== NOTIFICATION MENU (منوی کوچک بالای صفحه) ==================== */
 
+.notification-wrapper {
+    position: relative;
+}
+
 .notification-icon {
     position: relative;
     cursor: pointer;
