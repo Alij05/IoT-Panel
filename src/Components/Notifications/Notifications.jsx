@@ -5,24 +5,44 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import "./Notifications.css";
+import { useSockets } from "../../Contexts/SocketProvider";
 
 const url = process.env.REACT_APP_IOT;
+const iotUrl = process.env.REACT_APP_IOT
+
 
 export default function Notifications() {
+    const { sensorsAlert } = useSockets()
+
     const [alerts, setAlerts] = useState([]);
 
     useEffect(() => {
-        const getAlertsHandler = async () => {
+        const getInitAlerts = async () => {
             try {
-                const res = await axios.get(`${url}/api/alerts`);
-                setAlerts(res.data.alerts);
+                const res = await axios.get(`${iotUrl}/api/alerts`);
+                const dbAlerts = Array.isArray(res.data.alerts) ? res.data.alerts.slice(0, 20) : [];
+
+                setAlerts(dbAlerts);
             } catch (err) {
                 console.error("Error fetching alerts:", err);
             }
         };
 
-        getAlertsHandler();
+        getInitAlerts();
     }, []);
+
+
+    useEffect(() => {
+        if (sensorsAlert.length > 0) {
+            setAlerts(prev => {
+                const newAlerts = sensorsAlert.filter(alert =>
+                    !prev.some(a => a.timestamp === alert.timestamp && a.deviceId === alert.deviceId)
+                );
+                return [...newAlerts, ...prev];
+            });
+        }
+    }, [sensorsAlert]);
+
 
     return (
         <div className="notif-page">
@@ -63,7 +83,7 @@ export default function Notifications() {
                                     </td>
                                     <td>{notif.message}</td>
                                     <td>{notif.deviceId}</td>
-                                    <td>{moment(notif.extra.timestamp).format("jYYYY/jMM/jDD HH:mm:ss")}</td>
+                                    <td>{moment(notif?.timestamp).format("jYYYY/jMM/jDD HH:mm:ss")}</td>
                                 </tr>
                             ))}
                         </tbody>

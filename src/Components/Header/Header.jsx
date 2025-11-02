@@ -43,7 +43,7 @@ export default function Header() {
     const token = localStorage.getItem('token')
 
 
-    // بستن با کلیک بیرون
+    //!  بستن با کلیک بیرون  !//
     useEffect(() => {
         const handleClickOutside = (e) => {
             // بررسی کردیم آیا کلیک خارج از محدوده‌ی نوتیف بوده یا نه
@@ -74,14 +74,25 @@ export default function Header() {
 
     useEffect(() => {
         if (sensorsAlert.length > 0) {
-            const latestAlert = sensorsAlert[sensorsAlert.length - 1];
             setAlerts(prev => {
-                const exists = prev.some(a => a.timestamp === latestAlert.timestamp && a.deviceId === latestAlert.deviceId);
-                if (exists) return prev;
-                return [latestAlert, ...prev];
+                const newAlerts = sensorsAlert.filter(alert =>
+                    !prev.some(a => a.timestamp === alert.timestamp && a.deviceId === alert.deviceId)
+                );
+                return [...newAlerts, ...prev];
             });
         }
     }, [sensorsAlert]);
+
+    //* useEffect(() => {
+    //*     if (sensorsAlert.length > 0) {
+    //*         const latestSensorsAlert = sensorsAlert[sensorsAlert.length - 1];
+    //*         setAlerts(prev => {
+    //*             const exists = prev.some(a => a.timestamp === latestSensorsAlert.timestamp && a.deviceId === latestSensorsAlert.deviceId);
+    //*             if (exists) return prev;
+    //*             return [latestSensorsAlert, ...prev];
+    //*         });
+    //*     }
+    //* }, [sensorsAlert]);
 
 
 
@@ -153,10 +164,10 @@ export default function Header() {
                                             <div className="notif-content">
                                                 <p className="notif-message">{notif.message}</p>
                                                 <div className="notif-details">
-                                                    <span>دستگاه: {notif.deviceId}</span>
-                                                    <span>
-                                                        {moment(notif?.timestamp).format("HH:mm:ss")}
-                                                    </span>
+                                                    <p>دستگاه: {notif.deviceId}</p>
+                                                    <p>
+                                                        {moment(notif?.timestamp).format("jYYYY/jMM/jDD HH:mm:ss")}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </li>

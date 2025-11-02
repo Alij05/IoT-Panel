@@ -293,6 +293,8 @@
     font-size: 0.8rem;
     color: #888;
     display: flex;
+    flex-direction: column;
+    gap: 6px;
     justify-content: space-between;
 }
 
