@@ -8,13 +8,16 @@ export function WebSocketProvider({ children }) {
     const reconnectTimerRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
     const [sensorsData, setSensorsData] = useState({});
-    const [sensorsAlert, setSensorsAlert] = useState({});
+    const [sensorsAlert, setSensorsAlert] = useState([]);
     const [sensorsLogsData, setSensorsLogsData] = useState({});
     const [flamesData, setFlamesData] = useState({});
 
-    const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
-    const wsUrl = `${BASE_URL.replace(/^https?/, "wss")}/ws`;
-    const url = process.env.REACT_APP_URL;
+    // const BASE_URL = process.env.REACT_APP_HA_BASE_URL;
+    // const wsUrl = `${BASE_URL.replace(/^https?/, "wss")}/ws`;
+    // const url = process.env.REACT_APP_URL;
+
+    const iotUrl = process.env.REACT_APP_IOT
+    const wsUrl = `${iotUrl.replace(/^https?/, "ws")}/ws`;
 
     useEffect(() => {
         const connect = () => {
@@ -39,6 +42,17 @@ export function WebSocketProvider({ children }) {
                         // Update Database When State Changed
 
                     }
+
+                    if (data.deviceId && data.messageType === 'alert') {
+                        console.log('[WS] Alert: ', data);
+                        setSensorsAlert((prev = []) => {
+                            const exists = prev.some(a => a.timestamp === data.timestamp && a.deviceId === data.deviceId);
+                            if (exists) return prev;
+
+                            return [...prev, data];
+                        });
+                    }
+
                     if (data.device_class === 'flame') {
                         setFlamesData((prev) => ({
                             ...prev,
@@ -80,7 +94,7 @@ export function WebSocketProvider({ children }) {
 
     return (
         <WebSocketContext.Provider
-            value={{ socket: socketRef.current, isConnected, sensorsData, flamesData, sensorsLogsData }}
+            value={{ socket: socketRef.current, isConnected, sensorsData, flamesData, sensorsLogsData, sensorsAlert }}
         >
             {children}
         </WebSocketContext.Provider>

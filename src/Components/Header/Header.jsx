@@ -13,6 +13,7 @@ import moment from "moment-jalaali";
 import { MobileMenuContext } from '../../Contexts/MobileMenuContext';
 import axios from 'axios';
 import { useAuth } from '../../Contexts/AuthContext';
+import { useSockets } from '../../Contexts/SocketProvider';
 
 const url = process.env.REACT_APP_URL
 const iotUrl = process.env.REACT_APP_IOT
@@ -30,6 +31,8 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     const notifRef = useRef(null);
     const [alerts, setAlerts] = useState([])
+    const { sensorsAlert } = useSockets()
+
 
     // Persian Date
     moment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
@@ -50,15 +53,36 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const getAlertsHandler = async () => {
+
+    const getInitAlerts = async () => {
         try {
             const res = await axios.get(`${iotUrl}/api/alerts`);
-            console.log(res.data.alerts);
-            setAlerts(res.data.alerts.slice(0, 25))
+            const dbAlerts = Array.isArray(res.data.alerts) ? res.data.alerts.slice(0, 20) : [];
+
+            setAlerts(dbAlerts);
         } catch (err) {
             console.error("Error fetching alerts:", err);
         }
     };
+
+    // Get first 20 Alerts on Mounting
+    useEffect(() => {
+        getInitAlerts()
+    }, [])
+
+
+    useEffect(() => {
+        if (sensorsAlert.length > 0) {
+            const latestAlert = sensorsAlert[sensorsAlert.length - 1];
+            setAlerts(prev => {
+                const exists = prev.some(a => a.timestamp === latestAlert.timestamp && a.deviceId === latestAlert.deviceId);
+                if (exists) return prev;
+                return [latestAlert, ...prev];
+            });
+        }
+    }, [sensorsAlert]);
+
+
 
     return (
         <header className='header'>
@@ -83,7 +107,7 @@ export default function Header() {
                     className="notification-icon"
                     onClick={() => {
                         setIsOpen(!isOpen);
-                        getAlertsHandler();
+                        // getAlertsHandler();
                     }}
                     title="نوتیفیکیشن‌ها"
                 >
@@ -128,7 +152,7 @@ export default function Header() {
                                                 <p className="notif-message">{notif.message}</p>
                                                 <div className="notif-details">
                                                     <span>دستگاه: {notif.deviceId}</span>
-                                                    <span>{moment(notif.extra.timestamp).format("HH:mm:ss")}</span>
+                                                    <span>{moment(notif?.timestamp).format("HH:mm:ss")}</span>
                                                 </div>
                                             </div>
                                         </li>

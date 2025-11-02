@@ -13,6 +13,7 @@ import MotionDetectionCard from "../HomeCards/MotionDetectionCard";
 import CameraCard from "../HomeCards/CameraCard";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import useProductStore from "../../Store/productStore";
+import DoorCard from "../HomeCards/DoorCard";
 
 const url = process.env.REACT_APP_URL;
 
@@ -96,7 +97,7 @@ export default function Home() {
                                 />
                             );
 
-	        case "reed":
+                        case "reed":
                             let open_count = sensorsLogsData[deviceId]?.open_count
                             return (
                                 <DoorCard
