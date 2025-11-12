@@ -14,6 +14,7 @@ import CameraCard from "../HomeCards/CameraCard";
 import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import useProductStore from "../../Store/productStore";
 import DoorCard from "../HomeCards/DoorCard";
+import VoltageCard from "../HomeCards/VoltageCard";
 
 const url = process.env.REACT_APP_URL;
 
@@ -85,6 +86,7 @@ export default function Home() {
                                     deiviceAutoStatus={sensorsData?.[deviceId]?.auto_enabled}
                                 />
                             );
+
                         case "flame":
                             return (
                                 <FlameCard
@@ -122,6 +124,7 @@ export default function Home() {
                                     deviceStatus={deviceStatus}
                                 />
                             );
+
                         case "water":
                             return (
                                 <WaterCard
@@ -133,6 +136,7 @@ export default function Home() {
                                     deviceStatus={deviceStatus}
                                 />
                             );
+
                         case "motion":
                             return (
                                 <MotionDetectionCard
@@ -144,6 +148,19 @@ export default function Home() {
                                     deviceStatus={deviceStatus}
                                 />
                             );
+
+                        case "power":
+                            return (
+                                <VoltageCard
+                                    key={deviceId}
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
+                                />
+                            );
+
                         case "camera":
                             return (
                                 <div key={deviceId} className="btn-cell" style={{ minHeight: "200px" }}>

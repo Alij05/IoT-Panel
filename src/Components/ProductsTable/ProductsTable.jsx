@@ -19,6 +19,7 @@ import CameraCard from '../HomeCards/CameraCard'
 import MotionStatus from '../Cards/MotionStatus'
 import FlameStatus from '../Cards/FlameStatus'
 import useProductStore from '../../Store/productStore'
+import PowerStatus from '../Cards/PowerStatus'
 
 
 const url = process.env.REACT_APP_URL
@@ -553,6 +554,15 @@ export default function ProductsTable() {
                                             </>
                                         )}
 
+                                        {product?.deviceClass === 'power' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>ولتاژ</button>
+                                            </>
+                                        )}
+
                                         {product?.deviceClass === 'camera' && (
                                             <>
                                                 <button className='users-table-btn' onClick={() => {
@@ -659,6 +669,15 @@ export default function ProductsTable() {
                                             </button>
                                         )}
 
+                                        {product?.deviceClass === 'power' && (
+                                            <>
+                                                <button className='users-table-btn' onClick={() => {
+                                                    setIsShowDetailsModal(true);
+                                                    setProductInfo(product)
+                                                }}>ولتاژ</button>
+                                            </>
+                                        )}
+
                                         {product?.deviceClass === 'camera' && (
                                             <button
                                                 className="users-table-btn"
@@ -706,12 +725,18 @@ export default function ProductsTable() {
                                     <WaterMoistureStatus deviceState={deviceState} />
                                 )}
 
-                                {productInfo?.deviceClass === "temperature" && (
-                                    <>
-                                        <Temperature deviceState={deviceState} product={productInfo} />
-                                        <Humadity deviceState={deviceState} product={productInfo} />
-                                    </>
+                                {productInfo?.deviceClass === "power" && (
+                                    <PowerStatus deviceState={deviceState} product={productInfo} />
                                 )}
+
+                                {productInfo?.deviceClass === "temperature" && (
+                                    <Temperature deviceState={deviceState} product={productInfo} />
+                                )}
+
+                                {productInfo?.deviceClass === "humidity" && (
+                                    <Humadity deviceState={deviceState} product={productInfo} />
+                                )}
+
 
                                 {productInfo?.deviceClass === "motion" && (
                                     <MotionStatus product={productInfo} deviceState={deviceState} />

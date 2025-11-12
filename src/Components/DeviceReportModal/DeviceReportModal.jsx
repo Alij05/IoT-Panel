@@ -6,7 +6,7 @@ export default function DeviceReportModal({ isOpen, onClose, deviceId, data, dev
   const selectedDate = useReportStore((state) => state.selectedDate);
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content">
         <button className="modal-close" onClick={onClose}>
           ✖

@@ -1,0 +1,36 @@
+.voltage-container {
+    width: 60px;
+    text-align: center;
+    margin: 10px;
+  }
+  
+  .voltage-title {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .voltage-wrapper {
+    position: relative;
+    height: 150px;
+    width: 20px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+  
+  .voltage-bar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .voltage-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    transition: height 0.3s, background-color 0.3s;
+  }
+  

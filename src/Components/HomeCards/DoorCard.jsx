@@ -1,16 +1,41 @@
 import React, { useEffect, useState } from 'react'
 import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
+const url = process.env.REACT_APP_IOT
+
 function DoorCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus, open_count }) {
 
-    const [isWet, setIsWet] = useState(deviceState ? 'on' : 'off')
+    console.log('deviceState ==>', deviceState);
+    
+
+    const [isLock, setIsLock] = useState(deviceState ? 'on' : 'off')
     const [openCount, setOpenCount] = useState(open_count)
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
 
+    const deviceType = product.deviceType || 'sensor';
+    const deviceId = product.entity_id;
+
 
     useEffect(() => {
-        setIsWet(deviceState ? 'on' : 'off')
+        setIsLock(deviceState ? 'on' : 'off')
     }, [deviceState])
+
+    useEffect(() => {
+        async function deviceInitState() {
+            try {
+                const res = await fetch(`${url}/api/status/${deviceType}/${deviceId}`);
+                const data = await res.json();
+                if (!res.ok) return;
+
+                setOpenCount(data.extra.open_count)
+
+            } catch (error) {
+
+            }
+        }
+
+        deviceInitState()
+    }, []);
 
     useEffect(() => {
         setOpenCount(open_count)
@@ -46,18 +71,17 @@ function DoorCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus,
                 )}
                 <img
                     src={
-                        isWet === 'on'
-                            ? 'svgs/water-on.svg'
-                            : (isWet === 'off'
-                                ? 'svgs/lock.svg'
-                                : 'svgs/water-disable.svg')
+                        isLock === 'off'
+                            ? 'svgs/lock-open.svg'
+                            : (isLock === 'off'
+                                ? 'svgs/lock-open.svg'
+                                : 'svgs/lock-close.svg')
                     }
-                    alt={isWet === 'on' ? 'باز' : 'بسته'}
+                    alt={isLock === 'on' ? 'باز' : 'بسته'}
                     style={{ width: '85px', transition: '0.3s ease-in-out' }}
                 />
 
-                <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isWet === 'on' ? 'باز' : 'بسته'}</p>
-
+                <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isLock === 'off' ? 'باز' : 'بسته'}</p>
                 <div
                     className='open-count'
                     style={{
@@ -82,7 +106,7 @@ function DoorCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus,
                         <h4>جزئیات سنسور</h4>
                         <table className="info-table">
                             <tbody>
-                                <tr><td>وضعیت :</td><td>{isWet === 'on' ? 'باز' : 'بسته'}</td></tr>
+                                <tr><td>وضعیت :</td><td>{isLock === 'on' ? 'باز' : 'بسته'}</td></tr>
                                 <DeviceMoreInfo deviceInfo={deviceInfo} product={product} />
                             </tbody>
                         </table>
