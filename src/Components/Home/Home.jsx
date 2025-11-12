@@ -19,7 +19,7 @@ import VoltageCard from "../HomeCards/VoltageCard";
 const url = process.env.REACT_APP_URL;
 
 export default function Home() {
-    const { sensorsData, sensorsLogsData } = useSockets();
+    const { sensorsData, sensorsLogsData, deviceStatuses } = useSockets();
     const [allProducts, setAllProducts] = useState([]);
     const { products: userProducts, setProducts: setUserProducts } = useProductStore();
     const { isUserAdmin } = useAuth();
@@ -71,7 +71,8 @@ export default function Home() {
                     const deviceId = product.entity_id;
                     const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
                     const deviceInfo = deviceId ? sensorsData?.[deviceId] : null;
-                    const deviceStatus = deviceId ? sensorsLogsData?.[deviceId]?.msg : null;
+                    const deviceStatus = deviceId ? deviceStatuses?.[deviceId] || null;
+
 
                     switch (product.deviceClass) {
                         case "light":
