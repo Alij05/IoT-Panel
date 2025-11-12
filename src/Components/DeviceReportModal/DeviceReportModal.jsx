@@ -7,7 +7,7 @@ export default function DeviceReportModal({ isOpen, onClose, deviceId, data, dev
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content">
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>
           ✖
         </button>
