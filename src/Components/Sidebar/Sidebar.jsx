@@ -4,6 +4,7 @@ import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import BuildIcon from '@mui/icons-material/Build';
+import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import EdgesensorHighIcon from '@mui/icons-material/EdgesensorHigh';
 import QrCodeScannerRoundedIcon from '@mui/icons-material/QrCodeScannerRounded';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
@@ -72,6 +73,14 @@ export default function Sidebar() {
             }}>
               <EdgesensorHighIcon className="icon" />
               دستگاه ها
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/add-phone" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
+              <AddIcCallIcon className="icon" />
+              ثبت شماره
             </NavLink>
           </li>
           <li>

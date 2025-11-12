@@ -71,7 +71,7 @@ export default function Home() {
                     const deviceId = product.entity_id;
                     const deviceState = deviceId ? sensorsData?.[deviceId]?.state : null;
                     const deviceInfo = deviceId ? sensorsData?.[deviceId] : null;
-                    const deviceStatus = deviceId ? deviceStatuses?.[deviceId] || null;
+                    const deviceStatus = deviceId ? deviceStatuses?.[deviceId] : null;
 
 
                     switch (product.deviceClass) {

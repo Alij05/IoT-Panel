@@ -13,6 +13,7 @@ import AddNewProduct from './Components/AddNewProduct/AddNewProduct';
 import Support from './Components/Support/Support';
 import Reports from './Components/Reports/Reports';
 import Notifications from './Components/Notifications/Notifications';
+import AddPhone from './Components/AddPhone/AddPhone';
 
 
 const adminRoutes = [
@@ -24,6 +25,7 @@ const userRoutes = [
     { path: 'home', element: <PrivateRoute><Home /></PrivateRoute> },
     { path: 'products', element: <PrivateRoute><Products /></PrivateRoute> },
     { path: 'add-product', element: <PrivateRoute><AddNewProduct /></PrivateRoute> },
+    { path: 'add-phone', element: <PrivateRoute><AddPhone /></PrivateRoute> },
     { path: 'support', element: <PrivateRoute><Support /></PrivateRoute> },
     { path: 'reports', element: <PrivateRoute><Reports /></PrivateRoute> },
     { path: 'notifs', element: <PrivateRoute><Notifications /></PrivateRoute> },

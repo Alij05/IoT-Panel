@@ -1,0 +1,100 @@
+.phones-main {
+    margin-top: 60px;
+}
+
+.phones-title {
+    font-size: 2rem;
+}
+
+.add-phones-form {
+    margin-top: 30px;
+    background-color:
+        color-mix(in oklab, var(--white) 60%, transparent) !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 30px 20px;
+    border-radius: 20px;
+    width: 85%;
+    margin: 30px auto 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+.add-phones-form-wrap {
+    width: 85%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px 25px;
+}
+
+.add-phones-form-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-50);
+    padding: 0 20px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position: relative;
+}
+
+.input-icon {
+    font-size: 1.4rem;
+    color: #767676;
+    margin-right: 10px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.add-phones-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.1rem;
+    padding: 16px 10px 8px;
+    color: var(--text);
+}
+
+.input-wrapper label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    color: #888;
+    background: var(--white-50);
+    padding: 0 4px;
+    pointer-events: none;
+}
+
+.add-phones-input:focus+label,
+.add-phones-input:valid+label {
+    top: 0;
+    transform: translateY(-50%) scale(0.85);
+    color: #444;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.add-phones-submit {
+    border: none;
+    background: var(--blue);
+    color: white;
+    font-size: 1.1rem;
+    padding: 10px 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    margin: 36px auto 0;
+    display: block;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-phones-submit:hover {
+    filter: brightness(0.9);
+}
