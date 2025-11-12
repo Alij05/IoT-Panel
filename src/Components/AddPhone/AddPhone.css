@@ -1,100 +1,177 @@
+/* Container */
 .phones-main {
     margin-top: 60px;
 }
 
 .phones-title {
     font-size: 2rem;
+    color: var(--text);
+    text-align: center;
 }
 
+/* Form */
 .add-phones-form {
     margin-top: 30px;
-    background-color:
-        color-mix(in oklab, var(--white) 60%, transparent) !important;
+    background: rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     padding: 30px 20px;
     border-radius: 20px;
     width: 85%;
-    margin: 30px auto 0;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px;
 }
 
+/* Grid wrapper */
 .add-phones-form-wrap {
-    width: 85%;
-    margin: 0 auto;
+    width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 30px 25px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
 }
 
+/* Input group */
 .add-phones-form-group {
     display: flex;
     align-items: center;
-    background-color: var(--white-50);
-    padding: 0 20px;
-    border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--blue);
+    border-radius: 12px;
+    padding: 6px 12px;
     position: relative;
 }
 
+/* Phone icon */
 .input-icon {
-    font-size: 1.4rem;
-    color: #767676;
-    margin-right: 10px;
+    color: var(--blue);
+    margin-right: 8px;
+    flex-shrink: 0;
 }
 
+/* ===== core: prefix + input + label ===== */
+
+/* width reserved for prefix (change variable if you want different spacing) */
 .input-wrapper {
+    --prefix-w: 44px;
+    /* width occupied by prefix including left space */
     position: relative;
     width: 100%;
+    display: flex;
+    align-items: center;
 }
 
+/* prefix fixed on left inside wrapper */
+.input-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--blue);
+    font-size: 1.05rem;
+    pointer-events: none;
+    user-select: none;
+    width: var(--prefix-w);
+    text-align: left;
+}
+
+/* input — padding-left accounts for prefix width + left offset */
 .add-phones-input {
     width: 100%;
     border: none;
     outline: none;
-    background: none;
-    font-size: 1.1rem;
-    padding: 16px 10px 8px;
+    background: transparent;
+    font-size: 1.05rem;
+    padding: 16px 8px 16px calc(var(--prefix-w));
+    /* important: reserves space for +98 */
     color: var(--text);
+    direction: ltr;
+    text-align: left;
+    box-sizing: border-box;
 }
 
+/* placeholder subtle */
+.add-phones-input::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* label floating */
 .input-wrapper label {
     position: absolute;
-    left: 10px;
+    left: calc(var(--prefix-w) + 12px);
+    /* کنار +98 */
     top: 50%;
     transform: translateY(-50%);
-    transition: all 0.2s ease;
+    /* قبل از focus */
+    transition: all 0.18s ease;
     font-size: 1rem;
-    color: #888;
-    background: var(--white-50);
-    padding: 0 4px;
+    color: #bdbdbd;
     pointer-events: none;
+    background: transparent;
+    padding: 0 4px;
+    z-index: 2;
 }
 
-.add-phones-input:focus+label,
-.add-phones-input:valid+label {
-    top: 0;
-    transform: translateY(-50%) scale(0.85);
-    color: #444;
-    padding: 4px 8px;
-    border-radius: 8px;
+/* وقتی input فوکوس شده یا پر شده */
+.input-wrapper label.filled,
+.add-phones-input:focus+label {
+    top: -15px;
+    transform: translateY(0) scale(0.85);
+    color: #fff;
+    background: var(--blue);
+    padding: 2px 6px;
+    border-radius: 6px;
 }
 
+
+/* error message */
+.error-message {
+    position: absolute;
+    left: calc(var(--prefix-w) + 18px);
+    bottom: -20px;
+    font-size: 0.8rem;
+    color: #ff6b6b;
+}
+
+/* submit button */
 .add-phones-submit {
     border: none;
     background: var(--blue);
-    color: white;
+    color: #fff;
     font-size: 1.1rem;
-    padding: 10px 40px;
+    padding: 12px 40px;
     border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.2s ease, filter 0.2s ease;
-    margin: 36px auto 0;
-    display: block;
+    transition: transform 0.18s ease, filter 0.18s ease;
+    margin: 26px 0 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .add-phones-submit:hover {
-    filter: brightness(0.9);
+    filter: brightness(0.92);
+    transform: translateY(-2px);
+}
+
+/* svg color */
+.add-phones-form-group svg {
+    fill: var(--blue);
+    color: var(--blue);
+}
+
+/* responsive small screens: slightly reduce prefix and paddings */
+@media (max-width: 420px) {
+    .input-wrapper {
+        --prefix-w: 38px;
+    }
+
+    .add-phones-input {
+        padding-left: calc(var(--prefix-w) + 12px);
+    }
+
+    .input-wrapper label {
+        left: calc(var(--prefix-w) + 14px);
+    }
+
+    .error-message {
+        left: calc(var(--prefix-w) + 14px);
+    }
 }

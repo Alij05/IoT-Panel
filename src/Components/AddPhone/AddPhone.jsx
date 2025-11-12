@@ -1,39 +1,50 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import PhoneIcon from '@mui/icons-material/Phone';
+import { Phone } from 'lucide-react';
 import './AddPhone.css';
 
 const AddPhone = () => {
-    const { register, handleSubmit, formState } = useForm();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
 
     const onSubmit = (data) => {
-        const filledPhones = Object.values(data).filter(num => num.trim() !== '');
-        console.log("شماره‌های وارد شده:", filledPhones);
+        const filledPhones = Object.entries(data).reduce((acc, [key, value]) => {
+            acc[key] = value?.trim() ? `+98${value?.trim()}` : null;
+            return acc;
+        }, {});
+
+        console.log(filledPhones);
     };
+
+
 
 
     return (
         <div className='phones-main'>
             <h1 className='phones-title'>ثبت شماره تماس</h1>
 
-            <form onSubmit={handleSubmit(onSubmit)} className='add-phones-form' noValidate>
+            <form className='add-phones-form' onSubmit={handleSubmit(onSubmit)} noValidate>
                 <div className='add-phones-form-wrap'>
                     {[1, 2, 3, 4, 5].map(i => (
                         <div key={i} className='add-phones-form-group'>
-                            <PhoneIcon className='input-icon' />
+                            <Phone className='input-icon' size={20} />
                             <div className="input-wrapper">
+                                <span className="input-prefix">+98</span>
+
                                 <input
                                     type="tel"
+                                    inputMode="numeric"
+                                    maxLength={10}
                                     {...register(`phone${i}`, {
-                                        // required: "این فیلد الزامی است",
-                                        pattern: {
-                                            value: /^09\d{9}$/,
-                                            message: "شماره موبایل معتبر نیست"
-                                        }
+                                        validate: value => !value || /^9\d{9}$/.test(value) || "شماره موبایل معتبر نیست"
                                     })}
                                     className="add-phones-input"
                                 />
-                                <label>شماره تماس {i}</label>
+
+                                <label className={watch(`phone${i}`) ? 'filled' : ''}>شماره تماس {i}</label>
+
+                                {errors[`phone${i}`] && (
+                                    <span className="error-message">{errors[`phone${i}`].message}</span>
+                                )}
                             </div>
                         </div>
                     ))}
