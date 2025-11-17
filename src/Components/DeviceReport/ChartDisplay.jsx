@@ -22,6 +22,8 @@ import "./DeviceReport.css";
  * ChartDisplay component (dynamic labels for value1/value2 + Excel & PDF export)
  */
 const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToExcel, loading = false }) => {
+  console.log("filteredData ==> ", filteredData);
+
   const chartContainerRef = useRef(null); // Ref for entire chart section
   const originalRef = useRef([]);
   const [localData, setLocalData] = useState([]);
@@ -72,6 +74,7 @@ const ChartDisplay = ({ filteredData = [], setFilteredData, deviceId, exportToEx
       let displayTime = d.time;
       const parsed = Date.parse(d.time);
       if (!isNaN(parsed)) displayTime = toJalaliDateString(d.time);
+      console.log("processedData ==> ", processedData);
       return { ...d, displayTime };
     });
   }, [localData]);

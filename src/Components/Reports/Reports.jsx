@@ -8,6 +8,7 @@ import { ReportLocalization } from "../../Constants/Localizations/Localizations"
 import { useAuth } from "../../Contexts/AuthContext";
 import axios from "axios";
 import { useEntityStore } from "../../Store/entityStore";
+import useProductStore from "../../Store/productStore";
 
 const url = process.env.REACT_APP_URL;
 
@@ -23,6 +24,9 @@ export default function Reports() {
   const resetDate = useReportStore((state) => state.resetDate);
   const resetRange = useReportStore((state) => state.resetRange);
 
+  const userProducts = useProductStore((state) => state.products)
+
+
   const [openModal, setOpenModal] = useState(false);
   const [modalData, setModalData] = useState({ entity: null, data: null });
 
@@ -33,7 +37,7 @@ export default function Reports() {
     } else {
       geUserEntities()
     }
-  }, [])
+  }, [userProducts])
 
   useEffect(() => {
     async function fetchData() {
@@ -49,6 +53,9 @@ export default function Reports() {
             )
           )
         );
+
+        console.log('Entity History Logs ::', result);
+
 
         const newDataMap = {};
         entity_id.forEach((id, index) => {
@@ -118,42 +125,28 @@ export default function Reports() {
   }
 
   async function geUserEntities() {
-    const token = localStorage.getItem('token');
+    const ids = userProducts.map((p) => p.entity_id);
+    const devicesClass = Object.assign(
+      {},
+      ...userProducts.map(d => ({
+        [d.entity_id]: { deviceClass: d.deviceClass }
+      }))
+    )
 
-    try {
-      const res = await axios.get(`${url}/api/devices/mine`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const deviceInfos = Object.assign(
+      {},
+      ...userProducts.map(d => ({
+        [d.entity_id]: {
+          deviceLocationName: d.deviceLocationName,
+          deviceName: d.deviceName,
+          user: d.user
+        }
+      }))
+    );
 
-      if (res.status === 200) {
-        const ids = res.data.map((p) => p.entity_id);
-        const devicesClass = Object.assign(
-          {},
-          ...res.data.map(d => ({
-            [d.entity_id]: { deviceClass: d.deviceClass }
-          }))
-        )
-
-        const deviceInfos = Object.assign(
-          {},
-          ...res.data.map(d => ({
-            [d.entity_id]: {
-              deviceLocationName: d.deviceLocationName,
-              deviceName: d.deviceName,
-              user: d.user
-            }
-          }))
-        );
-
-        setDeviceInfos(deviceInfos)
-        setEntityId(ids)
-        setDevicesClass(devicesClass)
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    setDeviceInfos(deviceInfos)
+    setEntityId(ids)
+    setDevicesClass(devicesClass)
   }
 
 
@@ -186,7 +179,7 @@ export default function Reports() {
           }}
           deviceId={modalData.deviceId}
           deviceClass={devicesClass[modalData.deviceId].deviceClass}
-          data={modalData.data}
+          data={modalData.data}  // Logs Historty from Database
           deviceInfos={deviceInfos[modalData.deviceId]}
         />
       )}

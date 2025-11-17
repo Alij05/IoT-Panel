@@ -16,8 +16,10 @@ export function WebSocketProvider({ children }) {
     const [flamesData, setFlamesData] = useState({});
     const [deviceStatuses, setDeviceStatuses] = useState({}); // Tracks device online/offline states
 
-    const url = process.env.REACT_APP_IOT;
-    const wsUrl = `${url.replace(/^https?/, "ws")}/ws`;
+    const url = process.env.REACT_APP_HA_BASE_URL;
+    const TOKEN = process.env.REACT_APP_TOKEN;
+
+    const wsUrl = `${url.replace(/^http?/, "ws")}/ws`;
 
     useEffect(() => {
         const connect = () => {
@@ -26,6 +28,7 @@ export function WebSocketProvider({ children }) {
 
             ws.onopen = () => {
                 setIsConnected(true);
+                ws.send(JSON.stringify({ type: "auth", access_token: TOKEN }));
                 console.log("WSS Connected ✔");
             };
 

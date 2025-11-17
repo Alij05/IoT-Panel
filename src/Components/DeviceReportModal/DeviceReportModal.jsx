@@ -3,6 +3,8 @@ import { useReportStore } from '../../Store/dateStore';
 import "./DeviceReportModal.css";
 
 export default function DeviceReportModal({ isOpen, onClose, deviceId, data, deviceInfos, deviceClass }) {
+  console.log("modalData ==> ", data);
+
   const selectedDate = useReportStore((state) => state.selectedDate);
 
   return (

@@ -7,6 +7,8 @@ import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 const url = process.env.REACT_APP_URL
 
 function TempCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) {
+    console.log("deviceState ==>", deviceState);
+
     const [temperature, setTemperature] = useState("Loading");
     const [humidity, setHumidity] = useState("Loading");
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);

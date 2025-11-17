@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .env
+roadmap.txt
 
 # testing
 /coverage

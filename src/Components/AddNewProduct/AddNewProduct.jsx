@@ -35,7 +35,7 @@ export default function AddNewProduct() {
     const [deviceType, setDeviceType] = useState('');
 
     const addProduct = useProductStore((state) => state.addProduct);
-    
+
     const navigate = useNavigate()
 
     const html5QrCodeRef = useRef(null);

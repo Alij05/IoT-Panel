@@ -16,8 +16,6 @@ const AddPhone = () => {
     };
 
 
-
-
     return (
         <div className='phones-main'>
             <h1 className='phones-title'>ثبت شماره تماس</h1>
@@ -28,7 +26,7 @@ const AddPhone = () => {
                         <div key={i} className='add-phones-form-group'>
                             <Phone className='input-icon' size={20} />
                             <div className="input-wrapper">
-                                <span className="input-prefix">+98</span>
+                                <span className="input-prefix">98+</span>
 
                                 <input
                                     type="tel"

@@ -114,7 +114,8 @@ export default function Home() {
                                 />
                             );
 
-                        case "temperature":
+                        // case "temperature":
+                        case "temp&hum":
                             return (
                                 <TempCard
                                     key={deviceId}

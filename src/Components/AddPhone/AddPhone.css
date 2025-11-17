@@ -6,13 +6,13 @@
 .phones-title {
     font-size: 2rem;
     color: var(--text);
-    text-align: center;
 }
 
 /* Form */
 .add-phones-form {
-    margin-top: 30px;
-    background: rgba(255, 255, 255, 0.1);
+    margin: 30px auto 0;
+    background-color:
+        color-mix(in oklab, var(--white) 60%, transparent) !important;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,7 +37,7 @@
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid var(--blue);
     border-radius: 12px;
-    padding: 6px 12px;
+    padding: 0px 12px;
     position: relative;
 }
 
@@ -97,7 +97,7 @@
 /* label floating */
 .input-wrapper label {
     position: absolute;
-    left: calc(var(--prefix-w) + 12px);
+    left: calc(var(--prefix-w) + 110px);
     /* کنار +98 */
     top: 50%;
     transform: translateY(-50%);
@@ -114,14 +114,13 @@
 /* وقتی input فوکوس شده یا پر شده */
 .input-wrapper label.filled,
 .add-phones-input:focus+label {
-    top: -15px;
+    top: -9px;
     transform: translateY(0) scale(0.85);
     color: #fff;
     background: var(--blue);
     padding: 2px 6px;
     border-radius: 6px;
 }
-
 
 /* error message */
 .error-message {
