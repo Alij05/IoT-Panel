@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react'
 import './WaterCard.css'
 import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
-function WaterCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) {
+function WaterCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus, sensorsData }) {
     const [isWet, setIsWet] = useState(deviceState ? 'on' : 'off')
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
+
+    console.log("sensorsData", sensorsData);
+
 
 
     useEffect(() => {
@@ -51,6 +54,8 @@ function WaterCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 />
 
                 <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isWet === 'on' ? 'خیس' : 'خشک'}</p>
+                <p style={{ marginTop: '25px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>درصد رطوبت خاک : {sensorsData?.moisture_pct}</p>
+
             </div>
 
             {isShowMoreInfo && (

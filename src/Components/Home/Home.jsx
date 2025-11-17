@@ -73,7 +73,6 @@ export default function Home() {
                     const deviceInfo = deviceId ? sensorsData?.[deviceId] : null;
                     const deviceStatus = deviceId ? deviceStatuses?.[deviceId] : null;
 
-
                     switch (product.deviceClass) {
                         case "light":
                             return (
@@ -136,6 +135,7 @@ export default function Home() {
                                     deviceState={deviceState}
                                     deviceInfo={deviceInfo}
                                     deviceStatus={deviceStatus}
+                                    sensorsData={sensorsData[deviceId]}
                                 />
                             );
 
