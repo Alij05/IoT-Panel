@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Captcha from './../Captcha/Captcha'
 import zxcvbn from "zxcvbn";
 
 const url = process.env.REACT_APP_URL
@@ -34,6 +35,9 @@ export default function Register() {
   const [showResend, setShowResend] = useState(false)
   const [passwordScore, setPasswordScore] = useState(0)
   const [passwordFeedback, setPasswordFeedback] = useState("")
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [otpCaptchaToken, setOtpCaptchaToken] = useState("");
+
   const navigate = useNavigate();
 
 
@@ -90,15 +94,20 @@ export default function Register() {
   };
 
   const registerHandler = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
+
     const { username, password, nationalId, phone } = state;
+
+    if (!captchaToken) {
+      toast.warn('لطفاً کپچا را حل کنید', { className: 'toast-center' });
+      return;
+    }
 
     if (!username || !password || !nationalId || !phone) {
       toast.warn('لطفا همه فیلدها را پر کنید', { className: 'toast-center' });
       return;
     }
 
-    // بررسی الزامات امنیتی ISO برای پسورد (Complexity)
     const minLength = password.length >= 8;
     const hasUpper = /[A-Z]/.test(password);
     const hasLower = /[a-z]/.test(password);
@@ -110,9 +119,10 @@ export default function Register() {
       return;
     }
 
-    const passwordResult = zxcvbn(password)
+    // --- بررسی پیچیدگی پسورد با zxcvbn ---
+    const passwordResult = zxcvbn(password);
     if (passwordResult.score <= 2) {
-      toast.error('پسوورد ایمن نیست. از پسورد پیچیده‌تر استفاده کنید.', { className: 'toast-center' });
+      toast.error('پسورد ایمن نیست. از پسورد پیچیده‌تر استفاده کنید.', { className: 'toast-center' });
       return;
     }
 
@@ -139,7 +149,8 @@ export default function Register() {
         password,
         nationalCode: nationalId,
         phone,
-        token: idVerifyRes.data.token
+        token: idVerifyRes.data.token,
+        captchaToken   // <-- ارسال توکن کپچا به سرور
       });
 
       if (registerRes.status === 200) {
@@ -153,16 +164,19 @@ export default function Register() {
           toast.error('کد ملی با شماره تماس تطابق ندارد', { className: 'toast-center' });
           dispatch({ type: 'RESET' });
         } else if (error.response.status === 400) {
-          toast.error('مقددار ورودی معتبر نیست !', { className: 'toast-center' });
+          toast.error('مقدار ورودی معتبر نیست!', { className: 'toast-center' });
           dispatch({ type: 'RESET' });
+        } else if (error.response.status === 422) {
+          toast.error('اعتبارسنجی کپچا ناموفق بود', { className: 'toast-center' });
         } else {
-          toast.error('Error !', { className: 'toast-center' });
+          toast.error('خطای سرور', { className: 'toast-center' });
         }
       } else {
         toast.error('خطای اتصال به سرور یا شبکه', { className: 'toast-center' });
       }
     }
-  };
+  }
+
 
   const OTPHandler = async () => {
     if (state.otp.length === 6) {
@@ -196,7 +210,6 @@ export default function Register() {
     }
   }
 
-
   const reSendOTPHandler = async () => {
     // Resend API
     const { phone } = state;
@@ -215,12 +228,9 @@ export default function Register() {
     }
   }
 
-
-
   return (
     <>
       {!showOtp && (
-
         <div className='login-form-container'>
           <div className="login wrap">
             <div className="h1">ایجاد حساب</div>
@@ -240,7 +250,6 @@ export default function Register() {
                   />
                   <label htmlFor="password" className="form-label">رمز عبور</label>
 
-                  {/* Password strength meter */}
                   {state.password && (
                     <div style={{ marginTop: '5px' }}>
                       <div style={{ height: '6px', width: '95%', backgroundColor: '#ddd', borderRadius: '3px', overflow: 'hidden', margin: '0 auto' }}>
@@ -255,12 +264,6 @@ export default function Register() {
                           transition: '0.3s'
                         }} />
                       </div>
-
-                      {/* {passwordFeedback && (
-                        <p style={{ color: '#d9534f', marginTop: '5px', fontSize: '12px' }}>
-                          {passwordFeedback}
-                        </p>
-                      )} */}
                     </div>
                   )}
 
@@ -285,61 +288,67 @@ export default function Register() {
                 </div>
               </div>
 
-              <button className='button-modern'>ثبت نام</button>
+              <Captcha onVerify={(token) => setCaptchaToken(token)} />
+
+              <button className='button-modern' style={{ marginTop: "20px" }}>ثبت نام</button>
             </form>
 
             <p className='login-footer-text'>
               حساب کاربری دارید؟ <Link to='/login'>وارد شوید</Link>
             </p>
           </div>
-        </div >
-      )
-      }
+        </div>
+      )}
 
       {/* OTP */}
-      {
-        showOtp && (
-          <div className='login-form-container'>
-            <div className="login wrap">
-              <div className="h1">کد تایید</div>
+      {showOtp && (
+        <div className='login-form-container'>
+          <div className="login wrap">
+            <div className="h1">کد تایید</div>
 
-              <div className='otp-inputs-wrapper'>
-                <div className="form-group" id="otpNumber">
-                  <input type="text" className="form-control" placeholder="" maxLength={6} value={state.otp} onChange={handleNumberFieldChange('otp')} />
-                  <label htmlFor="passwordNumber" className="form-label">کد</label>
-                </div>
-              </div>
-              <button className='button-modern' style={{ marginTop: '20px' }} onClick={OTPHandler}>ارسال</button>
-              <div className='timer-wrapper'>
-                <p className='otp-footer-text' style={{ cursor: 'pointer' }}><Link onClick={(event) => {
-                  event.preventDefault()
-                  setShowOtp(false)
-                }
-                }>بازگشت</Link></p>
-
-                {showResend ? (
-                  <button
-                    className="button-outline-cool"
-                    onClick={() => {
-                      // Resend API
-                      reSendOTPHandler()
-                      setShowResend(false);
-                      setTimer(120);
-                    }}
-                  >
-                    ارسال مجدد
-                  </button>
-                ) : (
-                  <div>
-                    {timer} ثانیه
-                  </div>
-                )}
+            <div className='otp-inputs-wrapper'>
+              <div className="form-group" id="otpNumber">
+                <input type="text" className="form-control" placeholder="" maxLength={6}
+                  value={state.otp} onChange={handleNumberFieldChange('otp')}
+                />
+                <label htmlFor="passwordNumber" className="form-label">کد</label>
               </div>
             </div>
 
+            {/* --- کپچا OTP --- */}
+            <Captcha onVerify={(token) => setOtpCaptchaToken(token)} />
+
+            <button className='button-modern' style={{ marginTop: '20px' }} onClick={OTPHandler}>ارسال</button>
+
+            <div className='timer-wrapper'>
+              <p className='otp-footer-text' style={{ cursor: 'pointer' }}>
+                <Link onClick={(event) => {
+                  event.preventDefault()
+                  setShowOtp(false)
+                }}>
+                  بازگشت
+                </Link>
+              </p>
+
+              {showResend ? (
+                <button
+                  className="button-outline-cool"
+                  onClick={() => {
+                    reSendOTPHandler()
+                    setShowResend(false);
+                    setTimer(120);
+                  }}
+                >
+                  ارسال مجدد
+                </button>
+              ) : (
+                <div>{timer} ثانیه</div>
+              )}
+            </div>
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
+
 }
