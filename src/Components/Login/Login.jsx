@@ -13,7 +13,21 @@ export default function Login() {
     const [password, setPassword] = useState('')
     const [phone, setPhone] = useState('')
     const [showForgetPass, setShowForgetPass] = useState(false)
+    const [showOtp, setShowOtp] = useState(false) // برای OTP مرحله دوم
+    const [otp, setOtp] = useState('')
+    const [timer, setTimer] = useState(60)
+    const [showResend, setShowResend] = useState(false)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        let interval
+        if (showOtp && timer > 0) {
+            interval = setInterval(() => setTimer(prev => prev - 1), 1000)
+        } else if (timer === 0) {
+            setShowResend(true)
+        }
+        return () => clearInterval(interval)
+    }, [showOtp, timer])
 
     if (isUserLoggedIn) {
         document.body.classList.remove('auth-body')
@@ -24,18 +38,20 @@ export default function Login() {
         event.preventDefault()
         if (username && password) {
             try {
-                const res = await axios.post(`${url}/api/auth/login`, {
-                    username,
-                    password
-                })
+                const res = await axios.post(`${url}/api/auth/login`, { username, password })
                 if (res.status === 200) {
-                    login(res.data.token) // آپدیت کردن AuthContext
-                    toast.success('به پنل کاربری خود وارد شدید', { className: 'toast-center' })
-                    document.body.classList.remove('auth-body')
-                    setPassword('')
-                    setUsername('')
+                    if (res.data.requires2FA) {
+                        // if User active 2FA
+                        setShowOtp(true)
+                        toast.info('کد تایید 2FA ارسال شد', { className: 'toast-center' })
+                    } else {
+                        login(res.data.token)
+                        toast.success('به پنل کاربری خود وارد شدید', { className: 'toast-center' })
+                        document.body.classList.remove('auth-body')
+                        setUsername('')
+                        setPassword('')
+                    }
                 }
-
             } catch (err) {
                 if (err.response?.status === 401) {
                     toast.error('نام کاربری یا رمز عبور اشتباه است', { className: 'toast-center' });
@@ -45,17 +61,45 @@ export default function Login() {
                     toast.error('کاربری با این اطلاعات یافت نشد', { className: 'toast-center' });
                     setPassword('')
                     setUsername('')
-                }
-                else {
+                } else {
                     toast.error('خطای اتصال به سرور یا شبکه', { className: 'toast-center' });
                 }
             }
-
         } else {
             toast.warn('لطفا همه فیلدها را پر کنید', { className: 'toast-center' })
         }
     }
 
+    const OTPHandler = async () => {
+        if (otp.length === 6) {
+            try {
+                const res = await axios.post(`${url}/api/auth/2fa-verify`, { otp }, { withCredentials: true })
+                if (res.status === 200) {
+                    login(res.data.token)
+                    toast.success('ورود موفقیت‌آمیز!', { className: 'toast-center' })
+                    document.body.classList.remove('auth-body')
+                    setShowOtp(false)
+                    setOtp('')
+                }
+            } catch (err) {
+                toast.error('کد اشتباه یا منقضی شده است', { className: 'toast-center' })
+                setOtp('')
+            }
+        } else {
+            toast.warn('کد ۶ رقمی را وارد کنید', { className: 'toast-center' })
+        }
+    }
+
+    const reSendOTPHandler = async () => {
+        try {
+            await axios.post(`${url}/api/auth/resendotp`, {}, { withCredentials: true })
+            toast.success('کد تایید مجدد ارسال شد', { className: 'toast-center' })
+            setShowResend(false)
+            setTimer(60)
+        } catch (err) {
+            toast.error('ارسال مجدد کد تایید با مشکل مواجه شد', { className: 'toast-center' })
+        }
+    }
 
     return (
         <>
@@ -63,15 +107,12 @@ export default function Login() {
                 <div className='login-form-container'>
                     <div className="login wrap">
                         <div className="h1">فراموشی رمز عبور</div>
-
                         <div className='otp-inputs-wrapper'>
                             <div className="form-group" style={{ width: '70%', margin: '0 auto' }}>
                                 <input type="text" className="form-control" id="phoneNumber" placeholder=" " value={phone} maxLength="11" inputMode="numeric"
                                     onChange={(e) => {
-                                        const value = e.target.value;
-                                        if (/^\d*$/.test(value)) {
-                                            setPhone(e.target.value)
-                                        }
+                                        const value = e.target.value
+                                        if (/^\d*$/.test(value)) setPhone(value)
                                     }}
                                 />
                                 <label htmlFor="phoneNumber" className="form-label">شماره تماس</label>
@@ -82,48 +123,50 @@ export default function Login() {
                             <p className='otp-footer-text' style={{ cursor: 'pointer' }}><Link onClick={(event) => {
                                 event.preventDefault()
                                 setShowForgetPass(false)
-                            }
-                            }>بازگشت</Link></p>
+                            }}>بازگشت</Link></p>
+                        </div>
+                    </div>
+                </div>
+            ) : showOtp ? (
+                <div className='login-form-container'>
+                    <div className="login wrap">
+                        <div className="h1">کد 2FA</div>
+                        <div className='otp-inputs-wrapper'>
+                            <div className="form-group" id="otpNumber">
+                                <input type="text" className="form-control" placeholder="" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)} />
+                                <label htmlFor="passwordNumber" className="form-label">کد</label>
+                            </div>
+                        </div>
+                        <button className='button-modern' style={{ marginTop: '20px' }} onClick={OTPHandler}>ارسال</button>
+                        <div className='timer-wrapper'>
+                            {showResend ? (
+                                <button className="button-outline-cool" onClick={reSendOTPHandler}>ارسال مجدد</button>
+                            ) : (
+                                <div>{timer} ثانیه</div>
+                            )}
                         </div>
                     </div>
                 </div>
             ) : (
                 <div className='login-form-container'>
                     <div className="login wrap">
-                        {/* <div className="login-image">
-                            <img src="./images/logo.png" alt="" />
-                        </div> */}
-
                         <div className="h1">ورود به حساب</div>
                         <form onSubmit={loginHandler}>
                             <div className='register-inputs-wrapper' >
                                 <div className="form-group">
-                                    <input type="text" className="form-control" placeholder=" " id="username" value={username} onChange={(e) => {
-                                        setUsername(e.target.value)
-                                    }} />
+                                    <input type="text" className="form-control" placeholder=" " id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                                     <label htmlFor="username" className="form-label">نام کاربری</label>
                                 </div>
-
                                 <div className="form-group">
-                                    <input type="password" className="form-control" placeholder=" " id="passwordNumber" value={password} onChange={(e) => {
-                                        setPassword(e.target.value)
-                                    }} />
+                                    <input type="password" className="form-control" placeholder=" " id="passwordNumber" value={password} onChange={(e) => setPassword(e.target.value)} />
                                     <label htmlFor="passwordNumber" className="form-label">رمز عبور</label>
                                 </div>
                             </div>
                             <button className='button-modern'>ورود</button>
                         </form>
-                        {/* <button className='button-modern' onClick={loginHandler}>ورود</button> */}
-
-                        <span className="forgot-password" onClick={() => {
-                            setShowForgetPass(true)
-                        }}>
-                            فراموشی رمز عبور
-                        </span>
-
+                        <span className="forgot-password" onClick={() => setShowForgetPass(true)}>فراموشی رمز عبور</span>
                         <p className='login-footer-text'>حساب کاربری ندارید؟ <Link to='/register'>ثبت نام کنید</Link></p>
                     </div>
-
                 </div>
             )}
         </>

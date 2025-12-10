@@ -14,6 +14,7 @@ import Support from './Components/Support/Support';
 import Reports from './Components/Reports/Reports';
 import Notifications from './Components/Notifications/Notifications';
 import AddPhone from './Components/AddPhone/AddPhone';
+import Settings from './Components/Settings/Settings';
 
 
 const adminRoutes = [
@@ -29,6 +30,7 @@ const userRoutes = [
     { path: 'support', element: <PrivateRoute><Support /></PrivateRoute> },
     { path: 'reports', element: <PrivateRoute><Reports /></PrivateRoute> },
     { path: 'notifs', element: <PrivateRoute><Notifications /></PrivateRoute> },
+    { path: 'settings', element: <PrivateRoute><Settings /></PrivateRoute> },
 ];
 
 const routes = [

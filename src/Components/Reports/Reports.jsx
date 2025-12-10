@@ -26,7 +26,6 @@ export default function Reports() {
 
   const userProducts = useProductStore((state) => state.products)
 
-
   const [openModal, setOpenModal] = useState(false);
   const [modalData, setModalData] = useState({ entity: null, data: null });
 

@@ -116,6 +116,14 @@ export default function Sidebar() {
             </NavLink>
           </li>
           <li>
+            <NavLink to="/settings" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
+              isShowSidebar && mobileMenuClickHandler()
+            }}>
+              <SupportAgentIcon className="icon" />
+              تنظیمات
+            </NavLink>
+          </li>
+          <li>
             <div className="link" style={{ cursor: 'pointer' }} onClick={() => {
               setIsShowDeleteModal(true)
             }}>

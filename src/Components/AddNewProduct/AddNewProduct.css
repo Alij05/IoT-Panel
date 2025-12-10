@@ -10,7 +10,7 @@
 .add-products-form {
   width: 85%;
   margin-top: 30px;
-  background-color: color-mix(in oklab, var(--white) 30%, transparent) !important;
+  background-color: color-mix(in oklab, var(--white) 60%, transparent) !important;
   display: flex;
   align-items: center;
   justify-content: space-between;

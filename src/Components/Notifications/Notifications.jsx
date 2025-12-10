@@ -7,8 +7,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import "./Notifications.css";
 import { useSockets } from "../../Contexts/SocketProvider";
 
-const url = process.env.REACT_APP_IOT;
-const iotUrl = process.env.REACT_APP_IOT
+const url = process.env.REACT_APP_HA_BASE_URL;
 
 
 export default function Notifications() {
@@ -19,7 +18,7 @@ export default function Notifications() {
     useEffect(() => {
         const getInitAlerts = async () => {
             try {
-                const res = await axios.get(`${iotUrl}/api/alerts`);
+                const res = await axios.get(`${url}/api/alerts`);
                 const dbAlerts = Array.isArray(res.data.alerts) ? res.data.alerts.slice(0, 20) : [];
 
                 setAlerts(dbAlerts);
