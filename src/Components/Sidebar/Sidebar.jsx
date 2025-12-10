@@ -11,6 +11,7 @@ import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import SecurityIcon from '@mui/icons-material/Security';
 import "./Sidebar.css";
 import { Link, NavLink } from "react-router-dom";
 import { MobileMenuContext } from "../../Contexts/MobileMenuContext";
@@ -119,8 +120,8 @@ export default function Sidebar() {
             <NavLink to="/settings" className={({ isActive }) => isActive ? "link active" : "link"} onClick={() => {
               isShowSidebar && mobileMenuClickHandler()
             }}>
-              <SupportAgentIcon className="icon" />
-              تنظیمات
+              <SecurityIcon className="icon" />
+              تنظیمات امنیتی
             </NavLink>
           </li>
           <li>
