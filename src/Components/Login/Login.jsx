@@ -4,6 +4,7 @@ import './Login.css'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useAuth } from '../../Contexts/AuthContext'
+import Captcha from './../Captcha/Captcha'
 
 const url = process.env.REACT_APP_URL
 
@@ -17,6 +18,7 @@ export default function Login() {
     const [otp, setOtp] = useState('')
     const [timer, setTimer] = useState(60)
     const [showResend, setShowResend] = useState(false)
+    const [captchaToken, setCaptchaToken] = useState(null);  // Cloudflare Captcha
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -101,6 +103,33 @@ export default function Login() {
         }
     }
 
+    const handleForgetPass = async () => {
+        if (!phone) {
+            toast.warn("شماره تماس را وارد کنید", { className: "toast-center" })
+            return
+        }
+
+        if (!captchaToken) {
+            toast.warn("لطفاً کپچا را تکمیل کنید", { className: 'toast-center' })
+            return
+        }
+
+        try {
+            const res = await axios.post(`${url}/api/auth/forget-password`, {
+                phone,
+                captchaToken,
+            })
+
+            toast.success("کد بازیابی ارسال شد", { className: 'toast-center' })
+            setShowForgetPass(false)
+            setShowOtp(true)
+            setTimer(60)
+
+        } catch (err) {
+            toast.error("خطا در ارسال درخواست", { className: 'toast-center' })
+        }
+    }
+
     return (
         <>
             {showForgetPass ? (
@@ -118,7 +147,11 @@ export default function Login() {
                                 <label htmlFor="phoneNumber" className="form-label">شماره تماس</label>
                             </div>
                         </div>
-                        <button className='button-modern' style={{ marginTop: '20px' }} >ارسال</button>
+
+                        {/* Captcha Component */}
+                        <Captcha onVerify={(token) => setCaptchaToken(token)} />
+
+                        <button className='button-modern' style={{ marginTop: '20px' }} onClick={handleForgetPass}>ارسال</button>
                         <div className='timer-wrapper'>
                             <p className='otp-footer-text' style={{ cursor: 'pointer' }}><Link onClick={(event) => {
                                 event.preventDefault()
