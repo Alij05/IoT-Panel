@@ -3,6 +3,7 @@ import axios from 'axios';
 import ToggleOnIcon from '@mui/icons-material/ToggleOn';
 import ToggleOffIcon from '@mui/icons-material/ToggleOff';
 import { toast } from 'react-toastify';
+import "./Settings.css"
 
 const url = process.env.REACT_APP_URL;
 
@@ -46,7 +47,7 @@ function Settings() {
 
     return (
         <div className="settings-main">
-            <h1 className="settings-title">تنظیمات حساب</h1>
+            <h1 className="users-title">تنظیمات حساب</h1>
 
             <div className="settings-form">
                 <div className="settings-form-group">

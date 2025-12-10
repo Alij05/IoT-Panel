@@ -35,7 +35,7 @@ export default function Register() {
   const [showResend, setShowResend] = useState(false)
   const [passwordScore, setPasswordScore] = useState(0)
   const [passwordFeedback, setPasswordFeedback] = useState("")
-  const [captchaToken, setCaptchaToken] = useState("");
+  const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");
   const [otpCaptchaToken, setOtpCaptchaToken] = useState("");
 
   const navigate = useNavigate();
@@ -288,7 +288,7 @@ export default function Register() {
                 </div>
               </div>
 
-              <Captcha onVerify={(token) => setCaptchaToken(token)} />
+              <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
 
               <button className='button-modern' style={{ marginTop: "20px" }}>ثبت نام</button>
             </form>
@@ -316,7 +316,7 @@ export default function Register() {
             </div>
 
             {/* --- کپچا OTP --- */}
-            <Captcha onVerify={(token) => setOtpCaptchaToken(token)} />
+            {/* <Captcha onVerify={(token) => setOtpCaptchaToken(token)} /> */}
 
             <button className='button-modern' style={{ marginTop: '20px' }} onClick={OTPHandler}>ارسال</button>
 

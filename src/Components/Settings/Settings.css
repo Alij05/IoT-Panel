@@ -1,0 +1,156 @@
+/* Settings.css */
+
+.settings-main {
+    margin-top: 60px;
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.users-title {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin-bottom: 30px;
+}
+
+.settings-form {
+    background-color: color-mix(in oklab, var(--white) 60%, transparent);
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.settings-form-group {
+    display: flex;
+    align-items: center;
+    background-color: var(--white-50);
+    padding: 0 20px;
+    border-radius: 10px;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.input-icon {
+    font-size: 1.4rem;
+    color: rgb(118, 118, 118);
+}
+
+.input-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-left: 10px;
+}
+
+.settings-label {
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+/* Fancy button مشابه فرم محصولات */
+.fancy-button {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: filter 250ms;
+    user-select: none;
+    touch-action: manipulation;
+    font-family: inherit;
+}
+
+.fancy-button .shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: hsl(0deg 0% 0% / 0.25);
+    transform: translateY(2px);
+    transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+}
+
+.fancy-button .edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: linear-gradient(to left,
+            hsl(231, 100%, 8%) 0%,
+            hsl(235, 95%, 15%) 10%,
+            hsl(240, 90%, 35%) 50%,
+            hsl(235, 95%, 15%) 90%,
+            hsl(231, 100%, 8%) 100%);
+}
+
+.fancy-button .front {
+    display: block;
+    position: relative;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    color: white;
+    background: var(--blue);
+    transform: translateY(-4px);
+    transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
+}
+
+.fancy-button:hover {
+    filter: brightness(95%);
+}
+
+.fancy-button:hover .front {
+    transform: translateY(-6px);
+    transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+}
+
+.fancy-button:active .front {
+    transform: translateY(-2px);
+    transition: transform 34ms;
+}
+
+.fancy-button:hover .shadow {
+    transform: translateY(4px);
+    transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+}
+
+.fancy-button:active .shadow {
+    transform: translateY(1px);
+    transition: transform 34ms;
+}
+
+.fancy-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .settings-main {
+        width: 90%;
+        margin-top: 40px;
+    }
+
+    .settings-form {
+        padding: 15px 20px;
+    }
+
+    .input-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fancy-button .front {
+        width: 100%;
+        text-align: center;
+    }
+}

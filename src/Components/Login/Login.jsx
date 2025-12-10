@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useAuth } from '../../Contexts/AuthContext'
 import Captcha from './../Captcha/Captcha'
+import Captcha from './../Captcha/Captcha'
 
 const url = process.env.REACT_APP_URL
 
@@ -19,6 +20,7 @@ export default function Login() {
     const [timer, setTimer] = useState(60)
     const [showResend, setShowResend] = useState(false)
     const [captchaToken, setCaptchaToken] = useState(null);  // Cloudflare Captcha
+    const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -109,7 +111,7 @@ export default function Login() {
             return
         }
 
-        if (!captchaToken) {
+        if (!cloudflareCaptchaToken) {
             toast.warn("لطفاً کپچا را تکمیل کنید", { className: 'toast-center' })
             return
         }
@@ -117,7 +119,7 @@ export default function Login() {
         try {
             const res = await axios.post(`${url}/api/auth/forget-password`, {
                 phone,
-                captchaToken,
+                // cloudflareCaptchaToken,
             })
 
             toast.success("کد بازیابی ارسال شد", { className: 'toast-center' })
@@ -130,7 +132,7 @@ export default function Login() {
         }
     }
 
-    
+
     return (
         <>
             {showForgetPass ? (
@@ -150,7 +152,7 @@ export default function Login() {
                         </div>
 
                         {/* Captcha Component */}
-                        <Captcha onVerify={(token) => setCaptchaToken(token)} />
+                        <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
 
                         <button className='button-modern' style={{ marginTop: '20px' }} onClick={handleForgetPass}>ارسال</button>
                         <div className='timer-wrapper'>
@@ -196,6 +198,9 @@ export default function Login() {
                                     <label htmlFor="passwordNumber" className="form-label">رمز عبور</label>
                                 </div>
                             </div>
+
+                            <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
+
                             <button className='button-modern'>ورود</button>
                         </form>
                         <span className="forgot-password" onClick={() => setShowForgetPass(true)}>فراموشی رمز عبور</span>
