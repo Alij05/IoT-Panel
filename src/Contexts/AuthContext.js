@@ -12,28 +12,17 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const checkLogin = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setUsername(null);
-            setIsUserLoggedIn(false);
-            setLoading(false);
-            return;
-        }
         try {
-            const res = await axios.post(
-                `${url}/api/auth/homescreen`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const res = await axios.post(`${url}/api/auth/homescreen`, {}, { withCredentials: true });
             if (res.data?.isLogin) {
-                setUsername(res.data.username); 
+                setUsername(res.data.username);
                 setIsUserLoggedIn(true);
-                setIsUserAdmin(res.data.isAdmin)
+                setIsUserAdmin(res.data.isAdmin);
             } else {
                 setUsername(null);
                 setIsUserLoggedIn(false);
             }
-        } catch (err) {
+        } catch {
             setUsername(null);
             setIsUserLoggedIn(false);
         } finally {
@@ -45,13 +34,12 @@ export const AuthProvider = ({ children }) => {
         checkLogin();
     }, []);
 
-    const login = (token) => {
-        localStorage.setItem("token", token);
-        checkLogin();
+    const login = async () => {
+        await checkLogin()
     };
 
-    const logout = () => {
-        localStorage.removeItem("token");
+    const logout = async () => {
+        await axios.post(`${url}/api/auth/logout`, {}, { withCredentials: true });
         setUsername(null);
         setIsUserLoggedIn(false);
     };
