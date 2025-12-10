@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import zxcvbn from "zxcvbn";
 
 const url = process.env.REACT_APP_URL
 
@@ -31,6 +32,8 @@ export default function Register() {
   const [showOtp, setShowOtp] = useState(false)
   const [timer, setTimer] = useState(120)
   const [showResend, setShowResend] = useState(false)
+  const [passwordScore, setPasswordScore] = useState(0)
+  const [passwordFeedback, setPasswordFeedback] = useState("")
   const navigate = useNavigate();
 
 
@@ -52,6 +55,14 @@ export default function Register() {
 
 
   const handleChange = (field) => (e) => {
+
+    // اضافه کردن محاسبه امنیت پسورد
+    if (field === "password") {
+      const result = zxcvbn(e.target.value)
+      setPasswordScore(result.score)
+      setPasswordFeedback(result.feedback.warning || "")
+    }
+
     dispatch({ type: 'SET_FIELD', field, value: e.target.value });
   };
 
@@ -84,6 +95,24 @@ export default function Register() {
 
     if (!username || !password || !nationalId || !phone) {
       toast.warn('لطفا همه فیلدها را پر کنید', { className: 'toast-center' });
+      return;
+    }
+
+    // بررسی الزامات امنیتی ISO برای پسورد (Complexity)
+    const minLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+    if (!minLength || !hasUpper || !hasLower || !hasDigit || !hasSpecial) {
+      toast.error('رمز عبور باید حداقل ۸ کاراکتر و شامل حروف بزرگ، کوچک، عدد و کاراکتر خاص باشد', { className: 'toast-center' });
+      return;
+    }
+
+    const passwordResult = zxcvbn(password)
+    if (passwordResult.score <= 2) {
+      toast.error('پسوورد ایمن نیست. از پسورد پیچیده‌تر استفاده کنید.', { className: 'toast-center' });
       return;
     }
 
@@ -210,6 +239,31 @@ export default function Register() {
                     onChange={handleChange('password')}
                   />
                   <label htmlFor="password" className="form-label">رمز عبور</label>
+
+                  {/* Password strength meter */}
+                  {state.password && (
+                    <div style={{ marginTop: '5px' }}>
+                      <div style={{ height: '6px', width: '95%', backgroundColor: '#ddd', borderRadius: '3px', overflow: 'hidden', margin: '0 auto' }}>
+                        <div style={{
+                          width: `${(passwordScore + 1) * 20}%`,
+                          height: '100%',
+                          backgroundColor:
+                            passwordScore === 0 ? '#ff4d4d' :
+                              passwordScore === 1 ? '#ff944d' :
+                                passwordScore === 2 ? '#ffcc00' :
+                                  passwordScore === 3 ? '#99e600' : '#00cc44',
+                          transition: '0.3s'
+                        }} />
+                      </div>
+
+                      {/* {passwordFeedback && (
+                        <p style={{ color: '#d9534f', marginTop: '5px', fontSize: '12px' }}>
+                          {passwordFeedback}
+                        </p>
+                      )} */}
+                    </div>
+                  )}
+
                 </div>
 
                 <div className="form-group">
@@ -233,11 +287,6 @@ export default function Register() {
 
               <button className='button-modern'>ثبت نام</button>
             </form>
-            {/* <button className='button-modern' onClick={(event) => {
-                event.preventDefault()
-                registerHandler()
-              }
-              }>ثبت نام</button> */}
 
             <p className='login-footer-text'>
               حساب کاربری دارید؟ <Link to='/login'>وارد شوید</Link>

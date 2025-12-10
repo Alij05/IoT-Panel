@@ -1,7 +1,6 @@
 .aqi-card {
     padding: 20px 16px;
     text-align: center;
-    font-family: 'Segoe UI', sans-serif;
     transition: transform 0.3s ease;
 }
 
@@ -34,4 +33,9 @@
 .aqi-value {
     margin-top: 1px;
     color: var(--text);
+}
+
+#aqi-gauge {
+    width: 70% !important;
+    margin: 10px auto 0 !important;
 }

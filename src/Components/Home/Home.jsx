@@ -15,6 +15,7 @@ import WeatherWidget from "../WeatherWidget/WeatherWidget";
 import useProductStore from "../../Store/productStore";
 import DoorCard from "../HomeCards/DoorCard";
 import VoltageCard from "../HomeCards/VoltageCard";
+import AirQualityCard from "../HomeCards/AirQualityCard"
 
 const url = process.env.REACT_APP_URL;
 
@@ -162,6 +163,19 @@ export default function Home() {
                                     deviceStatus={deviceStatus}
                                 />
                             );
+
+                             case "air":
+                            return (
+                                <AirQualityCard
+                                    key={deviceId}
+                                    product={product}
+                                    isUserAdmin={isUserAdmin}
+                                    deviceState={deviceState}
+                                    deviceInfo={deviceInfo}
+                                    deviceStatus={deviceStatus}
+                                />
+                            );
+                            
 
                         case "camera":
                             return (

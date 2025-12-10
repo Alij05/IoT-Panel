@@ -43,18 +43,19 @@ function WaterCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 )}
                 <img
                     src={
-                        isWet === 'on'
+                        sensorsData?.relay_on === true
                             ? 'svgs/water-on.svg'
-                            : (isWet === 'off'
+                            : (sensorsData?.relay_on === false
                                 ? 'svgs/water-off.svg'
                                 : 'svgs/water-disable.svg')
                     }
-                    alt={isWet === 'on' ? 'خیس' : 'خشک'}
+                    alt={sensorsData?.relay_on === 'on' ? 'خیس' : 'خشک'}
                     style={{ width: '85px', transition: '0.3s ease-in-out' }}
                 />
 
-                <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isWet === 'on' ? 'خیس' : 'خشک'}</p>
-                <p style={{ marginTop: '25px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>درصد رطوبت خاک : {sensorsData?.moisture_pct}</p>
+                {/* <p style={{ marginTop: '10px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>{isWet === 'on' ? 'خیس' : 'خشک'}</p> */}
+                <p style={{ marginTop: '15px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>پمپ آب : {sensorsData?.relay_on ? "روشن" : "خاموش"}</p>
+                <p style={{ marginTop: '15px', textAlign: 'center', fontSize: '15px', color: 'var(--text-color)' }}>درصد رطوبت خاک : {sensorsData?.moisture_pct}</p>
 
             </div>
 
