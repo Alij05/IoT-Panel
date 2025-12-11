@@ -98,7 +98,7 @@ export default function Register() {
 
     const { username, password, nationalId, phone } = state;
 
-    if (!captchaToken) {
+    if (!cloudflareCaptchaToken) {
       toast.warn('لطفاً کپچا را حل کنید', { className: 'toast-center' });
       return;
     }
@@ -150,7 +150,7 @@ export default function Register() {
         nationalCode: nationalId,
         phone,
         token: idVerifyRes.data.token,
-        captchaToken   // <-- ارسال توکن کپچا به سرور
+        cloudflareCaptchaToken   // <-- ارسال توکن کپچا به سرور
       });
 
       if (registerRes.status === 200) {

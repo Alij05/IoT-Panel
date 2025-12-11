@@ -5,7 +5,6 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useAuth } from '../../Contexts/AuthContext'
 import Captcha from './../Captcha/Captcha'
-import Captcha from './../Captcha/Captcha'
 
 const url = process.env.REACT_APP_URL
 
@@ -19,8 +18,8 @@ export default function Login() {
     const [otp, setOtp] = useState('')
     const [timer, setTimer] = useState(60)
     const [showResend, setShowResend] = useState(false)
-    const [captchaToken, setCaptchaToken] = useState(null);  // Cloudflare Captcha
-    const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");  // Cloudflare Captcha
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -131,7 +130,6 @@ export default function Login() {
             toast.error("خطا در ارسال درخواست", { className: 'toast-center' })
         }
     }
-
 
     return (
         <>

@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b54b0996.css",
+    "main.js": "/static/js/main.2187f742.js",
+    "static/js/82.e4b95bae.chunk.js": "/static/js/82.e4b95bae.chunk.js",
+    "static/js/239.5efa00e1.chunk.js": "/static/js/239.5efa00e1.chunk.js",
+    "static/media/Lalezar-Regular.ttf": "/static/media/Lalezar-Regular.241ca811c53de4ed36a4.ttf",
+    "static/media/flame.svg": "/static/media/flame.e5d0d4700ba52bfc80f59266e927488e.svg",
+    "static/media/default.svg": "/static/media/default.9aaaa5560337018990df5f6db6ba7c7f.svg",
+    "static/media/smoke.svg": "/static/media/smoke.50cb40ceb30df85a06c4ad5506879636.svg",
+    "static/media/fan.svg": "/static/media/fan.b6f374c2a5621d1db15e8781e4bff6be.svg",
+    "static/media/outlet.svg": "/static/media/outlet.b2abe538918e2eb0b3d563d9ecd35c0c.svg",
+    "static/media/humidity.svg": "/static/media/humidity.dd96f38a9ffff0fba45657ed8de650ce.svg",
+    "static/media/temperature.svg": "/static/media/temperature.3bf0f171e30cc63bc9230dcf5c1727b5.svg",
+    "static/media/air-quality.svg": "/static/media/air-quality.4d8efdd85357eded2681e6ff66699382.svg",
+    "static/media/rgb.svg": "/static/media/rgb.0b119e8604c2d5127062ed498361aae0.svg",
+    "static/media/water.svg": "/static/media/water.39239f6422e4a0157b5b6cb055fa3617.svg",
+    "static/media/light.svg": "/static/media/light.c87e355a541f1617811611f06f26c33d.svg",
+    "static/media/lock.svg": "/static/media/lock.df5d0da3daee31e9eb899952cb92df94.svg",
+    "static/media/motion.svg": "/static/media/motion.ad319a8647118ea4e25f5338bc1cdd2d.svg",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.b54b0996.css",
+    "static/js/main.2187f742.js"
+  ]
+}
