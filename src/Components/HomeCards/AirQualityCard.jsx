@@ -5,31 +5,15 @@ import './AirQualityCard.css';
 const AirQualityCard = ({ product, deviceState, deviceInfo }) => {
     const maxAqi = 500;
 
-    // مقدار AQI را از deviceState یا deviceInfo بگیر
-    // فرض می‌کنیم deviceState عدد کیفیت هواست
-    const value = Number(deviceState);
-    const percent = !isNaN(value) ? value / maxAqi : 0;
-
-    const owner = product?.owner || '-';
-    const deviceName = product?.deviceName || '-';
-    const deviceLocation = product?.deviceLocation || '-';
+    const safeValue = Number(deviceState);
+    const percent = !isNaN(safeValue) ? safeValue / maxAqi : 0;
 
     return (
         <div className="home-box aqi-card">
-            <div style={{
-                display: "flex",
-                gap: "15px 20px",
-                fontSize: "18px",
-                color: "black",
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <span>دستگاه: {deviceName}</span>
+            <div style={{ display: "flex", gap: "15px 20px", fontSize: "18px", color: "black", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+                <span>مکان : {product?.deviceLocation || '-'}</span>
                 |
-                <span>مکان: {deviceLocation}</span>
-                |
-                <span>مالک: {owner}</span>
+                <span>مالک : {product?.owner || '-'}</span>
             </div>
 
             <GaugeChart
@@ -45,7 +29,7 @@ const AirQualityCard = ({ product, deviceState, deviceInfo }) => {
                 hideText={true}
             />
 
-            <div className="aqi-value">AQ • {!isNaN(value) ? value : 0}</div>
+            <div className="aqi-value">AQ • {!isNaN(safeValue) ? safeValue : 0}</div>
             <div className="aqi-label">کیفیت هوا</div>
         </div>
     );

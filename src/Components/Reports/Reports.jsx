@@ -138,7 +138,8 @@ export default function Reports() {
         [d.entity_id]: {
           deviceLocationName: d.deviceLocationName,
           deviceName: d.deviceName,
-          user: d.user
+          user: d.user,
+          deviceType: d.deviceType
         }
       }))
     );
