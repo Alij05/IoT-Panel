@@ -69,11 +69,11 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
   const handleClearLogs = async () => {
     console.log(deviceInfos);
 
-    if (!deviceInfos?.deviceType || !deviceInfos?.deviceId) return;
+    if (!deviceInfos?.deviceType || !deviceId) return;
 
     try {
       const res = await axios.delete(
-        `${url}/api/logs/execute/device/${deviceInfos.deviceType}/${deviceInfos.deviceId}`
+        `${url}/api/logs/execute/device/${deviceInfos.deviceType}/${deviceId}`
       );
 
       console.log(res);
