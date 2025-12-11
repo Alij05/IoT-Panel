@@ -41,7 +41,11 @@ export default function Login() {
         event.preventDefault()
         if (username && password) {
             try {
-                const res = await axios.post(`${url}/api/auth/login`, { username, password, captchaToken: cloudflareCaptchaToken })
+                const res = await axios.post(`${url}/api/auth/login`, {
+                    username,
+                    password,
+                    captchaToken: cloudflareCaptchaToken
+                })
                 if (res.status === 200) {
                     if (res.data.requires2FA) {
                         // if User active 2FA

@@ -138,12 +138,12 @@ const DeviceReport = ({ rawData = [], deviceId = "", deviceInfos = {}, deviceCla
     exportToExcel(filteredData, deviceId);
   };
 
-  
+
   return (
     <Box className="report-chart-container" sx={{ margin: "50px auto" }}>
       {isSensor ? (
         <>
-          <ChartHeader chartType={chartType} deviceId={deviceId} />
+          <ChartHeader chartType={chartType} deviceId={deviceId} deviceInfos={deviceInfos} />
           <ChartControls
             chartType={chartType}
             setChartType={setChartType}

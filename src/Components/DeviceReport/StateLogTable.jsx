@@ -13,9 +13,12 @@ import {
   Chip,
   CircularProgress,
 } from "@mui/material";
-import { Download } from "lucide-react";
+import { Download, Delete } from "lucide-react";
 import DescriptionIcon from "@mui/icons-material/Description";
 import { toJalaliDateString } from "./DateUtils";
+import axios from "axios";
+
+const url = process.env.REACT_APP_HA_BASE_URL
 
 const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
   // helper: extract timestamp from multiple possible keys
@@ -61,6 +64,22 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
 
     // Fallback
     return { label: stateVal, color: "#868686" };
+  };
+
+  const handleClearLogs = async () => {
+    if (!deviceInfos?.deviceType || !deviceInfos?.deviceId) return;
+
+    try {
+      const res = await axios.delete(
+        `${url}/api/logs/execute/device/${deviceInfos.deviceType}/${deviceInfos.deviceId}`
+      );
+
+      // Optional: refresh data after deletion
+      // if (fetchData) fetchData();
+
+    } catch (error) {
+      console.error("Clear logs error:", error);
+    }
   };
 
   const isLoading = !data || data.length === 0;
@@ -113,6 +132,30 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
         >
           خروجی Excel
         </Button>
+
+        <Button
+          variant="contained"
+          startIcon={<Delete size={18} />}
+          onClick={handleClearLogs}
+          sx={{
+            borderRadius: "12px",
+            textTransform: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            px: 2,
+            backgroundColor: "red",
+            color: "white",
+            fontFamily: "'Lalezar', sans-serif",
+            fontSize: { xs: "12px", sm: "14px", md: "16px" },
+            "&:hover": {
+              backgroundColor: "#b30000",
+            },
+          }}
+        >
+          پاک کردن لاگ‌ها
+        </Button>
+
       </Box>
 
       {/* Loader while data is loading */}
