@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
-const url = process.env.REACT_APP_IOT
+const url = process.env.REACT_APP_URL
 
 function DoorCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus, open_count }) {
 
     console.log('deviceState ==>', deviceState);
-    
+
 
     const [isLock, setIsLock] = useState(deviceState ? 'on' : 'off')
     const [openCount, setOpenCount] = useState(open_count)

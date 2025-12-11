@@ -3,7 +3,7 @@ import { Zap } from 'lucide-react';
 import './VoltageCard.css';
 import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
-const url = process.env.REACT_APP_IOT;
+const url = process.env.REACT_APP_URL;
 
 function VoltageCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) {
     const [voltage, setVoltage] = useState('');
