@@ -150,7 +150,7 @@ export default function Register() {
         nationalCode: nationalId,
         phone,
         token: idVerifyRes.data.token,
-        cloudflareCaptchaToken   // <-- ارسال توکن کپچا به سرور
+        captchaToken: cloudflareCaptchaToken
       });
 
       if (registerRes.status === 200) {
