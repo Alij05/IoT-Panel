@@ -15,7 +15,7 @@ import axios from 'axios';
 import { useAuth } from '../../Contexts/AuthContext';
 import { useSockets } from '../../Contexts/SocketProvider';
 
-const url = process.env.REACT_APP_URL
+const url = process.env.REACT_APP_HA_BASE_URL
 
 export default function Header() {
 

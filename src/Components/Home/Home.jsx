@@ -164,7 +164,7 @@ export default function Home() {
                                 />
                             );
 
-                             case "air":
+                        case "air":
                             return (
                                 <AirQualityCard
                                     key={deviceId}
@@ -175,7 +175,7 @@ export default function Home() {
                                     deviceStatus={deviceStatus}
                                 />
                             );
-                            
+
 
                         case "camera":
                             return (
