@@ -17,6 +17,12 @@ import { useSockets } from '../../Contexts/SocketProvider';
 
 const url = process.env.REACT_APP_HA_BASE_URL
 
+// Initialize shared state برای جلوگیری از درخواست‌های تکراری
+if (typeof window !== 'undefined') {
+    window.globalAlertsFetching = window.globalAlertsFetching || false;
+    window.globalLastFetchTime = window.globalLastFetchTime || 0;
+}
+
 export default function Header() {
 
     const { theme, toggleTheme } = useContext(ThemeContext)
@@ -54,14 +60,44 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // Shared state برای جلوگیری از درخواست‌های تکراری (هماهنگ با Notifications.jsx)
+    const alertsFetchingRef = useRef(false);
+    
+    // استفاده از همان متغیرهای سراسری که در Notifications.jsx تعریف شده
     const getInitAlerts = async () => {
+        // جلوگیری از درخواست‌های همزمان - استفاده از window object برای دسترسی به متغیرهای سراسری
+        if (alertsFetchingRef.current || window.globalAlertsFetching) {
+            return;
+        }
+
+        // Throttling: حداقل 5 ثانیه بین درخواست‌ها
+        const now = Date.now();
+        const globalLastFetchTime = window.globalLastFetchTime || 0;
+        const timeSinceLastFetch = now - globalLastFetchTime;
+        if (timeSinceLastFetch < 5000) {
+            return;
+        }
+
+        alertsFetchingRef.current = true;
+        window.globalAlertsFetching = true;
+        window.globalLastFetchTime = now;
+
         try {
             const res = await axios.get(`${url}/api/alerts`);
             const dbAlerts = Array.isArray(res.data.alerts) ? res.data.alerts.slice(0, 20) : [];
 
             setAlerts(dbAlerts);
         } catch (err) {
-            console.error("Error fetching alerts:", err);
+            if (err.response?.status === 429) {
+                console.warn("Too many requests for alerts. Waiting before retry...");
+                // در صورت 429، زمان انتظار را افزایش می‌دهیم
+                window.globalLastFetchTime = now + 10000; // 10 ثانیه بعد
+            } else {
+                console.error("Error fetching alerts:", err);
+            }
+        } finally {
+            alertsFetchingRef.current = false;
+            window.globalAlertsFetching = false;
         }
     };
 
