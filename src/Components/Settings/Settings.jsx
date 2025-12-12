@@ -26,7 +26,7 @@ function Settings() {
 
     const handle2FAToggle = async () => {
         if (loading) return;
-        
+
         setLoading(true);
         try {
             const res = await axios.post(`${url}/api/user/2fa`, {
@@ -37,6 +37,8 @@ function Settings() {
                 setIs2FAEnabled(!is2FAEnabled);
                 toast.success(is2FAEnabled ? '2FA با موفقیت غیرفعال شد' : '2FA با موفقیت فعال شد', { className: 'toast-center' });
             }
+
+            setIs2FAEnabled(!is2FAEnabled);  // Test
 
         } catch (err) {
             toast.error('خطا در بروزرسانی وضعیت 2FA', { className: 'toast-center' });
@@ -52,6 +54,7 @@ function Settings() {
             <div className="settings-form">
                 <div className="settings-form-group">
                     <div className="toggle-switch-container">
+                        <label className="settings-label">فعال‌سازی 2FA</label>
                         <button
                             type="button"
                             className={`toggle-switch ${is2FAEnabled ? 'active' : ''}`}
@@ -60,7 +63,6 @@ function Settings() {
                         >
                             <span className="switch-circle"></span>
                         </button>
-                        <label className="settings-label">فعال‌سازی 2FA</label>
                     </div>
                 </div>
             </div>
