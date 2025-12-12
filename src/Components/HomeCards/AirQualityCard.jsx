@@ -2,6 +2,7 @@ import React from 'react';
 import GaugeChart from 'react-gauge-chart';
 import './AirQualityCard.css';
 import { useState } from 'react';
+import DeviceMoreInfo from '../DeviceMoreInfo/DeviceMoreInfo';
 
 const AirQualityCard = ({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus }) => {
     const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
@@ -24,6 +25,19 @@ const AirQualityCard = ({ product, isUserAdmin, deviceState, deviceInfo, deviceS
                     }`}
             ></div>
 
+            {isUserAdmin ? (
+                <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+                    <span>مکان : {product.deviceLocationName}</span>
+                    |
+                    <span>مالک : {product.user}</span>
+                </div>
+
+            ) : (
+                <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+                    <span>{product.deviceName} در {product.deviceLocationName}</span>
+                </div>
+            )}
+
             <GaugeChart
                 id={`aqi-gauge-${product?.entity_id}`}
                 nrOfLevels={50}
@@ -39,7 +53,22 @@ const AirQualityCard = ({ product, isUserAdmin, deviceState, deviceInfo, deviceS
 
             <div className="aqi-value">AQ • {!isNaN(safeValue) ? safeValue : 0}</div>
             <div className="aqi-label">کیفیت هوا</div>
+
+            {isShowMoreInfo && (
+                <div className="overlay" onClick={() => setIsShowMoreInfo(false)}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <h4>جزئیات سنسور</h4>
+                        <table className="info-table">
+                            <tbody>
+                                <DeviceMoreInfo deviceInfo={deviceInfo} product={product} />
+                            </tbody>
+                        </table>
+                        <button className="close-btn" onClick={() => setIsShowMoreInfo(false)}>بستن</button>
+                    </div>
+                </div>
+            )}
         </div>
+
     );
 };
 

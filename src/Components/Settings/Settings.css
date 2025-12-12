@@ -40,25 +40,61 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.input-icon {
-    font-size: 1.6rem;
-    color: rgb(118, 118, 118);
+.toggle-switch-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.toggle-switch {
+    width: 50px;
+    height: 26px;
+    background-color: #8c9197;
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    outline: none;
+    padding: 0;
     flex-shrink: 0;
 }
 
-.input-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-left: 4px;
-    gap: 12px;
+.toggle-switch.active {
+    background-color: var(--blue);
+}
+
+.toggle-switch .switch-circle {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch.active .switch-circle {
+    transform: translateX(24px);
+}
+
+.toggle-switch:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.toggle-switch:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .settings-label {
     font-size: 1.1rem;
     color: var(--text);
     font-weight: 600;
+    margin: 0;
 }
 
 /* Fancy button مشابه فرم محصولات */
@@ -151,10 +187,6 @@
     }
 
     .settings-form {
-        padding: 15px 20px;
-    }
-
-    .settings-form {
         width: 100%;
         padding: 16px 18px;
     }
@@ -164,15 +196,8 @@
         align-items: flex-start;
     }
 
-    .input-wrapper {
-        flex-direction: column;
-        align-items: flex-start;
+    .toggle-switch-container {
         width: 100%;
-        gap: 10px;
-    }
-
-    .fancy-button .front {
-        width: 100%;
-        text-align: center;
+        justify-content: space-between;
     }
 }

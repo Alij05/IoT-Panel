@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ToggleOnIcon from '@mui/icons-material/ToggleOn';
-import ToggleOffIcon from '@mui/icons-material/ToggleOff';
 import { toast } from 'react-toastify';
 import "./Settings.css"
 
@@ -27,6 +25,8 @@ function Settings() {
     }, []);
 
     const handle2FAToggle = async () => {
+        if (loading) return;
+        
         setLoading(true);
         try {
             const res = await axios.post(`${url}/api/user/2fa`, {
@@ -35,7 +35,7 @@ function Settings() {
 
             if (res.status === 200) {
                 setIs2FAEnabled(!is2FAEnabled);
-                toast.success('2FA با موفقیت فعال شد', { className: 'toast-center' });
+                toast.success(is2FAEnabled ? '2FA با موفقیت غیرفعال شد' : '2FA با موفقیت فعال شد', { className: 'toast-center' });
             }
 
         } catch (err) {
@@ -51,19 +51,16 @@ function Settings() {
 
             <div className="settings-form">
                 <div className="settings-form-group">
-                    {is2FAEnabled ? <ToggleOnIcon className="input-icon" /> : <ToggleOffIcon className="input-icon" />}
-                    <div className="input-wrapper">
-                        <label className="settings-label">فعال‌سازی 2FA</label>
+                    <div className="toggle-switch-container">
                         <button
                             type="button"
-                            className="fancy-button"
+                            className={`toggle-switch ${is2FAEnabled ? 'active' : ''}`}
                             onClick={handle2FAToggle}
                             disabled={loading}
                         >
-                            <span className="shadow"></span>
-                            <span className="edge"></span>
-                            <span className="front text">{is2FAEnabled ? 'غیرفعال کردن' : 'فعال کردن'}</span>
+                            <span className="switch-circle"></span>
                         </button>
+                        <label className="settings-label">فعال‌سازی 2FA</label>
                     </div>
                 </div>
             </div>
