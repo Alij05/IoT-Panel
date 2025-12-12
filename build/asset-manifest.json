@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.b54b0996.css",
-    "main.js": "/static/js/main.ca1b4bc7.js",
+    "main.css": "/static/css/main.aae0894b.css",
+    "main.js": "/static/js/main.c4c68c57.js",
     "static/js/82.e4b95bae.chunk.js": "/static/js/82.e4b95bae.chunk.js",
     "static/js/239.5efa00e1.chunk.js": "/static/js/239.5efa00e1.chunk.js",
     "static/media/Lalezar-Regular.ttf": "/static/media/Lalezar-Regular.241ca811c53de4ed36a4.ttf",
@@ -21,7 +21,7 @@
     "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/css/main.b54b0996.css",
-    "static/js/main.ca1b4bc7.js"
+    "static/css/main.aae0894b.css",
+    "static/js/main.c4c68c57.js"
   ]
 }

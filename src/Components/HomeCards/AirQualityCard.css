@@ -34,8 +34,3 @@
     margin-top: 1px;
     color: var(--text);
 }
-
-#aqi-gauge {
-    width: 70% !important;
-    margin: 10px auto 0 !important;
-}

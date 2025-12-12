@@ -2,18 +2,24 @@
 
 .settings-main {
     margin-top: 60px;
-    width: 85%;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .users-title {
     font-size: 2rem;
     color: var(--text-color);
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    width: 85%;
 }
 
 .settings-form {
+    width: 85%;
+    max-width: 960px;
+    margin: 0 auto;
     background-color: color-mix(in oklab, var(--white) 60%, transparent);
     padding: 20px 30px;
     border-radius: 20px;
@@ -26,16 +32,18 @@
 .settings-form-group {
     display: flex;
     align-items: center;
+    gap: 16px;
     background-color: var(--white-50);
-    padding: 0 20px;
-    border-radius: 10px;
+    padding: 14px 20px;
+    border-radius: 12px;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .input-icon {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     color: rgb(118, 118, 118);
+    flex-shrink: 0;
 }
 
 .input-wrapper {
@@ -43,12 +51,14 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding-left: 10px;
+    padding-left: 4px;
+    gap: 12px;
 }
 
 .settings-label {
     font-size: 1.1rem;
     color: var(--text);
+    font-weight: 600;
 }
 
 /* Fancy button مشابه فرم محصولات */
@@ -97,7 +107,7 @@
     position: relative;
     padding: 8px 15px;
     border-radius: 12px;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: white;
     background: var(--blue);
     transform: translateY(-4px);
@@ -144,8 +154,20 @@
         padding: 15px 20px;
     }
 
+    .settings-form {
+        width: 100%;
+        padding: 16px 18px;
+    }
+
+    .settings-form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .input-wrapper {
         flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
         gap: 10px;
     }
 
