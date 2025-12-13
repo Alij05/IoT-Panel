@@ -31,17 +31,17 @@ export default function PanelLayout() {
     const { isUserAdmin } = useAuth()
 
     // Send Token to Backend
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     if (!token) {
-    //         navigate('/login', { replace: true });
-    //     }
+    useEffect(() => {
+        // const token = localStorage.getItem('token');
+        // if (!token) {
+        //     navigate('/login', { replace: true });
+        // }
 
-    //     getHomeScreenUser()
-    //     getUsers()
-    //     getAllDevices()
+        getHomeScreenUser()
+        getUsers()
+        getAllDevices()
 
-    // }, [navigate]);
+    }, [navigate]);
 
     //! Previous Function
     // async function getHomeScreenUser() {
@@ -80,15 +80,9 @@ export default function PanelLayout() {
     }
 
     const getAllDevices = async () => {
-        const token = localStorage.getItem('token')
-
         if (isUserAdmin) {
             try {
-                const res = await axios.get(`${url}/api/devices`, {
-                    headers: {
-                        // 'Authorization': `Bearer ${token}`
-                    }
-                })
+                const res = await axios.get(`${url}/api/devices`, {})
                 if (res.status === 200) {
                     //! setProducts(res.data)
                 }
@@ -105,8 +99,6 @@ export default function PanelLayout() {
                     }
                 })
                 if (res.status === 200) {
-                    console.log(res.data);
-
                     setProducts(res.data)
                 }
 
