@@ -12,29 +12,34 @@ const AirQualityCard = ({ product, isUserAdmin, deviceState, deviceInfo, deviceS
     const safeValue = Number(deviceState);
     const percent = !isNaN(safeValue) ? safeValue / maxAqi : 0;
 
-    return (
+    <>
         <div className="home-box aqi-card">
-            <div className='more-info' onClick={() => setIsShowMoreInfo(true)}>
+            <div
+                className="more-info"
+                onClick={() => setIsShowMoreInfo(true)}
+            >
                 ...
             </div>
 
             <div
-                className={`status-dot ${deviceStatus?.includes('Sensor status publish OK') || deviceStatus?.includes('Heartbeat - device online')
-                    ? 'online'
-                    : 'offline'
+                className={`status-dot ${deviceStatus?.includes("Sensor status publish OK") ||
+                    deviceStatus?.includes("Heartbeat - device online")
+                    ? "online"
+                    : "offline"
                     }`}
-            ></div>
+            />
 
             {isUserAdmin ? (
-                <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="card-header">
                     <span>مکان : {product.deviceLocationName}</span>
                     |
                     <span>مالک : {product.user}</span>
                 </div>
-
             ) : (
-                <div style={{ display: "flex", marginBottom: '15px', gap: "10px 12px", fontSize: "16px", color: "var(--text-color)", flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center' }}>
-                    <span>{product.deviceName} در {product.deviceLocationName}</span>
+                <div className="card-header">
+                    <span>
+                        {product.deviceName} در {product.deviceLocationName}
+                    </span>
                 </div>
             )}
 
@@ -42,34 +47,46 @@ const AirQualityCard = ({ product, isUserAdmin, deviceState, deviceInfo, deviceS
                 id={`aqi-gauge-${product?.entity_id}`}
                 nrOfLevels={50}
                 arcsLength={[0.1, 0.1, 0.1, 0.2, 0.2, 0.3]}
-                colors={["#00e400", "#ffff00", "#ff7e00", "#ff0000", "#8f3f97", "#7e0023"]}
+                colors={[
+                    "#00e400",
+                    "#ffff00",
+                    "#ff7e00",
+                    "#ff0000",
+                    "#8f3f97",
+                    "#7e0023",
+                ]}
                 percent={percent}
                 arcWidth={0.2}
-                needleColor="#ffffff"
-                textColor="#ffffff"
-                needleBaseColor="#ffffff"
-                hideText={true}
+                hideText
             />
 
             <div className="aqi-value">AQ • {!isNaN(safeValue) ? safeValue : 0}</div>
             <div className="aqi-label">کیفیت هوا</div>
-
-            {isShowMoreInfo && (
-                <div className="overlay" onClick={() => setIsShowMoreInfo(false)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                        <h4>جزئیات سنسور</h4>
-                        <table className="info-table">
-                            <tbody>
-                                <DeviceMoreInfo deviceInfo={deviceInfo} product={product} />
-                            </tbody>
-                        </table>
-                        <button className="close-btn" onClick={() => setIsShowMoreInfo(false)}>بستن</button>
-                    </div>
-                </div>
-            )}
         </div>
 
-    );
+        {isShowMoreInfo && (
+            <div className="overlay" onClick={() => setIsShowMoreInfo(false)}>
+                <div className="modal" onClick={(e) => e.stopPropagation()}>
+                    <h4>جزئیات سنسور</h4>
+                    <table className="info-table">
+                        <tbody>
+                            <DeviceMoreInfo
+                                deviceInfo={deviceInfo}
+                                product={product}
+                            />
+                        </tbody>
+                    </table>
+                    <button
+                        className="close-btn"
+                        onClick={() => setIsShowMoreInfo(false)}
+                    >
+                        بستن
+                    </button>
+                </div>
+            </div>
+        )}
+    </>
+
 };
 
 export default AirQualityCard;
