@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment-jalaali";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -7,54 +7,26 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import "./Notifications.css";
 import { useSockets } from "../../Contexts/SocketProvider";
 
-const url = process.env.REACT_APP_HA_BASE_URL;
+// const url = process.env.REACT_APP_HA_BASE_URL;
+const url = process.env.REACT_APP_URL;
 
-// Shared state برای جلوگیری از درخواست‌های تکراری (قابل استفاده در تمام کامپوننت‌ها)
-if (typeof window !== 'undefined') {
-    window.globalAlertsFetching = window.globalAlertsFetching || false;
-    window.globalLastFetchTime = window.globalLastFetchTime || 0;
-}
 
 export default function Notifications() {
     const { sensorsAlert } = useSockets()
 
     const [alerts, setAlerts] = useState([]);
-    const alertsFetchingRef = useRef(false);
 
     useEffect(() => {
         const getInitAlerts = async () => {
-            // جلوگیری از درخواست‌های همزمان
-            if (alertsFetchingRef.current || window.globalAlertsFetching) {
-                return;
-            }
-
-            // Throttling: حداقل 5 ثانیه بین درخواست‌ها
-            const now = Date.now();
-            const timeSinceLastFetch = now - (window.globalLastFetchTime || 0);
-            if (timeSinceLastFetch < 5000) {
-                return;
-            }
-
-            alertsFetchingRef.current = true;
-            window.globalAlertsFetching = true;
-            window.globalLastFetchTime = now;
-
             try {
                 const res = await axios.get(`${url}/api/alerts`);
                 const dbAlerts = Array.isArray(res.data.alerts) ? res.data.alerts.slice(0, 20) : [];
 
+                console.log('Notif', dbAlerts);
+
                 setAlerts(dbAlerts);
             } catch (err) {
-                if (err.response?.status === 429) {
-                    console.warn("Too many requests for alerts. Waiting before retry...");
-                    // در صورت 429، زمان انتظار را افزایش می‌دهیم
-                    window.globalLastFetchTime = now + 10000; // 10 ثانیه بعد
-                } else {
-                    console.error("Error fetching alerts:", err);
-                }
-            } finally {
-                alertsFetchingRef.current = false;
-                window.globalAlertsFetching = false;
+                console.error("Error fetching alerts:", err);
             }
         };
 
