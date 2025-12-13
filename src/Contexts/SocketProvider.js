@@ -1,11 +1,5 @@
 // src/contexts/WebSocketProvider.js
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const WebSocketContext = createContext(null);
 
@@ -13,10 +7,11 @@ export function WebSocketProvider({ children }) {
     const socketRef = useRef(null);
     const reconnectTimerRef = useRef(null);
     const heartbeatTimersRef = useRef({});
-    const hasConnectedRef = useRef(false);
+    const isAuthenticatedRef = useRef(false);
+    const reconnectAttemptsRef = useRef(0);
+    const destroyedRef = useRef(false);
 
     const [isConnected, setIsConnected] = useState(false);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const [sensorsData, setSensorsData] = useState({});
     const [sensorsAlert, setSensorsAlert] = useState([]);
@@ -28,10 +23,9 @@ export function WebSocketProvider({ children }) {
     const wsUrl = `${httpUrl.replace(/^http/, "ws")}/ws`;
 
     useEffect(() => {
-        let isUnmounted = false;
-
         const connect = () => {
-            // جلوگیری از چند اتصال همزمان
+            if (destroyedRef.current) return;
+
             if (
                 socketRef.current &&
                 (socketRef.current.readyState === WebSocket.OPEN ||
@@ -44,12 +38,11 @@ export function WebSocketProvider({ children }) {
             socketRef.current = ws;
 
             ws.onopen = () => {
-                if (isUnmounted) return;
-
+                reconnectAttemptsRef.current = 0;
                 setIsConnected(true);
-                console.log("[WSS] Connected ✔");
+                isAuthenticatedRef.current = false;
 
-                // فقط یک بار auth بفرست
+                console.log("[WSS] Connected ✔");
                 ws.send(JSON.stringify({ type: "authWithCookie" }));
             };
 
@@ -61,10 +54,10 @@ export function WebSocketProvider({ children }) {
                     return;
                 }
 
-                // --- Auth response ---
+                // ---- AUTH ----
                 if (data.type === "auth_response") {
                     if (data.success) {
-                        setIsAuthenticated(true);
+                        isAuthenticatedRef.current = true;
                         console.log("[WSS] Authenticated ✔");
                     } else {
                         console.warn("[WSS] Auth failed");
@@ -73,10 +66,9 @@ export function WebSocketProvider({ children }) {
                     return;
                 }
 
-                // قبل از auth هیچ دیتایی پردازش نشود
-                if (!isAuthenticated) return;
+                if (!isAuthenticatedRef.current) return;
 
-                // --- Status updates ---
+                // ---- STATUS ----
                 if (data.deviceId && data.messageType === "status") {
                     setSensorsData((prev) => ({
                         ...prev,
@@ -84,7 +76,7 @@ export function WebSocketProvider({ children }) {
                     }));
                 }
 
-                // --- Alerts ---
+                // ---- ALERTS ----
                 if (data.deviceId && data.messageType === "alert") {
                     setSensorsAlert((prev) => {
                         const exists = prev.some(
@@ -97,7 +89,7 @@ export function WebSocketProvider({ children }) {
                     });
                 }
 
-                // --- Flame sensors ---
+                // ---- FLAME ----
                 if (data.device_class === "flame") {
                     setFlamesData((prev) => ({
                         ...prev,
@@ -105,17 +97,17 @@ export function WebSocketProvider({ children }) {
                     }));
                 }
 
-                // --- Logs & Heartbeat ---
+                // ---- LOGS + HEARTBEAT ----
                 if (data.deviceId && data.messageType === "logs") {
                     setSensorsLogsData((prev) => ({
                         ...prev,
                         [data.deviceId]: data,
                     }));
 
-                    const msg = String(data.msg || data.message || "");
+                    const msg = String(data.msg || data.message || "").toLowerCase();
                     const isHeartbeat =
-                        msg.toLowerCase().includes("heartbeat") ||
-                        msg.includes("Sensor status publish OK");
+                        msg.includes("heartbeat") ||
+                        msg.includes("sensor status publish ok");
 
                     if (isHeartbeat) {
                         setDeviceStatuses((prev) => ({
@@ -124,56 +116,45 @@ export function WebSocketProvider({ children }) {
                         }));
 
                         if (heartbeatTimersRef.current[data.deviceId]) {
-                            clearTimeout(
-                                heartbeatTimersRef.current[data.deviceId]
-                            );
+                            clearTimeout(heartbeatTimersRef.current[data.deviceId]);
                         }
 
-                        heartbeatTimersRef.current[data.deviceId] =
-                            setTimeout(() => {
-                                setDeviceStatuses((prev) => ({
-                                    ...prev,
-                                    [data.deviceId]: "offline",
-                                }));
-                                delete heartbeatTimersRef.current[
-                                    data.deviceId
-                                ];
-                            }, 30000);
+                        heartbeatTimersRef.current[data.deviceId] = setTimeout(() => {
+                            setDeviceStatuses((prev) => ({
+                                ...prev,
+                                [data.deviceId]: "offline",
+                            }));
+                            delete heartbeatTimersRef.current[data.deviceId];
+                        }, 30000);
                     }
                 }
             };
 
             ws.onclose = () => {
-                if (isUnmounted) return;
-
-                console.warn("[WSS] Closed, retrying in 5s");
                 setIsConnected(false);
-                setIsAuthenticated(false);
+                isAuthenticatedRef.current = false;
 
-                if (!reconnectTimerRef.current) {
-                    reconnectTimerRef.current = setTimeout(() => {
-                        reconnectTimerRef.current = null;
-                        connect();
-                    }, 5000);
-                }
+                if (destroyedRef.current) return;
+
+                const attempt = reconnectAttemptsRef.current++;
+                const delay = Math.min(30000, 2000 * 2 ** attempt);
+
+                console.warn(`[WSS] Closed. Reconnecting in ${delay}ms`);
+                reconnectTimerRef.current = setTimeout(connect, delay);
             };
 
-            ws.onerror = (err) => {
-                console.error("[WSS] Error:", err);
+            ws.onerror = () => {
+                ws.close();
             };
         };
 
-        if (!hasConnectedRef.current) {
-            hasConnectedRef.current = true;
-            connect();
-        }
+        connect();
 
         return () => {
-            isUnmounted = true;
+            destroyedRef.current = true;
 
             if (reconnectTimerRef.current) {
                 clearTimeout(reconnectTimerRef.current);
-                reconnectTimerRef.current = null;
             }
 
             if (socketRef.current) {
@@ -191,7 +172,6 @@ export function WebSocketProvider({ children }) {
             value={{
                 socket: socketRef.current,
                 isConnected,
-                isAuthenticated,
                 sensorsData,
                 sensorsAlert,
                 flamesData,
