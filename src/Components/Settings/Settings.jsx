@@ -50,6 +50,7 @@ function Settings() {
                 setQrCodeUrl(qrCode);
                 setSecret(secret);
                 setSetupStep(1); // Show QR Code & Final State
+                setIs2FAEnabled(true)
                 toast.info('QR Code تولید شد. لطفا برای تایید نهایی، کد را وارد کنید.', { className: 'toast-center' });
             }
         } catch (err) {
@@ -123,12 +124,12 @@ function Settings() {
 
     return (
         <div className="settings-main">
-            <h1 className="users-title">تنظیمات حساب</h1>
+            <h1 className="settings-title">تنظیمات حساب</h1>
 
             <div className="settings-form">
                 <div className="settings-form-group">
                     <div className="toggle-switch-container">
-                        <label className="settings-label">فعال‌سازی 2FA</label>
+                        <label className="settings-label">فعال‌سازی ورود دو مرحله ای</label>
                         <button type="button" className={`toggle-switch ${is2FAEnabled ? 'active' : ''}`}
                             onClick={handle2FAToggle}
                             disabled={loading || setupStep === 1} // در حین تنظیم، دکمه اصلی را غیرفعال می‌کنیم
@@ -152,7 +153,7 @@ function Settings() {
                             )}
                         </div>
 
-                        <p>کد دستی: <code style={{ overflowWrap: 'break-word', fontWeight: 'bold' }}>{secret}</code></p>
+                        {/* <p>کد دستی: <code style={{ overflowWrap: 'break-word', fontWeight: 'bold' }}>{secret}</code></p> */}
 
                         <form onSubmit={verifyTOTP} style={{ marginTop: '20px' }}>
                             <div className="form-group" style={{ maxWidth: '300px', margin: '15px auto' }}>
