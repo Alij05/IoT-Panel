@@ -90,73 +90,19 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
 
   return (
     <Box sx={{ mb: 4, fontFamily: "'Lalezar', sans-serif" }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-        flexWrap="wrap"
-        gap={1}
-      >
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            fontFamily: "'Lalezar', sans-serif",
-            fontSize: { xs: "16px", sm: "18px", md: "20px" },
-            color: "var(--text-color)",
-          }}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} flexWrap="wrap" gap={1}>
+        <Typography variant="h6" fontWeight="bold" sx={{ display: "flex", alignItems: "center", gap: 1, fontFamily: "'Lalezar', sans-serif", fontSize: { xs: "16px", sm: "18px", md: "20px" }, color: "var(--text-color)", }}
         >
-          <DescriptionIcon /> لاگ وضعیت دستگاه (
+          <DescriptionIcon />
+          لاگ وضعیت دستگاه (
           {deviceInfos?.deviceName || ""} در{" "}
           {deviceInfos?.deviceLocationName || ""})
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Download size={18} />}
-          onClick={exportToExcel}
-          sx={{
-            borderRadius: "12px",
-            textTransform: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            px: 2,
-            backgroundColor: "var(--blue)",
-            color: "white",
-            fontFamily: "'Lalezar', sans-serif",
-            fontSize: { xs: "12px", sm: "14px", md: "16px" },
-            "&:hover": {
-              backgroundColor: "#041235",
-            },
-          }}
-        >
+        <Button variant="contained" startIcon={<Download size={18} />} onClick={exportToExcel} sx={{ borderRadius: "12px", textTransform: "none", display: "flex", alignItems: "center", gap: "6px", px: 2, backgroundColor: "var(--blue)", color: "white", fontFamily: "'Lalezar', sans-serif", fontSize: { xs: "12px", sm: "14px", md: "16px" }, "&:hover": { backgroundColor: "#041235", }, }}>
           خروجی Excel
         </Button>
 
-        <Button
-          variant="contained"
-          startIcon={<Delete size={18} />}
-          onClick={handleClearLogs}
-          sx={{
-            borderRadius: "12px",
-            textTransform: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            px: 2,
-            backgroundColor: "red",
-            color: "white",
-            fontFamily: "'Lalezar', sans-serif",
-            fontSize: { xs: "12px", sm: "14px", md: "16px" },
-            "&:hover": {
-              backgroundColor: "#b30000",
-            },
-          }}
-        >
+        <Button variant="contained" startIcon={<Delete size={18} />} onClick={handleClearLogs} sx={{ borderRadius: "12px", textTransform: "none", display: "flex", alignItems: "center", gap: "6px", px: 2, backgroundColor: "red", color: "white", fontFamily: "'Lalezar', sans-serif", fontSize: { xs: "12px", sm: "14px", md: "16px" }, "&:hover": { backgroundColor: "#b30000", }, }} >
           پاک کردن لاگ‌ها
         </Button>
 
@@ -164,57 +110,26 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
 
       {/* Loader while data is loading */}
       {isLoading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "200px",
-            flexDirection: "column",
-            color: "var(--text-color)",
-          }}
-        >
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px", flexDirection: "column", color: "var(--text-color)", }} >
           <CircularProgress sx={{ color: "var(--blue)", mb: 2 }} />
           <Typography sx={{ fontFamily: "'Lalezar', sans-serif" }}>
             در حال بارگذاری داده‌ها...
           </Typography>
         </Box>
       ) : (
-        <TableContainer
-          component={Paper}
-          sx={{
-            borderRadius: "16px",
-            overflow: "hidden",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-          }}
-        >
+        <TableContainer component={Paper} sx={{ borderRadius: "16px", overflow: "hidden", boxShadow: "0 8px 24px rgba(0,0,0,0.1)", }} >
           <Table sx={{ background: "var(--white-50)", borderCollapse: "separate" }}>
             <TableHead>
               <TableRow sx={{ backgroundColor: "var(--blue)" }}>
-                <TableCell
-                  sx={{
-                    color: "white",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    fontFamily: "'Lalezar', sans-serif",
-                    borderBottom: "1px solid rgba(255,255,255,0.3)",
-                  }}
-                >
+                <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif", borderBottom: "1px solid rgba(255,255,255,0.3)", }} >
                   زمان
                 </TableCell>
-                <TableCell
-                  sx={{
-                    color: "white",
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    fontFamily: "'Lalezar', sans-serif",
-                    borderBottom: "1px solid rgba(255,255,255,0.3)",
-                  }}
-                >
+                <TableCell sx={{ color: "white", fontWeight: "bold", textAlign: "center", fontFamily: "'Lalezar', sans-serif", borderBottom: "1px solid rgba(255,255,255,0.3)", }} >
                   وضعیت
                 </TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {[...data].reverse().map((row, index) => {
                 const ts = extractTimestamp(row);
@@ -229,60 +144,13 @@ const StateLogTable = ({ data = [], deviceId, exportToExcel, deviceInfos }) => {
                   detectStateLabel(stateVal);
 
                 return (
-                  <TableRow
-                    key={index}
-                    sx={{
-                      backgroundColor:
-                        index % 2 === 0
-                          ? "var(--white-50)"
-                          : "color-mix(in oklab, var(--white) 20%, transparent) !important",
-                      "&:hover": {
-                        backgroundColor:
-                          index % 2 === 0
-                            ? "var(--white-50)"
-                            : "color-mix(in oklab, var(--white) 20%, transparent) !important",
-                      },
-                      transition: "none",
-                      borderBottom: "none",
-                    }}
-                  >
-                    <TableCell
-                      sx={{
-                        textAlign: "center",
-                        fontFamily: "'Lalezar', sans-serif",
-                        color: "var(--text-color)",
-                        fontSize: "16px",
-                        borderBottom: "none",
-                      }}
-                    >
+                  <TableRow key={index} sx={{ backgroundColor: index % 2 === 0 ? "var(--white-50)" : "color-mix(in oklab, var(--white) 20%, transparent) !important", "&:hover": { backgroundColor: index % 2 === 0 ? "var(--white-50)" : "color-mix(in oklab, var(--white) 20%, transparent) !important", }, transition: "none", borderBottom: "none", }} >
+                    <TableCell sx={{ textAlign: "center", fontFamily: "'Lalezar', sans-serif", color: "var(--text-color)", fontSize: "16px", borderBottom: "none", }} >
                       {timeStr}
                     </TableCell>
                     <TableCell sx={{ borderBottom: "none" }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <Chip
-                          label={chipLabel}
-                          variant="filled"
-                          sx={{
-                            fontFamily: "'Lalezar', sans-serif",
-                            fontSize: "0.85rem",
-                            borderRadius: "8px",
-                            width: 80,
-                            height: 36,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            color: "white",
-                            backgroundColor: chipColor,
-                            textAlign: "center",
-                          }}
-                        />
+                      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", }} >
+                        <Chip label={chipLabel} variant="filled" sx={{ fontFamily: "'Lalezar', sans-serif", fontSize: "0.85rem", borderRadius: "8px", width: 80, height: 36, display: "flex", justifyContent: "center", alignItems: "center", color: "white", backgroundColor: chipColor, textAlign: "center", }} />
                       </Box>
                     </TableCell>
                   </TableRow>
