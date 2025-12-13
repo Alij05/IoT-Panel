@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import './Login.css'
 import { toast } from 'react-toastify'
@@ -12,25 +12,15 @@ export default function Login() {
     const { isUserLoggedIn, login } = useAuth()
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [totpCode, setTotpCode] = useState('')  // 2FA
     const [phone, setPhone] = useState('')
     const [showForgetPass, setShowForgetPass] = useState(false)
-    const [showOtp, setShowOtp] = useState(false) // برای OTP مرحله دوم
-    const [otp, setOtp] = useState('')
-    const [timer, setTimer] = useState(60)
-    const [showResend, setShowResend] = useState(false)
-    const [captchaToken, setCaptchaToken] = useState(null);
-    const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");  // Cloudflare Captcha
-    const navigate = useNavigate()
 
-    useEffect(() => {
-        let interval
-        if (showOtp && timer > 0) {
-            interval = setInterval(() => setTimer(prev => prev - 1), 1000)
-        } else if (timer === 0) {
-            setShowResend(true)
-        }
-        return () => clearInterval(interval)
-    }, [showOtp, timer])
+    // States مربوط به OTP مرحله دوم حذف شده‌اند.
+
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");  // Cloudflare Captcha
+    const navigate = useNavigate()
 
     if (isUserLoggedIn) {
         document.body.classList.remove('auth-body')
@@ -41,70 +31,65 @@ export default function Login() {
         event.preventDefault()
         if (username && password) {
             try {
-                const res = await axios.post(`${url}/api/auth/login`, {
+                // آماده‌سازی داده‌های لاگین
+                const loginData = {
                     username,
                     password,
                     captchaToken: cloudflareCaptchaToken
-                })
+                };
+
+                // منطق: اگر کاربر کد TOTP را وارد کرد، آن را به بک‌اند می‌فرستیم.
+                if (totpCode.trim().length > 0 && totpCode.trim().length <= 6) {
+                    loginData.totpCode = totpCode.trim();
+                }
+
+                // ارسال درخواست لاگین به /api/auth/login
+                const res = await axios.post(`${url}/api/auth/login`, loginData)
+
+                // در صورت موفقیت (status 200)
                 if (res.status === 200) {
-                    if (res.data.requires2FA) {
-                        // if User active 2FA
-                        setShowOtp(true)
-                        toast.info('کد تایید 2FA ارسال شد', { className: 'toast-center' })
-                    } else {
-                        login(res.data.token)
-                        toast.success('به پنل کاربری خود وارد شدید', { className: 'toast-center' })
-                        document.body.classList.remove('auth-body')
-                        setUsername('')
-                        setPassword('')
-                    }
+                    login(res.data.token)
+                    toast.success('به پنل کاربری خود وارد شدید', { className: 'toast-center' })
+                    document.body.classList.remove('auth-body')
+                    setUsername('')
+                    setPassword('')
+                    setTotpCode('')
                 }
             } catch (err) {
-                if (err.response?.status === 401) {
-                    toast.error('نام کاربری یا رمز عبور اشتباه است', { className: 'toast-center' });
-                    setPassword('')
-                    setUsername('')
-                } else if (err.response?.status === 400) {
+                const status = err.response?.status;
+                const errorMessage = err.response?.data?.message || '';
+
+                if (status === 401 || status === 403) {
+
+                    // مدیریت خطای 2FA الزامی یا کد اشتباه (بر اساس پیام بک‌اند)
+                    if (errorMessage.includes('2FA is required') || errorMessage.includes('TOTP is required') || errorMessage.includes('Invalid TOTP')) {
+                        if (totpCode.trim().length > 0) {
+                            toast.error('کد 2FA وارد شده اشتباه است.', { className: 'toast-center' });
+                        } else {
+                            toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد 2FA را وارد کنید.', { className: 'toast-center' });
+                        }
+                        setPassword('')
+                        setTotpCode('')
+                    }
+                    // خطای عمومی نام کاربری/رمز عبور
+                    else {
+                        toast.error('نام کاربری یا رمز عبور اشتباه است', { className: 'toast-center' });
+                        setPassword('')
+                        setUsername('')
+                        setTotpCode('')
+                    }
+
+                } else if (status === 400) {
                     toast.error('کاربری با این اطلاعات یافت نشد', { className: 'toast-center' });
                     setPassword('')
                     setUsername('')
+                    setTotpCode('')
                 } else {
                     toast.error('خطای اتصال به سرور یا شبکه', { className: 'toast-center' });
                 }
             }
         } else {
-            toast.warn('لطفا همه فیلدها را پر کنید', { className: 'toast-center' })
-        }
-    }
-
-    const OTPHandler = async () => {
-        if (otp.length === 6) {
-            try {
-                const res = await axios.post(`${url}/api/auth/2fa-verify`, { otp }, { withCredentials: true })
-                if (res.status === 200) {
-                    login(res.data.token)
-                    toast.success('ورود موفقیت‌آمیز!', { className: 'toast-center' })
-                    document.body.classList.remove('auth-body')
-                    setShowOtp(false)
-                    setOtp('')
-                }
-            } catch (err) {
-                toast.error('کد اشتباه یا منقضی شده است', { className: 'toast-center' })
-                setOtp('')
-            }
-        } else {
-            toast.warn('کد ۶ رقمی را وارد کنید', { className: 'toast-center' })
-        }
-    }
-
-    const reSendOTPHandler = async () => {
-        try {
-            await axios.post(`${url}/api/auth/resendotp`, {}, { withCredentials: true })
-            toast.success('کد تایید مجدد ارسال شد', { className: 'toast-center' })
-            setShowResend(false)
-            setTimer(60)
-        } catch (err) {
-            toast.error('ارسال مجدد کد تایید با مشکل مواجه شد', { className: 'toast-center' })
+            toast.warn('لطفا نام کاربری و رمز عبور را پر کنید', { className: 'toast-center' })
         }
     }
 
@@ -120,15 +105,13 @@ export default function Login() {
         }
 
         try {
-            const res = await axios.post(`${url}/api/auth/forget-password`, {
+            await axios.post(`${url}/api/auth/forget-password`, {
                 phone,
                 // cloudflareCaptchaToken,
             })
 
-            toast.success("کد بازیابی ارسال شد", { className: 'toast-center' })
+            toast.success("کد بازیابی ارسال شد. لطفاً صندوق ورودی خود را چک کنید.", { className: 'toast-center' })
             setShowForgetPass(false)
-            setShowOtp(true)
-            setTimer(60)
 
         } catch (err) {
             toast.error("خطا در ارسال درخواست", { className: 'toast-center' })
@@ -138,6 +121,7 @@ export default function Login() {
     return (
         <>
             {showForgetPass ? (
+                // نمایش فرم فراموشی رمز عبور
                 <div className='login-form-container'>
                     <div className="login wrap">
                         <div className="h1">فراموشی رمز عبور</div>
@@ -165,27 +149,8 @@ export default function Login() {
                         </div>
                     </div>
                 </div>
-            ) : showOtp ? (
-                <div className='login-form-container'>
-                    <div className="login wrap">
-                        <div className="h1">کد 2FA</div>
-                        <div className='otp-inputs-wrapper'>
-                            <div className="form-group" id="otpNumber">
-                                <input type="text" className="form-control" placeholder="" maxLength={6} value={otp} onChange={(e) => setOtp(e.target.value)} />
-                                <label htmlFor="passwordNumber" className="form-label">کد</label>
-                            </div>
-                        </div>
-                        <button className='button-modern' style={{ marginTop: '20px' }} onClick={OTPHandler}>ارسال</button>
-                        <div className='timer-wrapper'>
-                            {showResend ? (
-                                <button className="button-outline-cool" onClick={reSendOTPHandler}>ارسال مجدد</button>
-                            ) : (
-                                <div>{timer} ثانیه</div>
-                            )}
-                        </div>
-                    </div>
-                </div>
             ) : (
+                // فرم ورود اصلی (حالت پیش فرض)
                 <div className='login-form-container'>
                     <div className="login wrap">
                         <div className="h1">ورود به حساب</div>
@@ -198,6 +163,26 @@ export default function Login() {
                                 <div className="form-group">
                                     <input type="password" className="form-control" placeholder=" " id="passwordNumber" value={password} onChange={(e) => setPassword(e.target.value)} />
                                     <label htmlFor="passwordNumber" className="form-label">رمز عبور</label>
+                                </div>
+                                {/* فیلد ورود 2FA جدید در فرم اصلی */}
+                                <div className="form-group">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder=" "
+                                        id="totpCode"
+                                        value={totpCode}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            // اجازه ورود فقط اعداد تا حداکثر 6 کاراکتر
+                                            if (/^\d*$/.test(value) && value.length <= 6) {
+                                                setTotpCode(value);
+                                            }
+                                        }}
+                                        maxLength={6}
+                                        inputMode="numeric"
+                                    />
+                                    <label htmlFor="totpCode" className="form-label">2FA (کد ۶ رقمی)</label>
                                 </div>
                             </div>
 
