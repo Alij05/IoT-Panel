@@ -7,8 +7,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import "./Notifications.css";
 import { useSockets } from "../../Contexts/SocketProvider";
 
-// const url = process.env.REACT_APP_HA_BASE_URL;
-const url = process.env.REACT_APP_URL;
+const url = process.env.REACT_APP_HA_BASE_URL;
+// const url = process.env.REACT_APP_URL;
 
 
 export default function Notifications() {

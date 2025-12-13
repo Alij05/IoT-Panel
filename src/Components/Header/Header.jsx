@@ -69,9 +69,9 @@ export default function Header() {
     };
 
     // Get first 20 Alerts on Mounting
-    useEffect(() => {
-        getInitAlerts()
-    }, [])
+    // useEffect(() => {
+    //     getInitAlerts()
+    // }, [])
 
 
     useEffect(() => {
