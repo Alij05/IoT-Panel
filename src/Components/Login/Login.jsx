@@ -43,6 +43,7 @@ export default function Login() {
 
                 const res = await axios.post(`${url}/api/auth/login`, loginData)
                 console.log('Login Response =>', res);
+                console.log('loginData =>', loginData);
 
                 if (res.status === 200) {
                     login(res.data.token)
@@ -57,15 +58,14 @@ export default function Login() {
                 const errorMessage = err.response?.data?.message || '';
                 console.log("errorMessage =>", errorMessage);
                 console.log("error =>", err);
-                console.log("errorStatus =>", status);
 
                 if (status === 401 || status === 403) {
 
                     if (errorMessage.includes('TOTP code is required')) {
                         if (totpCode.trim().length > 0) {
-                            toast.error('کد 2FA وارد شده اشتباه است.', { className: 'toast-center' });
+                            toast.error('کد ورود دو مرحله ای وارد شده اشتباه است.', { className: 'toast-center' });
                         } else {
-                            toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد 2FA را وارد کنید.', { className: 'toast-center' });
+                            toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد را وارد کنید.', { className: 'toast-center' });
                         }
                         setPassword('')
                         setTotpCode('')
