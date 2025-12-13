@@ -1,147 +1,190 @@
 // src/contexts/WebSocketProvider.js
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 
 const WebSocketContext = createContext(null);
 
 export function WebSocketProvider({ children }) {
     const socketRef = useRef(null);
     const reconnectTimerRef = useRef(null);
-    const heartbeatTimersRef = useRef({}); // Stores timeout timers for each device
+    const heartbeatTimersRef = useRef({});
+    const hasConnectedRef = useRef(false);
 
     const [isConnected, setIsConnected] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+
     const [sensorsData, setSensorsData] = useState({});
     const [sensorsAlert, setSensorsAlert] = useState([]);
     const [sensorsLogsData, setSensorsLogsData] = useState({});
     const [flamesData, setFlamesData] = useState({});
-    const [deviceStatuses, setDeviceStatuses] = useState({}); // Tracks device online/offline states
+    const [deviceStatuses, setDeviceStatuses] = useState({});
 
-    const url = process.env.REACT_APP_HA_BASE_URL;
-    const wsUrl = `${url.replace(/^http?/, "ws")}/ws`;
+    const httpUrl = process.env.REACT_APP_HA_BASE_URL;
+    const wsUrl = `${httpUrl.replace(/^http/, "ws")}/ws`;
 
     useEffect(() => {
+        let isUnmounted = false;
+
         const connect = () => {
+            // جلوگیری از چند اتصال همزمان
+            if (
+                socketRef.current &&
+                (socketRef.current.readyState === WebSocket.OPEN ||
+                    socketRef.current.readyState === WebSocket.CONNECTING)
+            ) {
+                return;
+            }
+
             const ws = new WebSocket(wsUrl);
             socketRef.current = ws;
 
             ws.onopen = () => {
-                setIsConnected(true);
-                console.log("WSS Connected ✔");
+                if (isUnmounted) return;
 
+                setIsConnected(true);
+                console.log("[WSS] Connected ✔");
+
+                // فقط یک بار auth بفرست
                 ws.send(JSON.stringify({ type: "authWithCookie" }));
             };
 
             ws.onmessage = (event) => {
+                let data;
                 try {
-                    const data = JSON.parse(event.data);
+                    data = JSON.parse(event.data);
+                } catch {
+                    return;
+                }
 
-                    // --- بررسی پاسخ احراز هویت ---
-                    if (data.type === "auth_response") {
-                        if (data.success) {
-                            console.log("کاربر با موفقیت احراز هویت شد");
-                            setIsAuthenticated(true);
-                        } else {
-                            console.warn("احراز هویت ناموفق، بستن WebSocket");
-                            ws.close();
-                        }
-                        return; // فقط مربوط به auth بود
+                // --- Auth response ---
+                if (data.type === "auth_response") {
+                    if (data.success) {
+                        setIsAuthenticated(true);
+                        console.log("[WSS] Authenticated ✔");
+                    } else {
+                        console.warn("[WSS] Auth failed");
+                        ws.close();
                     }
+                    return;
+                }
 
-                    // --- اگر هنوز احراز هویت نشده، هیچ داده‌ای پردازش نشود ---
-                    if (!isAuthenticated) return;
+                // قبل از auth هیچ دیتایی پردازش نشود
+                if (!isAuthenticated) return;
 
-                    // --- Handle device status messages ---
-                    if (data.deviceId && data.messageType === "status") {
-                        setSensorsData((prev) => ({
+                // --- Status updates ---
+                if (data.deviceId && data.messageType === "status") {
+                    setSensorsData((prev) => ({
+                        ...prev,
+                        [data.deviceId]: data,
+                    }));
+                }
+
+                // --- Alerts ---
+                if (data.deviceId && data.messageType === "alert") {
+                    setSensorsAlert((prev) => {
+                        const exists = prev.some(
+                            (a) =>
+                                a.timestamp === data.timestamp &&
+                                a.deviceId === data.deviceId
+                        );
+                        if (exists) return prev;
+                        return [data, ...prev].slice(0, 50);
+                    });
+                }
+
+                // --- Flame sensors ---
+                if (data.device_class === "flame") {
+                    setFlamesData((prev) => ({
+                        ...prev,
+                        [data.deviceId]: data,
+                    }));
+                }
+
+                // --- Logs & Heartbeat ---
+                if (data.deviceId && data.messageType === "logs") {
+                    setSensorsLogsData((prev) => ({
+                        ...prev,
+                        [data.deviceId]: data,
+                    }));
+
+                    const msg = String(data.msg || data.message || "");
+                    const isHeartbeat =
+                        msg.toLowerCase().includes("heartbeat") ||
+                        msg.includes("Sensor status publish OK");
+
+                    if (isHeartbeat) {
+                        setDeviceStatuses((prev) => ({
                             ...prev,
-                            [data.deviceId]: data,
+                            [data.deviceId]: "online",
                         }));
-                    }
 
-                    // --- Handle device alerts ---
-                    if (data.deviceId && data.messageType === "alert") {
-                        setSensorsAlert((prev = []) => {
-                            const exists = prev.some(
-                                (a) =>
-                                    a.timestamp === data.timestamp &&
-                                    a.deviceId === data.deviceId
+                        if (heartbeatTimersRef.current[data.deviceId]) {
+                            clearTimeout(
+                                heartbeatTimersRef.current[data.deviceId]
                             );
-                            if (exists) return prev;
-                            return [...prev, data];
-                        });
-                    }
+                        }
 
-                    // --- Handle flame sensors ---
-                    if (data.device_class === "flame") {
-                        setFlamesData((prev) => ({
-                            ...prev,
-                            [data.deviceId]: data,
-                        }));
-                    }
-
-                    // --- Handle device logs (including heartbeat) ---
-                    if (data.deviceId && data.messageType === "logs") {
-                        setSensorsLogsData((prev) => ({
-                            ...prev,
-                            [data.deviceId]: data,
-                        }));
-
-                        const msg = (data.msg || data.message || "").toString();
-                        const isHeartbeat =
-                            msg.includes("Heartbeat") ||
-                            msg.includes("heartbeat") ||
-                            msg.includes("Sensor status publish OK");
-
-                        if (isHeartbeat) {
-                            setDeviceStatuses((prev) => ({
-                                ...prev,
-                                [data.deviceId]: "Heartbeat - device online",
-                            }));
-
-                            if (heartbeatTimersRef.current[data.deviceId]) {
-                                clearTimeout(heartbeatTimersRef.current[data.deviceId]);
-                            }
-
-                            heartbeatTimersRef.current[data.deviceId] = setTimeout(() => {
+                        heartbeatTimersRef.current[data.deviceId] =
+                            setTimeout(() => {
                                 setDeviceStatuses((prev) => ({
                                     ...prev,
-                                    [data.deviceId]: "Heartbeat - device offline (timeout)",
+                                    [data.deviceId]: "offline",
                                 }));
-                                delete heartbeatTimersRef.current[data.deviceId];
+                                delete heartbeatTimersRef.current[
+                                    data.deviceId
+                                ];
                             }, 30000);
-                        }
                     }
-                } catch (err) {
-                    console.error("[WS] Parse error:", err);
                 }
             };
 
             ws.onclose = () => {
+                if (isUnmounted) return;
+
+                console.warn("[WSS] Closed, retrying in 5s");
                 setIsConnected(false);
                 setIsAuthenticated(false);
-                console.log("WSS Closed, will try to reconnect in 3s");
 
-                if (reconnectTimerRef.current)
-                    clearTimeout(reconnectTimerRef.current);
-                reconnectTimerRef.current = setTimeout(connect, 3000);
+                if (!reconnectTimerRef.current) {
+                    reconnectTimerRef.current = setTimeout(() => {
+                        reconnectTimerRef.current = null;
+                        connect();
+                    }, 5000);
+                }
             };
 
             ws.onerror = (err) => {
-                console.error("WSS Error:", err);
+                console.error("[WSS] Error:", err);
             };
         };
 
-        connect();
+        if (!hasConnectedRef.current) {
+            hasConnectedRef.current = true;
+            connect();
+        }
 
         return () => {
-            if (reconnectTimerRef.current)
+            isUnmounted = true;
+
+            if (reconnectTimerRef.current) {
                 clearTimeout(reconnectTimerRef.current);
-            if (socketRef.current) socketRef.current.close();
+                reconnectTimerRef.current = null;
+            }
+
+            if (socketRef.current) {
+                socketRef.current.close();
+                socketRef.current = null;
+            }
 
             Object.values(heartbeatTimersRef.current).forEach(clearTimeout);
             heartbeatTimersRef.current = {};
         };
-    }, [wsUrl, isAuthenticated]);
+    }, [wsUrl]);
 
     return (
         <WebSocketContext.Provider
