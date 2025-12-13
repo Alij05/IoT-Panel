@@ -21,6 +21,8 @@ function TempCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus 
         async function deviceInitState() {
             try {
                 const res = await fetch(`${url}/mqtt/api/status/${deviceType}/${deviceId}`);
+                console.log('res Temp Card ==>', res);
+
                 const data = await res.json();
                 if (!res.ok) return;
 
