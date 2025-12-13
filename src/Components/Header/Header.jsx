@@ -40,7 +40,6 @@ export default function Header() {
     const today = moment(); // تاریخ امروز
     const dayName = today.format("dddd"); // نام روز هفته (مثلاً شنبه)
     const dateStr = today.format("jYYYY/jMM/jDD"); // تاریخ شمسی
-    const token = localStorage.getItem('token')
 
 
     //!  بستن با کلیک بیرون  !//

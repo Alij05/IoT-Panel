@@ -42,7 +42,7 @@ export default function AddNewProduct() {
     const isScannerRunningRef = useRef(false);
     const isStoppingRef = useRef(false);
 
-    const userToken = localStorage.getItem('token')
+    // const userToken = localStorage.getItem('token')
 
     useEffect(() => {
         const qrRegionId = 'qr-reader';
@@ -189,11 +189,8 @@ export default function AddNewProduct() {
         try {
             const res = await axios.post(`${url}/api/devices`, {
                 data: deviceObject
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${userToken}`
-                }
-            });
+            }, 
+        );
 
             if (res.status === 200) {
                 toast.success(`دستگاه ${deviceName} اضافه شد`, { className: 'toast-center' });

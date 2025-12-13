@@ -70,7 +70,7 @@ export default function ProductsTable() {
         try {
             const res = await axios.get(`${url}/api/devices/mine`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 }
             })
             if (res.status === 200) {
@@ -90,7 +90,7 @@ export default function ProductsTable() {
         try {
             const res = await axios.get(`${url}/api/devices/${selectedUser.username}`, {
                 headers: {
-                    'Authorization': `Bearer ${adminToken}`
+                    // 'Authorization': `Bearer ${adminToken}`
                 }
             })
             if (res.status === 200) {
@@ -281,18 +281,18 @@ export default function ProductsTable() {
 
     async function deleteProductHandler(product) {
         try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                toast.error("توکن یافت نشد. لطفاً دوباره وارد شوید.", { className: 'toast-center' });
-                return;
-            }
+            // const token = localStorage.getItem("token");
+            // if (!token) {
+            //     toast.error("توکن یافت نشد. لطفاً دوباره وارد شوید.", { className: 'toast-center' });
+            //     return;
+            // }
 
             const res = await axios.post(
                 `${url}/api/devices/delete/${product.entity_id}`,
                 {},
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        // "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 }

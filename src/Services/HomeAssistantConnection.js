@@ -47,7 +47,7 @@ export async function turnOffSwitch(deviceId, deviceType, state) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ deviceType, deviceId, command: state })
     });
@@ -62,7 +62,7 @@ export async function turnOnSwitch(deviceId, deviceType, state) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ deviceType, deviceId, command: state })
     });

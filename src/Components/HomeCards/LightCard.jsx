@@ -13,7 +13,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
     const deviceType = product.deviceType || 'sensor';
     const deviceId = product.entity_id;
 
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
 
     useEffect(() => {
         setLightStatus(deviceState);
@@ -49,7 +49,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'on' })
             });
@@ -77,7 +77,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'off' })
             });
@@ -120,7 +120,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'AUTOON' })
             });
@@ -145,7 +145,7 @@ function LightCard({ product, isUserAdmin, deviceState, deviceInfo, deviceStatus
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    // 'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ deviceType, deviceId, command: 'AUTOOFF' })
             });

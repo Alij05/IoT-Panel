@@ -92,7 +92,7 @@ export default function Reports() {
     try {
       const res = await axios.get(`${url}/api/devices`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
       });
 

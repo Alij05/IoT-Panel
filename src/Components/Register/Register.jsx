@@ -189,7 +189,7 @@ export default function Register() {
         if (res.status === 200) {
           document.body.classList.remove('auth-body')
           toast.success('ثبت نام با موفقیت انجام شد', { className: 'toast-center' })
-          localStorage.setItem('token', JSON.stringify(res.token))
+          // localStorage.setItem('token', JSON.stringify(res.token))
           navigate('/login')
         }
 

@@ -34,10 +34,10 @@ export default function Home() {
     }, [isUserAdmin]);
 
     async function getUserProducts() {
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
         try {
             const res = await axios.get(`${url}/api/devices/mine`, {
-                headers: { Authorization: `Bearer ${token}` },
+                // headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 200) setUserProducts(res.data);
         } catch (err) {
@@ -46,10 +46,10 @@ export default function Home() {
     }
 
     async function getAllProducts() {
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
         try {
             const res = await axios.get(`${url}/api/devices`, {
-                headers: { Authorization: `Bearer ${token}` },
+                // headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 200) setAllProducts(res.data);
         } catch (err) {

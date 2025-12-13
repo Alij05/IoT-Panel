@@ -207,13 +207,13 @@ export const getHourDetails = (rawData, selectedBucketKey) => {
 // Fetch device logs for a specific date
 export const fetchDeviceLogsByDate = async (deviceId, date) => {
   try {
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
     const response = await axios.post(
       `${url}/mqtt/api/logs/device/sensor/${deviceId}?limit=5`,
       { date }, // Request body
       {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          // "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
@@ -232,13 +232,13 @@ export const fetchDeviceLogsByDate = async (deviceId, date) => {
 // Fetch device logs for a date range
 export const fetchDeviceLogsByRange = async (deviceType, deviceId, startDate, endDate) => {
   try {
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
     const response = await axios.post(
       `${url}/mqtt/api/logs/device/range/sensor/${deviceId}`,
       { startDate, endDate },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          // "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         }
       }

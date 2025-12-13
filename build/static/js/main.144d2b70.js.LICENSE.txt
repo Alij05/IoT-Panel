@@ -406,6 +406,4 @@
 
 //!  بستن با کلیک بیرون  !//
 
-//! Previous Function
-
 //! moment.js

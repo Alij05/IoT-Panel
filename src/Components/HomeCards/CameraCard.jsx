@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import "./CameraCard.css";
 
 export default function CameraCard({ cameraId }) {
-  const token = localStorage.getItem('token')
   const url = `${process.env.REACT_APP_CAMERA_URL}/cam8`
   const [isOpen, setIsOpen] = useState(false);
 
