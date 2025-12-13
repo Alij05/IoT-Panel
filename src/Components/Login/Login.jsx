@@ -31,22 +31,19 @@ export default function Login() {
         event.preventDefault()
         if (username && password) {
             try {
-                // آماده‌سازی داده‌های لاگین
                 const loginData = {
                     username,
                     password,
                     captchaToken: cloudflareCaptchaToken
                 };
 
-                // منطق: اگر کاربر کد TOTP را وارد کرد، آن را به بک‌اند می‌فرستیم.
                 if (totpCode.trim().length > 0 && totpCode.trim().length <= 6) {
                     loginData.totpCode = totpCode.trim();
                 }
 
-                // ارسال درخواست لاگین به /api/auth/login
                 const res = await axios.post(`${url}/api/auth/login`, loginData)
+                console.log('Login Response =>', res);
 
-                // در صورت موفقیت (status 200)
                 if (res.status === 200) {
                     login(res.data.token)
                     toast.success('به پنل کاربری خود وارد شدید', { className: 'toast-center' })
@@ -58,10 +55,11 @@ export default function Login() {
             } catch (err) {
                 const status = err.response?.status;
                 const errorMessage = err.response?.data?.message || '';
+                console.log("errorMessage =>", errorMessage
+                );
 
                 if (status === 401 || status === 403) {
 
-                    // مدیریت خطای 2FA الزامی یا کد اشتباه (بر اساس پیام بک‌اند)
                     if (errorMessage.includes('2FA is required') || errorMessage.includes('TOTP is required') || errorMessage.includes('Invalid TOTP')) {
                         if (totpCode.trim().length > 0) {
                             toast.error('کد 2FA وارد شده اشتباه است.', { className: 'toast-center' });
