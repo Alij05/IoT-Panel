@@ -55,12 +55,13 @@ export default function Login() {
             } catch (err) {
                 const status = err.response?.status;
                 const errorMessage = err.response?.data?.message || '';
-                console.log("errorMessage =>", errorMessage
-                );
+                console.log("errorMessage =>", errorMessage);
+                console.log("error =>", err);
+                console.log("errorStatus =>", status);
 
                 if (status === 401 || status === 403) {
 
-                    if (errorMessage.includes('2FA is required') || errorMessage.includes('TOTP is required') || errorMessage.includes('Invalid TOTP')) {
+                    if (errorMessage.includes('TOTP code is required')) {
                         if (totpCode.trim().length > 0) {
                             toast.error('کد 2FA وارد شده اشتباه است.', { className: 'toast-center' });
                         } else {
