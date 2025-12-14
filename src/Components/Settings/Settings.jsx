@@ -50,7 +50,6 @@ function Settings() {
                 setQrCodeUrl(qrCode);
                 setSecret(secret);
                 setSetupStep(1); // Show QR Code & Final State
-                setIs2FAEnabled(true)
                 toast.info('QR Code تولید شد. لطفا برای تایید نهایی، کد را وارد کنید.', { className: 'toast-center' });
             }
         } catch (err) {
