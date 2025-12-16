@@ -17,9 +17,9 @@ export default function Login() {
     const [showForgetPass, setShowForgetPass] = useState(false)
     const [showTwoFactorLogin, setShowTwoFactorLogin] = useState(false)
 
-    const [captchaToken, setCaptchaToken] = useState(null);
     const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");  // Cloudflare Captcha
-    const navigate = useNavigate()
+    const [captchaKey, setCaptchaKey] = useState(0)
+
 
     if (isUserLoggedIn) {
         document.body.classList.remove('auth-body')
@@ -61,8 +61,11 @@ export default function Login() {
                 if (status === 401 || status === 403) {
                     if (errorMessage.includes('TOTP code is required')) {
                         toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد را وارد کنید.', { className: 'toast-center' });
+                        setShowTwoFactorLogin(true)
+                        // ریست کپچا
+                        setCloudflareCaptchaToken('')
+                        setCaptchaKey(prev => prev + 1)
                     }
-                    // خطای عمومی نام کاربری/رمز عبور
                     else {
                         toast.error('نام کاربری یا رمز عبور اشتباه است', { className: 'toast-center' });
                         setUsername('')
@@ -130,7 +133,11 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
+                        <Captcha
+                            key={captchaKey}
+                            onVerify={(token) => setCloudflareCaptchaToken(token)}
+                        />
+
 
                         <button className='button-modern' style={{ marginTop: '20px' }} onClick={handleForgetPass}>
                             ارسال
@@ -161,8 +168,6 @@ export default function Login() {
                                     کد ۶ رقمی 2FA
                                 </label>
                             </div>
-
-                            <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
 
                             <button className='button-modern'>
                                 ورود
@@ -198,7 +203,11 @@ export default function Login() {
                                 </div>
                             </div>
 
-                            <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
+                            <Captcha
+                                key={captchaKey}
+                                onVerify={(token) => setCloudflareCaptchaToken(token)}
+                            />
+
 
                             <button className='button-modern'>
                                 ورود
