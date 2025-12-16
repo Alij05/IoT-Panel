@@ -59,23 +59,14 @@ export default function Login() {
                 console.log("error =>", err);
 
                 if (status === 401 || status === 403) {
-
                     if (errorMessage.includes('TOTP code is required')) {
-                        if (totpCode.trim().length > 0) {
-                            toast.error('کد ورود دو مرحله ای وارد شده اشتباه است.', { className: 'toast-center' });
-                        } else {
-                            toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد را وارد کنید.', { className: 'toast-center' });
-                        }
-                        setUsername('')
-                        setPassword('')
-                        setTotpCode('')
+                        toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد را وارد کنید.', { className: 'toast-center' });
                     }
                     // خطای عمومی نام کاربری/رمز عبور
                     else {
                         toast.error('نام کاربری یا رمز عبور اشتباه است', { className: 'toast-center' });
                         setUsername('')
                         setPassword('')
-                        setTotpCode('')
                     }
 
                 } else if (status === 400) {
@@ -158,7 +149,7 @@ export default function Login() {
                     <div className="login wrap">
                         <div className="h1">ورود دومرحله‌ای</div>
 
-                        <form onSubmit={loginHandler}>
+                        <form onSubmit={loginHandler} style={{ width: '60%', margin: '0 auto' }}>
                             <div className="form-group">
                                 <input type="text" className="form-control" placeholder=" " value={totpCode} maxLength={6} inputMode="numeric"
                                     onChange={(e) => {
@@ -209,18 +200,21 @@ export default function Login() {
 
                             <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
 
-                            <span className="forgot-password" onClick={() => setShowTwoFactorLogin(true)} >
-                                ورود دومرحله‌ای
-                            </span>
-
                             <button className='button-modern'>
                                 ورود
                             </button>
                         </form>
 
-                        <span className="forgot-password" onClick={() => setShowForgetPass(true)} >
-                            فراموشی رمز عبور
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between" }}>
+                            <span className="forgot-password" onClick={() => setShowForgetPass(true)} >
+                                فراموشی رمز عبور
+                            </span>
+
+                            <span className="forgot-password" onClick={() => setShowTwoFactorLogin(true)} >
+                                ورود دومرحله‌ای
+                            </span>
+                        </div>
+
 
                         <p className='login-footer-text'>
                             حساب کاربری ندارید؟ <Link to='/register'>ثبت نام کنید</Link>

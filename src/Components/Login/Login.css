@@ -214,7 +214,7 @@
     background: var(--blue);
     background-size: 200% 200%;
     width: 70%;
-    margin: 35px auto 25px;
+    margin: 15px auto 25px;
     animation: buttonAppear 0.4s ease-out both;
     animation-delay: 0.3s;
     opacity: 0;
