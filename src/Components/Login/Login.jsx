@@ -169,6 +169,11 @@ export default function Login() {
                                 </label>
                             </div>
 
+                            <Captcha
+                                key={captchaKey}
+                                onVerify={(token) => setCloudflareCaptchaToken(token)}
+                            />
+
                             <button className='button-modern'>
                                 ورود
                             </button>
