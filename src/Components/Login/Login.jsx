@@ -15,8 +15,7 @@ export default function Login() {
     const [totpCode, setTotpCode] = useState('')  // 2FA
     const [phone, setPhone] = useState('')
     const [showForgetPass, setShowForgetPass] = useState(false)
-
-    // States مربوط به OTP مرحله دوم حذف شده‌اند.
+    const [showTwoFactorLogin, setShowTwoFactorLogin] = useState(false)
 
     const [captchaToken, setCaptchaToken] = useState(null);
     const [cloudflareCaptchaToken, setCloudflareCaptchaToken] = useState("");  // Cloudflare Captcha
@@ -67,14 +66,15 @@ export default function Login() {
                         } else {
                             toast.error('ورود دو مرحله‌ای فعال است. لطفاً کد را وارد کنید.', { className: 'toast-center' });
                         }
+                        setUsername('')
                         setPassword('')
                         setTotpCode('')
                     }
                     // خطای عمومی نام کاربری/رمز عبور
                     else {
                         toast.error('نام کاربری یا رمز عبور اشتباه است', { className: 'toast-center' });
-                        setPassword('')
                         setUsername('')
+                        setPassword('')
                         setTotpCode('')
                     }
 
@@ -120,10 +120,11 @@ export default function Login() {
     return (
         <>
             {showForgetPass ? (
-                // نمایش فرم فراموشی رمز عبور
+                /* فرم فراموشی رمز عبور */
                 <div className='login-form-container'>
                     <div className="login wrap">
                         <div className="h1">فراموشی رمز عبور</div>
+
                         <div className='otp-inputs-wrapper'>
                             <div className="form-group" style={{ width: '70%', margin: '0 auto' }}>
                                 <input type="text" className="form-control" id="phoneNumber" placeholder=" " value={phone} maxLength="11" inputMode="numeric"
@@ -132,68 +133,102 @@ export default function Login() {
                                         if (/^\d*$/.test(value)) setPhone(value)
                                     }}
                                 />
-                                <label htmlFor="phoneNumber" className="form-label">شماره تماس</label>
+                                <label htmlFor="phoneNumber" className="form-label">
+                                    شماره تماس
+                                </label>
                             </div>
                         </div>
 
-                        {/* Captcha Component */}
                         <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
 
-                        <button className='button-modern' style={{ marginTop: '20px' }} onClick={handleForgetPass}>ارسال</button>
-                        <div className='timer-wrapper'>
-                            <p className='otp-footer-text' style={{ cursor: 'pointer' }}><Link onClick={(event) => {
-                                event.preventDefault()
-                                setShowForgetPass(false)
-                            }}>بازگشت</Link></p>
-                        </div>
+                        <button className='button-modern' style={{ marginTop: '20px' }} onClick={handleForgetPass}>
+                            ارسال
+                        </button>
+
+                        <p className='otp-footer-text' style={{ cursor: 'pointer' }} onClick={() => setShowForgetPass(false)}>
+                            بازگشت
+                        </p>
                     </div>
                 </div>
+
+            ) : showTwoFactorLogin ? (
+
+                /* فرم ورود دومرحله‌ای */
+                <div className='login-form-container'>
+                    <div className="login wrap">
+                        <div className="h1">ورود دومرحله‌ای</div>
+
+                        <form onSubmit={loginHandler}>
+                            <div className="form-group">
+                                <input type="text" className="form-control" placeholder=" " value={totpCode} maxLength={6} inputMode="numeric"
+                                    onChange={(e) => {
+                                        const value = e.target.value
+                                        if (/^\d*$/.test(value)) setTotpCode(value)
+                                    }}
+                                />
+                                <label className="form-label">
+                                    کد ۶ رقمی 2FA
+                                </label>
+                            </div>
+
+                            <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
+
+                            <button className='button-modern'>
+                                ورود
+                            </button>
+                        </form>
+
+                        <span
+                            className="forgot-password"
+                            onClick={() => setShowTwoFactorLogin(false)}
+                        >
+                            بازگشت
+                        </span>
+                    </div>
+                </div>
+
             ) : (
-                // فرم ورود اصلی (حالت پیش فرض)
+
+                /* فرم ورود معمولی */
                 <div className='login-form-container'>
                     <div className="login wrap">
                         <div className="h1">ورود به حساب</div>
+
                         <form onSubmit={loginHandler}>
-                            <div className='register-inputs-wrapper' >
+                            <div className='register-inputs-wrapper'>
                                 <div className="form-group">
-                                    <input type="text" className="form-control" placeholder=" " id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                                    <label htmlFor="username" className="form-label">نام کاربری</label>
+                                    <input type="text" className="form-control" placeholder=" " value={username} onChange={(e) => setUsername(e.target.value)} />
+                                    <label className="form-label">نام کاربری</label>
                                 </div>
+
                                 <div className="form-group">
-                                    <input type="password" className="form-control" placeholder=" " id="passwordNumber" value={password} onChange={(e) => setPassword(e.target.value)} />
-                                    <label htmlFor="passwordNumber" className="form-label">رمز عبور</label>
-                                </div>
-                                {/* فیلد ورود 2FA جدید در فرم اصلی */}
-                                <div className="form-group">
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder=" "
-                                        id="totpCode"
-                                        value={totpCode}
-                                        onChange={(e) => {
-                                            const value = e.target.value;
-                                            // اجازه ورود فقط اعداد تا حداکثر 6 کاراکتر
-                                            if (/^\d*$/.test(value) && value.length <= 6) {
-                                                setTotpCode(value);
-                                            }
-                                        }}
-                                        maxLength={6}
-                                        inputMode="numeric"
-                                    />
-                                    <label htmlFor="totpCode" className="form-label">2FA (کد ۶ رقمی)</label>
+                                    <input type="password" className="form-control" placeholder=" " value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <label className="form-label">رمز عبور</label>
                                 </div>
                             </div>
 
                             <Captcha onVerify={(token) => setCloudflareCaptchaToken(token)} />
 
-                            <button className='button-modern'>ورود</button>
+                            <span className="forgot-password" onClick={() => setShowTwoFactorLogin(true)} >
+                                ورود دومرحله‌ای
+                            </span>
+
+                            <button className='button-modern'>
+                                ورود
+                            </button>
                         </form>
-                        <span className="forgot-password" onClick={() => setShowForgetPass(true)}>فراموشی رمز عبور</span>
-                        <p className='login-footer-text'>حساب کاربری ندارید؟ <Link to='/register'>ثبت نام کنید</Link></p>
+
+                        <span className="forgot-password" onClick={() => setShowForgetPass(true)} >
+                            فراموشی رمز عبور
+                        </span>
+
+                        <p className='login-footer-text'>
+                            حساب کاربری ندارید؟ <Link to='/register'>ثبت نام کنید</Link>
+                        </p>
                     </div>
                 </div>
             )}
         </>
     )
+
 }

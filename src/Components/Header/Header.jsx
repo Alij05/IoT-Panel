@@ -188,14 +188,8 @@ export default function Header() {
 
                 {/* ---------- Date ---------- */}
                 <div className="header-left-icon header-date">
-                    <div
-                        style={{
-                            padding: "10px",
-                            textAlign: "center",
-                            fontWeight: "bold",
-                        }}
-                    >
-                        {dateStr} , {dayName}
+                    <div style={{ padding: "10px", textAlign: "center", fontWeight: "bold", }}>
+                        {dayName} , {dateStr}
                     </div>
                 </div>
 
